@@ -1,0 +1,7 @@
+RewriteEngine on
+Options +FollowSymlinks
+RewriteBase /webbase
+
+RewriteRule ^(ajax.*) $1 [L,NC,QSA]
+RewriteRule ^(assets)/(.*) $1/$2 [L,NC]
+RewriteRule ^([^/]+)(/.*)?$ index.php?_action=$1&_rest=$2 [L,QSA]
