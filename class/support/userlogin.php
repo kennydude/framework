@@ -123,8 +123,8 @@
 	    {
 		if (($lg = $context->postpar('login', '')) !== '')
 		{
+                    $page = $context->postpar('page', '');
 		    $pw = $context->postpar('password', '');
-		    $local->addval('logerr', 'Please try again');
 		    if ($pw !== '')
 		    {
 			$user = $this->eorl($lg);
@@ -135,11 +135,16 @@
 				session_start();
 			    }
 			    $_SESSION['user'] = $user;
-			    $context->divert('/'); # success - divert to home page
+			    $context->divert($page === '' ? '/' : $page); # success - divert to home page
 			}
 		    }
 		    $local->message('message', 'Please try again.');
 		}
+                else
+                {
+                    $page = $context->getpar('page', '');
+                }
+                $local->addval('page', $page);
 	    }
 	    return 'login.twig';
 	}
