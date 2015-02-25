@@ -1,6 +1,6 @@
     function mktoggle(tclass, v)
     {
-        return '<i class="'+tclass+' fa fa-toggle-'+(v ? icon : 'circle-thin')+'"></i>'
+        return '<i class="'+tclass+' fa fa-toggle-'+(v ? 'on' : 'off')+'"></i>'
     }
 
     function toggle(x)
