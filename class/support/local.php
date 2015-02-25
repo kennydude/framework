@@ -344,6 +344,21 @@
             return $this->basepath;
         }
 /**
+ * Remove the base component from a URL
+ *
+ * @param string        $url
+ *
+ * @return string
+ */
+        public function debase($url)
+        {
+            if ($this->base() !== '')
+            {
+                $url = preg_replace('#^'.$this->base().'#', '', $url);
+            }
+            return $url;
+        }
+/**
  * Set up local information in the constructor
  *
  * @param string	$basedir	The full path to the site directory
