@@ -141,7 +141,7 @@
  */
 	public static function getMessage($code)
 	{
-	    return isValid($code) ? self::$messages[$code] : 'Unknown Error Code';
+	    return self::isValid($code) ? self::$messages[$code] : 'Unknown Error Code';
 	}
 /**
  * return code and message
