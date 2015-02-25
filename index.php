@@ -56,7 +56,7 @@
 
     if (($page->needlogin) && !$context->hasuser())
     { # not logged in or not an admin
-        $context->divert('/login');
+        $context->divert('/login?page='.urlencode($local->debase($_SERVER['REQUEST_URI'])));
     }
 
     if ($page->admin && !$context->hasadmin())
