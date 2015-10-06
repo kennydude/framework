@@ -14,6 +14,7 @@
  */
     class Local
     {
+        use Singleton;
 /**
  * @var	string		The absolute path to the site directory
  */
@@ -87,13 +88,18 @@
         {
             if ($this->debug)
             {
+                echo '<pre>';
+                debug_print_backtrace();
+                echo '</pre>';
 //		require 'kint/Kint.class.php';
 //		Kint::dump(1);
             }
             $ekey = $file.'/'.$line.'/'.$type.'/'.$msg;
             if (!isset($this->senterrors[$ekey]))
             {
-                $ve = @var_export(debug_backtrace(), TRUE);
+                ob_start();
+                debug_print_backtrace();
+                $ve = ob_get_clean();
                 mail(implode(',', $this->sysadmin),
                     date('c').' System Error - '.$msg.' ',
                     'Type : '.$type."\n".
@@ -237,8 +243,6 @@
  */
         public function setuptwig($debug = TRUE, $cache = FALSE)
         {
-            require_once('Twig/Autoloader.php');
-            Twig_Autoloader::register();
             $this->twig = new Twig_Environment(
                 new Twig_Loader_Filesystem($this->makepath($this->basepath, 'twigs')),
                 array('cache' => $cache ? $this->makepath($this->basepath, 'twigcache') : FALSE, 'debug' => $debug)
@@ -282,14 +286,24 @@
 /**
  * Add a value into the values stored for rendering the template
  *
- * @param string	$vname		The name to be used inside the twig
- * @param mixed		$value		The value to be stored
+ * @param string	$vname		The name to be used inside the twig or an array of value pairs
+ * @param mixed		$value		The value to be stored or "" if an array in param 1
  *
  * @return void
  */
-        public function addval($vname, $value)
+        public function addval($vname, $value = "")
         {
-            $this->tvals[$vname] = $value;
+            if (is_array($vname))
+            {
+                foreach ($vname as $key => $aval)
+                {
+                    $this->tvals[$key] = $aval;
+                }
+            }
+            else
+            {
+                $this->tvals[$vname] = $value;
+            }
         }
 /**
  * Add a message into the messages stored for rendering the template
@@ -346,6 +360,9 @@
 /**
  * Remove the base component from a URL
  *
+ * Note that this will fail if the base name contains a '#' character!
+ * The installer tests for this and issues an error when run.
+ *
  * @param string        $url
  *
  * @return string
@@ -359,14 +376,19 @@
             return $url;
         }
 /**
- * Set up local information in the constructor
+ * Set up local information. Returns self
+ * 
+ * The $loadrb parameter simplifies some of the unit testing for this class
  *
  * @param string	$basedir	The full path to the site directory
  * @param boolean	$ajax		If TRUE then this is an AJAX call
  * @param boolean	$debug		If TRUE then we are developing the system
  * @param boolean	$loadtwig	if TRUE then load in Twig.
+ * @param boolean	$loadrb		if TRUE then load in RedBean
+ *
+ * @return object
  */
-        public function __construct($basedir, $ajax, $debug, $loadtwig)
+        public function setup($basedir, $ajax, $debug, $loadtwig, $loadrb = TRUE)
         {
 #
 # For a fixed place production system you probably just want to replace all the directory munging with constants!
@@ -403,12 +425,13 @@
 /*
  * Initialise database access
  */
-            require('rb.php'); # RedBean interface
-            if (Config::DBHOST != '')
+	    require_once('rb.php'); # RedBean interface
+            if (Config::DBHOST != '' && $loadrb)
             { # looks like there is a database configured
                 R::setup('mysql:host='.Config::DBHOST.';dbname='.Config::DB, Config::DBUSER, Config::DBPW); # mysql initialiser
                 R::freeze(!$debug); # freeze DB for production systems
-            }
+	    }
+            return $this;
         }
     }
 ?>
