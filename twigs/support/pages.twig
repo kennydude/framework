@@ -63,6 +63,18 @@
 	    bootbox.alert('That page already exists')
 	    return
 	}
+        var src = $('#npsrc').val()
+        if (src == '')
+        {
+	    bootbox.alert('Please specify a source')
+	    return
+        }
+        var kind = $('#npkind').val()
+        if (kind == '')
+        {
+	    bootbox.alert('Please pick template or object')
+	    return
+        }
 	var admin = $('#npadmin').is(':checked') ? 1 : 0
 	var active = $('#npactive').is(':checked') ? 1 : 0
 	var login = $('#nplogin').is(':checked') ? 1 : 0
@@ -85,8 +97,8 @@
 	$.post('{{base}}/ajax.php', {
 		op : 'addpage',
 		name : pn,
-		kind : $('#npkind').val(),
-		source : $('#npsrc').val(),
+		kind : kind,
+		source : src,
 		admin : admin,
 		active : active,
                 devel : devel,
@@ -211,7 +223,7 @@
                                     </select>
                                 </div>
                                 <div class="form-group">
-                                    <label for="npsrc">Name</label>
+                                    <label for="npsrc">Source</label>
                                     <input type="text" class="form-control" id="npsrc" placeholder="page.twig or class name" required="required"/>
                                 </div>
                                 <div class="checkbox">
