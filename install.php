@@ -14,7 +14,7 @@
         include 'errors/notwig.php';
         exit;
     }
-    Twig_Autoloader::register();
+//    Twig_Autoloader::register();
     $twig = new Twig_Environment(
         new Twig_Loader_Filesystem('./install/twigs'),
         array('cache' => FALSE, 'debug' => TRUE)
@@ -48,7 +48,11 @@
     $vals = array('name' => $name, 'dir' => __DIR__);
 
     $fail = FALSE;
-    if (!function_exists('password_hash'))
+    if (preg_match('/#/', $name))
+    { // names with # in them will break the regexp in Local debase()
+        $fail = $vals['hashname'] = TRUE;
+    }
+    elseif (!function_exists('password_hash'))
     {
         $fail = $vals['phpversion'] = TRUE;
     }
@@ -139,7 +143,7 @@
             header('HTTP/1.1 500 Internal Error');
             exit;
         }
-        fputs($fd, 'RewriteEngine on'.PHP_EOL.'Options +FollowSymlinks'.PHP_EOL);
+        fputs($fd, 'RewriteEngine on'.PHP_EOL.'Options -Indexes +FollowSymlinks'.PHP_EOL);
         fputs($fd, 'RewriteBase '.($dir == '' ? '/' : $dir).PHP_EOL);
         fputs($fd, 'RewriteRule ^(ajax.*) $1 [L,NC,QSA]'.PHP_EOL.'RewriteRule ^(assets)/(.*) $1/$2 [L,NC]'.PHP_EOL.
             'RewriteRule ^.*$ index.php [L,QSA]'.PHP_EOL);
@@ -150,6 +154,7 @@
         require('rb.php');
         try
         {
+            $now = r::isodatetime(time() - date('Z')); # make sure the timestamp is in UTC (this should fix a weird problem with some XAMPP installations)
             $vals['dbhost'] = $cvalue['dbhost'];
             $vals['dbname'] = $cvalue['dbname'];
             $vals['dbuser'] = $cvalue['dbuser'];
@@ -162,14 +167,14 @@
             $user->password = password_hash($cvalue['adminpw'], PASSWORD_DEFAULT);
             $user->active = 1;
             $user->confirm = 1;
-            $user->joined = R::isodatetime();
+            $user->joined = $now;
             R::store($user);
 /**
  * Now initialise the confirmation code table
  */
             $conf = R::dispense('confirm');
 	    $conf->code = 'this is a rubbish code';
-	    $conf->issued = R::isodatetime();
+	    $conf->issued = $now;
 	    $conf->kind = 'C';
 	    R::store($conf);
 	    $user->xownConfirm[] = $conf;
@@ -183,18 +188,24 @@
             {
                 $vals['timezone'] = TRUE;
             }
+/**
+ * See code below for significance of the entries (kind, source, admin, needlogin, devel)
+ *
+ * the link for install.php is to catch when people try to run install again after a successful install
+ */
             $pages = array(
-                'about'         => array(SiteAction::TEMPLATE, 'about.twig', 0, 0),
-                'admin'         => array(SiteAction::OBJECT, 'Admin', 1, 1),
-                'confirm'       => array(SiteAction::OBJECT, 'UserLogin', 0, 0),
-                'contact'       => array(SiteAction::OBJECT, 'Contact', 0, 0),
-                'error'         => array(SiteAction::OBJECT, 'Error', 0, 0),
-                'forgot'        => array(SiteAction::OBJECT, 'UserLogin', 0, 0),
-                'home'          => array(SiteAction::TEMPLATE, 'index.twig', 0, 0),
-                'install.php'   => array(SiteAction::TEMPLATE, 'oops.twig', 0, 0),
-                'login'         => array(SiteAction::OBJECT, 'UserLogin', 0, 0),
-                'logout'        => array(SiteAction::OBJECT, 'UserLogin', 0, 1),
-                'register'      => array(SiteAction::OBJECT, 'UserLogin', 0, 0),
+                'about'         => array(Siteaction::TEMPLATE, 'about.twig', 0, 0, 0),
+                'admin'         => array(Siteaction::OBJECT, 'Admin', 1, 1, 0),
+                'confirm'       => array(Siteaction::OBJECT, 'UserLogin', 0, 0, 0),
+                'contact'       => array(Siteaction::OBJECT, 'Contact', 0, 0, 0),
+                'devel'         => array(Siteaction::OBJECT, 'Developer', 1, 1, 1),
+                'error'         => array(Siteaction::OBJECT, 'Error', 0, 0, 0),
+                'forgot'        => array(Siteaction::OBJECT, 'UserLogin', 0, 0, 0),
+                'home'          => array(Siteaction::TEMPLATE, 'index.twig', 0, 0, 0),
+                'install.php'   => array(Siteaction::TEMPLATE, 'oops.twig', 0, 0, 0),
+                'login'         => array(Siteaction::OBJECT, 'UserLogin', 0, 0, 0),
+                'logout'        => array(Siteaction::OBJECT, 'UserLogin', 0, 1, 0),
+                'register'      => array(Siteaction::OBJECT, 'UserLogin', 0, 0, 0),
             );
             foreach ($pages as $name => $data)
             {
@@ -204,9 +215,9 @@
                 $p->source = $data[1];
                 $p->admin = $data[2];
                 $p->needlogin = $data[3];
+                $p->devel = $data[4];
                 $p->mobileonly = 0;
                 $p->active = 1;
-                $p->devel = 0;
                 R::store($p);
             }
 /**
@@ -229,8 +240,8 @@
 
             $role = R::dispense('role');
             $role->otherinfo = '-';
-            $role->start = R::isodatetime();
-            $role->end =   R::isodatetime(); # this makes RedBean make it a datetime field
+            $role->start = $now;
+            $role->end =   $now; # this makes RedBean make it a datetime field
             R::store($role);
             $role->end = NULL; # clear end date as we don't want to time limit admin
             R::store($role);
@@ -245,7 +256,7 @@
 
             $role = R::dispense('role');
             $role->otherinfo = '-';
-            $role->start = R::isodatetime();
+            $role->start = $now;
             $role->end = NULL; # no end date
             R::store($role);
             $user->xownRole[] = $role;
