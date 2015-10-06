@@ -33,11 +33,11 @@
  * @copyright 2012-2013 Newcastle University
  *
  */
-    include 'class/framework.php';
+    include 'class/support/framework.php';
     Framework::initialise();
 
-    $local = new Local(__DIR__, FALSE, TRUE, TRUE); # Not Ajax, debug on, load twig
-    $context = new Context($local);
+    $local = Local::getinstance()->setup(__DIR__, FALSE, TRUE, TRUE, FALSE); # Not Ajax, debug on, load twig, no RB
+    $context = Context::getinstance()->setup($local);
 
 /*
  * The valid actions for the site, i.e. valid first part of the URL
@@ -70,7 +70,7 @@
     {
     case Siteaction::OBJECT:
         $op = new $pages[$action][1];
-        $tpl = $op->handle($context, $local);
+        $tpl = $op->handle($context);
         break;
 
     case Siteaction::TEMPLATE:
