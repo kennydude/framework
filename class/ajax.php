@@ -12,6 +12,7 @@
  */
     class Ajax
     {
+        use Singleton;
 /**
  * @var array Allowed operation codes. Values indicate : [needs login, needs admin privileges, needs developer privileges]
  */
@@ -33,21 +34,22 @@
  */
         private function adduser($context)
         {
+            $now = $context->utcnow(); # make sure time is in UTC
             $u = R::dispense('user');
             $u->login = $context->mustpostpar('login');
             $u->email = $context->mustpostpar('email');
             $u->active = 1;
             $u->confirm = 1;
-            $u->joined = R::isodatetime();
+            $u->joined = $now;
             R::store($u);
             $u->setpw($context->mustpostpar('password'));
             if ($context->postpar('admin', 0) == 1)
             {
-                $u->addrole('Site', 'Admin', '', R::isodatetime());
+                $u->addrole('Site', 'Admin', '', $now);
             }
             if ($context->postpar('devel', 0) == 1)
             {
-                $u->addrole('Site', 'Developer', '', R::isodatetime());
+                $u->addrole('Site', 'Developer', '', $now);
             }
             echo $u->getID();
         }
@@ -150,7 +152,7 @@
                 }
                 else
                 {
-                    $bn->addrole('Site', $field, '', R::isodatetime());
+                    $bn->addrole('Site', $field, '', $context->utcnow());
                 }
             }
             else
@@ -163,11 +165,10 @@
  * Handle AJAX operations
  *
  * @param object	$context	The context object for the site
- * @param object	$local		The local object for the site
  *
  * @return void
  */
-        public function handle($context, $local)
+        public function handle($context)
         {
             if (($lg = $context->getpar('login', '')) != '')
             { # this is a parsley generated username check call
