@@ -10,6 +10,14 @@
 	    <h1>Framework Installer</h1>
 	    {% if nodotgw is defined or noclassgw is defined or dberror is defined or phpversion is defined %}
 		<h2>Error!!</h2>
+                {% if hashname %}
+		    <h3><span class="label label-danger"># character in site directory name</span></h3>
+                    <p>
+		        The directory you are installing into has a # charcater in its name.
+			This will cause an error in the function debase in class Local where a # is used
+			as a regular expression delimiter.
+                    </p>
+                {% endif %}
                 {% if phpversion %}
 		    <h3><span class="label label-danger">No password support</span></h3>
                     <p>
