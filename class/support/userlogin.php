@@ -35,7 +35,7 @@
 	    $code = hash('sha256', $bn->getID.$bn->email.$bn->login.uniqid());
 	    $conf = R::dispense('confirm');
 	    $conf->code = $code;
-	    $conf->issued = R::isodatetime();
+	    $conf->issued = $context->utcnow();
 	    $conf->kind = $kind;
 	    $conf->user = $bn;
 	    R::store($conf);
@@ -83,9 +83,8 @@
  * @link	http://php.net/manual/en/function.session-destroy.php
  *
  * @param object	$context	The context object for the site
- * @param object	$local		The local object for the site
  */
-	public function logout($context, $local)
+	public function logout($context)
 	{
 	    $_SESSION = array(); # Unset all the session variables.
 
@@ -109,15 +108,14 @@
  * Handle a login
  *
  * @param object	$context	The context object for the site
- * @param object	$local		The local object for the site
  *
  * @return string	A template name
  */
-	public function login($context, $local)
+	public function login($context)
 	{
 	    if ($context->hasuser())
 	    { # already logged in
-		$local->message('message', 'Please log out before trying to login');
+		$context->local()->message('message', 'Please log out before trying to login');
 	    }
 	    else
 	    {
@@ -138,13 +136,13 @@
 			    $context->divert($page === '' ? '/' : $page); # success - divert to home page
 			}
 		    }
-		    $local->message('message', 'Please try again.');
+		    $context->local()->message('message', 'Please try again.');
 		}
                 else
                 {
                     $page = $context->getpar('page', '');
                 }
-                $local->addval('page', $page);
+                $context->local()->addval('page', $page);
 	    }
 	    return 'login.twig';
 	}
@@ -153,11 +151,10 @@
  *
  *
  * @param object	$context	The context object for the site
- * @param object	$local		The local object for the site
  *
  * @return string	A template name
  */
-	public function register($context, $local)
+	public function register($context)
 	{
 	    $login = $context->postpar('login', '');
 	    if ($login !== '')
@@ -189,11 +186,11 @@
 			$x->email = $email;
 			$x->confirm = 0;
                         $x->active = 1;
-			$x->joined = R::isodatetime();
+			$x->joined = $context->utcnow();
 			R::store($x);
 			$x->setpw($pw);
 			$this->sendconfirm($x);
-			$local->addval('regok', 'A confirmation link has been sent to your email address.');
+			$context->local()->addval('regok', 'A confirmation link has been sent to your email address.');
 		    }
 		}
 		else
@@ -202,7 +199,7 @@
 		}
                 if (!empty($errmess))
                 {
-                    $local->message('errmessage', $errmess);
+                    $context->local()->message('errmessage', $errmess);
                 }
 	    }
 	    return 'register.twig';
@@ -211,16 +208,16 @@
  * Handle things to do with email address confirmation
  *
  * @param object	$context	The context object for the site
- * @param object	$local		The local object for the site
  *
  * @return string	A template name
  */
-	public function confirm($context, $local)
+	public function confirm($context)
 	{
 	    if ($context->hasuser())
 	    { # logged in, so this stupid....
 		$context->divert('/');
 	    }
+            $local = $context->local();
 	    $tpl = 'index.twig';
 	    $rest = $context->rest();
 	    if ($rest[0] == '' || $rest[0] == 'resend')
@@ -253,7 +250,7 @@
 		$x = R::findOne('confirm', 'code=? and kind=?', array($rest[0], 'C'));
 		if (is_object($x))
 		{
-		    $interval = (new DateTime(R::isodatetime()))->diff(new DateTime($x->issued));
+		    $interval = (new DateTime($context->utcnow()))->diff(new DateTime($x->issued));
 		    if ($interval->days <= 3)
 		    {
 			$x->user->doconfirm();
@@ -272,16 +269,16 @@
  * Handle things to do with password reset
  *
  * @param object	$context	The context object for the site
- * @param object	$local		The local object for the site
  *
  * @return string	A template name
  */
-	public function forgot($context, $local)
+	public function forgot($context)
 	{
 	    if ($context->hasuser())
 	    { # logged in, so this stupid....
 		$context->divert('/');
 	    }
+            $local = $context->local();
 	    $tpl = 'index.twig';
 	    $rest = $context->rest();
 	    if ($rest[0] == '')
@@ -312,7 +309,7 @@
 		$xc = R::findOne('confirm', 'code=? and kind=?', array($code, 'P'));
 		if (is_object($xc) && $xc->user_id == $user->getID())
 		{
-		    $interval = (new DateTime(R::isodatetime()))->diff(new DateTime($xc->issued));
+		    $interval = (new DateTime($context->utcnow()))->diff(new DateTime($xc->issued));
 		    if ($interval->days <= 1)
 		    {
 			$pw = $context->mustpostpar('password');
@@ -345,7 +342,7 @@
 		$x = R::findOne('confirm', 'code=? and kind=?', array($rest[0], 'P'));
 		if (is_object($x))
 		{
-		    $interval = (new DateTime(R::isodatetime()))->diff(new DateTime($x->issued));
+		    $interval = (new DateTime($context->utcnow()))->diff(new DateTime($x->issued));
 		    if ($interval->days <= 1)
 		    {
 			$local->addval('pwuser', $x->user);
@@ -364,14 +361,13 @@
  * Handle /login /logout /register /forgot /confirm
  *
  * @param object	$context	The context object for the site
- * @param object	$local		The local object for the site
  *
  * @return string	A template name
  */
-	public function handle($context, $local)
+	public function handle($context)
 	{
 	    $action = $context->action();
-	    return $this->$action($context, $local);
+	    return $this->$action($context);
 	}
     }
 ?>

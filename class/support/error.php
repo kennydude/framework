@@ -14,11 +14,10 @@
  * Handle various error operations /error/xxxx
  *
  * @param object	$context	The context object for the site
- * @param object	$local		The local object for the site
  *
  * @return string	A template name
  */
-	public function handle($context, $local)
+	public function handle($context)
 	{
 	    $tpl = 'error/error.twig';
 	    $rest = $context->rest();
@@ -26,12 +25,14 @@
 	    {
             case '404':
                 $tpl = 'error/404.twig';
-                $local->addval('page', $context->getpar('page', ''));
+                $context->local()->addval('page', $context->getpar('page', ''));
                 break;
 
 	    default :
-                $local->addval('code', $rest[0]);
-                $local->addval('message', StatusCodes::getMessage($rest[0]));
+                $context->local()->addval(array(
+                    'code'      => $rest[0],
+                    'message'   => StatusCodes::getMessage($rest[0])
+                ));
 		break;
 	    }
 	    header(StatusCodes::httpHeaderFor($rest[0]));

@@ -16,11 +16,10 @@
  * The test for developer status is done in index.php so deos not need to be repeated here.
  *
  * @param object	$context	The context object for the site
- * @param object	$local		The local object for the site
  *
  * @return string	A template name
  */
-	public function handle($context, $local)
+	public function handle($context)
 	{
 	    if ($context->hasdeveloper())
 	    {
@@ -42,16 +41,16 @@
 
 		case 'mail' : # this lets you test email sending
 		    $foo = mail($context->user()->email, 'test', 'test');
-		    $local->message('message', 'sent');
+		    $context->local()->message('message', 'sent');
 		    break;
 /*
 		case 'errlog' : # this will show you the contents of the PHP error log file.
-		    $local->addval('errlog', file_get_contents(Config::PHPLOG));
+		    $context->local()->addval('errlog', file_get_contents(Config::PHPLOG));
 		    exit;
 
 		case 'clearlog' :
 		    fclose(fopen(Config::PHPLOG, 'w'));
-		    $local->message('message', 'Log Cleared');
+		    $context->local()->message('message', 'Log Cleared');
 		    break;
 */
                 }
