@@ -38,8 +38,8 @@
     include 'class/support/framework.php';
     Framework::initialise();
 
-    $local = new Local(__DIR__, FALSE, TRUE, TRUE); # Not Ajax, debug on, load twig
-    $context = new Context($local);
+    $local = Local::getinstance()->setup(__DIR__, FALSE, TRUE, TRUE, TRUE); # Not Ajax, debug on, load twig, load RB
+    $context = Context::getinstance()->setup($local);
 
     $action = $context->action();
     if ($action === '')
@@ -76,13 +76,12 @@
 
     $local->addval('context', $context);
     $local->addval('page', $action);
-    $local->addval('siteinfo', new SiteInfo($local));
+    $local->addval('siteinfo', new Siteinfo($local));
 
     switch ($page->kind)
     {
     case Siteaction::OBJECT:
-        $op = new $page->source;
-        $tpl = $op->handle($context, $local);
+        $tpl = (new $page->source)->handle($context);
         break;
 
     case Siteaction::TEMPLATE:
