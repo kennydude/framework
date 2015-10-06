@@ -12,11 +12,10 @@
  * The handler for this class
  *
  * @param object	$context	The context object for the site
- * @param object	$local		The local object for the site
  *
  * @return string	An empty string as phpinfo generates the HTML for us....
  */
-        public function handle($context, $local)
+        public function handle($context)
         {
             if (isset($_SERVER['PHP_AUTH_PW']))
             { # hide the password field!!
