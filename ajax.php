@@ -11,6 +11,6 @@
     include 'class/support/framework.php';
     Framework::initialise();
 
-    $local = new Local(__DIR__, TRUE, TRUE, TRUE); # Ajax, debug on, load twig
-    (new Ajax)->handle(new Context($local), $local);
+    // Ajax on, debug on, load twig, load RB
+    Ajax::getinstance()->handle(Context::getinstance()->setup(Local::getinstance()->setup(__DIR__, TRUE, TRUE, TRUE, TRUE)));
 ?>
