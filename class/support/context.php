@@ -10,14 +10,15 @@
  */
     class Context
     {
+        use Singleton;
 /**
  * The name of the authentication token field.
  */
-	const TOKEN 	= 'X-FEEDBOOK-TOKEN';
+	const TOKEN 	= 'X-APPNAME-TOKEN';
 /**
  * The key used to encode the token validation
  */
-	const KEY	= 'I have no idea what the key should look like';
+	const KEY	= 'Some string of text.....';
 /**
  * @var object		an instance of Local
  */
@@ -183,7 +184,57 @@
         {
             return $this->reqrest;
         }
-/*
+/**
+ * Deliver JSON response. Does not return
+ *
+ * @param object    $res
+ *
+ * @return void
+ */
+        public function sendJSON($res)
+        {
+            $foo = json_encode($res, JSON_UNESCAPED_SLASHES);
+            header('Content-Type: application/json');
+            header('Content-Length: '.strlen($foo));
+            echo $foo;
+            exit;
+        }
+/**
+ * Deliver a file as a response.
+ *
+ * @param string	$path	The path to the file
+ * @param string	$name	The name of the file as told to the downloader
+ * @param string	$mime	The mime type of the file
+ * @param string	$cache	Any cache control parameters
+ * @param string	$etag	An etag value
+ *
+ * @return void
+ */
+	public function sendfile($path, $name = '', $mime = '', $cache	= '', $etag = '')
+	{
+	    if ($mime == '')
+	    {
+                $finfo = finfo_open(FILEINFO_MIME_TYPE);
+		$mime = finfo_file($finfo, $path);
+                finfo_close($finfo);
+	    }
+            header('Content-Type: '.$mime);
+            header('Content-Length: '.filesize($path));
+	    if ($name != '')
+	    {
+                header('Content-Disposition: attachment; filename="'.$name.'"');
+	    }
+	    if ($cache != '')
+	    {
+                header('Cache-Control: '.$cache);
+	    }
+	    if ($etag != '')
+	    {
+                header('ETag: "'.$cache.'"');
+	    }
+            readfile($path);
+	}
+/**
  ***************************************
  * User related functions
  ***************************************
@@ -350,18 +401,48 @@
             }
             return $foo;
         }
-
+/**
+ * Return the local object
+ *
+ * @return object
+ */
+        public function local()
+        {
+            return $this->local;
+        }
+/**
+ * Return an iso formatted time for NOW  in UTC
+ *
+ * @return string
+ */
+        public function utcnow()
+        {
+            return R::isodatetime(time() - date('Z'));
+        }
+/**
+ * Return an iso formatted time in UTC
+ *
+ * @param string       $datetime
+ *
+ * @return string
+ */
+        public function utcdate($datetime)
+        {
+            return R::isodatetime(strtotime($datetime) - date('Z'));
+        }
 /*
  ***************************************
- * The constructor
+ * Setup the Context - the constructor is hidden in Singleton
  ***************************************
  */
  /**
- * Initialise the context
+ * Initialise the context and return self
  *
  * @param boolean	$local	The singleton local object
+ *
+ * @return object
  */
-        public function __construct($local)
+        public function setup($local)
         {
             $this->local = $local;
             $this->luser = $this->sessioncheck('user', FALSE); # see if there is a user variable in the session....
@@ -414,6 +495,8 @@
                 $this->reqaction = strtolower(array_shift($req));
                 $this->reqrest = empty($req) ? array('') : array_values($req);
             }
+
+            return $this;
         }
     }
 ?>
