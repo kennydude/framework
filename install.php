@@ -2,19 +2,22 @@
 /**
  * This contains the code to initialise the framework from the web
  */
-    set_time_limit(0); # some people have very slow laptops and they run out of time on the installer.
+    set_time_limit(120); # some people have very slow laptops and they run out of time on the installer.
 
     include 'class/support/framework.php';
     Framework::initialise();
 /*
  * Initialise template engine - check to see if it is installed!!
+ *
  */
-    if (!(@include 'Twig/Autoloader.php'))
-    {
-        include 'errors/notwig.php';
-        exit;
-    }
-//    Twig_Autoloader::register();
+    include 'vendor/autoload.php';
+
+    #if (!(@include 'Twig/Autoloader.php'))
+    #{
+    #    include 'errors/notwig.php';
+    #    exit;
+    #}
+
     $twig = new Twig_Environment(
         new Twig_Loader_Filesystem('./install/twigs'),
         array('cache' => FALSE, 'debug' => TRUE)
@@ -23,10 +26,37 @@
 
 /**
  * Find out where we are
+ *
+ * Note that there issues with symbolic linking and __DIR__ being on a different path from the DOCUMENT_ROOT
+ * DOCUMENT_ROOT seems to be unresolved
+ *
+ * DOCUMENT_ROOT should be a substring of __DIR__ in a non-linked situation.
  */
     $dn = preg_replace('#\\\\#', '/', __DIR__); # windows installers have \ in the name
-    $bdr = array();
     $sdir = preg_replace('#/+$#', '', $_SERVER['DOCUMENT_ROOT']); # remove any trailing / characters
+    while (strpos($dn, $sdir) === FALSE)
+    { # ugh - not on the same path
+        $sdn = $sdir;
+        $sdr = array();
+        while (!is_link($sdn) && $sdn != '/')
+        {
+            $pp = pathinfo($sdn);
+            array_unshift($sdr, $pp['basename']);
+            $sdn = $pp['dirname'];
+            echo $sdn."\n";
+        }
+        echo $sdn."\n";
+        if (is_link($sdn))
+        { # not a symbolic link clearly.
+            $sdir = preg_replace('#/+$#', '', readlink($sdn).'/'.implode('/', $sdr));
+        }
+        else
+        {
+            include 'errors/symlink.php';
+            exit;
+        }
+    }
+    $bdr = array();
     while ($dn != $sdir)
     {
         $pp = pathinfo($dn);
