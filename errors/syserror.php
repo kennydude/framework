@@ -10,16 +10,18 @@
 <!--
     <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE8" />
 -->
-    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" media="screen"/>
+
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" media="screen,print"/>
 
 </head>
 <body lang="en-GB">
-    <div class="container">
+    <article class="container">
 	<div class="row">
 	   <div class="col-md-offset-3 col-md-6">
-	       <p class="well">There has been a System Error</p>
+	       <p>There has been a system error in the installer.</p>
 	   </div>
 	</div>
-    </div>
+    </article>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 </body>
 </html>
