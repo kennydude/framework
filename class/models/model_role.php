@@ -6,6 +6,9 @@
  * @copyright 2015 Newcastle University
  *
  */
+/**
+ * A class implementing a RedBean model for Role beans
+ */
     class Model_Role extends RedBean_SimpleModel
     {
 /**
