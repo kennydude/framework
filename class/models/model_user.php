@@ -65,10 +65,25 @@
             {
                 (new Web)->bad();
             }
+            $this->addrolebybean($cname, $rname, $otherinfo, $start, $end);
+        }
+/**
+ *  Add a role
+ *
+ * @param object	$context        Contextname
+ * @param object	$role           Rolename
+ * @param string	$otherinfo      Any other info that is to be stored with the role
+ * @param string	$start		A datetime
+ * @param string	$end		A datetime or ''
+ *
+ * @return object
+ */
+        public function addrolebybean($context, $role, $otherinfo, $start, $end = '')
+        {
             $r = R::dispense('role');
             $r->user = $this->bean;
-            $r->rolecontext = $cname;
-            $r->rolename = $rname;
+            $r->rolecontext = $context;
+            $r->rolename = $role;
             $r->otherinfo = $otherinfo;
             $r->start = $start;
             $r->end = $end == '' ? NULL : $end;
@@ -244,7 +259,7 @@
                 {
                     $end = $_POST['end'][$ix];
                     $start = $_POST['start'][$ix];
-                    $this->addrole($cn, $rn, $_POST['otherinfo'][$ix],
+                    $this->addrolebybean($context->load('rolecontext', $cn), $context->load('rolename', $rn), $_POST['otherinfo'][$ix],
                         strtolower($start) == 'now' ? $context->utcnow() : $context->utcdate($start),
                         strtolower($end) == 'never' || $end == '' ? '' : $context->utcdate($end)
                     );
