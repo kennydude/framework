@@ -28,6 +28,8 @@
 	    $('#addu').modal('hide')
 	    $('#utab tbody').append('<tr data-id="'+ret+'"><td>'+data.login+'</td>'+
 		'<td><a href="mailto:'+data.email+'">'+data.email+'</a></td>'+
+		'<td>'+mktoggle('confirm', data.confirm)+'</td>'+
+		'<td>'+mktoggle('active', data.active)+'</td>'+
 		'<td>'+mktoggle('admb', data.admin)+'</td>'+
 		'<td>'+mktoggle('devb', data.devel)+'</td>'+
 		'<td><i class="delb fa fa-trash-o"></i></td></tr>'
