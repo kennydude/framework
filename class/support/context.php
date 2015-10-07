@@ -275,7 +275,7 @@
  */
         public function hasadmin()
         {
-            return $this->hasuser() && $this->luser->isadmin();
+            return $this->hasuser() && $this->user()->isadmin();
         }
 /**
  * Do we have a logged in developer user?
@@ -284,7 +284,7 @@
  */
         public function hasdeveloper()
         {
-            return $this->hasuser() && $this->luser->isdeveloper();
+            return $this->hasuser() && $this->user()->isdeveloper();
         }
 /**
  * Find out if this was validated using a token, if so, it is coming from a device not a browser
