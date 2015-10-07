@@ -203,37 +203,40 @@
                 R::store($this->bean);
             }
             $uroles = $this->roles();
-            foreach ($_POST['exist'] as $ix => $rid)
-            {
-                $rl = $context->load('role', $rid);
-                $start = $_POST['xstart'][$ix];
-                $end = $_POST['xend'][$ix];
-                $other = $_POST['xotherinfo'][$ix];
-                if (strtolower($start) == 'now')
+	    if (filter_has_var(INPUT_POST, 'exist'))
+	    {
+                foreach ($_POST['exist'] as $ix => $rid)
                 {
-                    $rl->start = $context->utcnow();
-                }
-                elseif ($start != $rl->start)
-                {
-                    $rl->start = $context->utcdate($start);
-                }
-                if (strtolower($end) == 'never' || $end == '')
-                {
-                    if ($rl->end != '')
+                    $rl = $context->load('role', $rid);
+                    $start = $_POST['xstart'][$ix];
+                    $end = $_POST['xend'][$ix];
+                    $other = $_POST['xotherinfo'][$ix];
+                    if (strtolower($start) == 'now')
                     {
-                        $rl->end = NULL;
+                        $rl->start = $context->utcnow();
                     }
+                    elseif ($start != $rl->start)
+                    {
+                        $rl->start = $context->utcdate($start);
+                    }
+                    if (strtolower($end) == 'never' || $end == '')
+                    {
+                        if ($rl->end != '')
+                        {
+                            $rl->end = NULL;
+                        }
+                    }
+                    elseif ($end != $rl->end)
+                    {
+                         $rl->end = $context->utcdate($end);
+                    }
+                    if ($other != $rl->otherinfo)
+                    {
+                        $rl->otherinfo = $other;
+                    }
+                    R::store($rl);
                 }
-                elseif ($end != $rl->end)
-                {
-                     $rl->end = $context->utcdate($end);
-                }
-                if ($other != $rl->otherinfo)
-                {
-                    $rl->otherinfo = $other;
-                }
-                R::store($rl);
-            }
+	    }
             foreach ($_POST['role'] as $ix => $rn)
             {
                 $cn = $_POST['context'][$ix];
