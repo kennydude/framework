@@ -10,7 +10,8 @@
 <!--
     <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE8" />
 -->
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.no-icons.min.css" media="screen"/>
+
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" media="screen,print"/>
 
 </head>
 <body lang="en-GB">
@@ -21,5 +22,6 @@
 	   </div>
 	</div>
     </article>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 </body>
 </html>
