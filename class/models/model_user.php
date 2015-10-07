@@ -6,6 +6,9 @@
  * @copyright 2013-2014 Newcastle University
  *
  */
+/**
+ * A class implementing a RedBean model for User beans
+ */
     class Model_User extends RedBean_SimpleModel
     {
 /**
