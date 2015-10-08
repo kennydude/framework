@@ -22,7 +22,7 @@
         new Twig_Loader_Filesystem('./install/twigs'),
         array('cache' => FALSE, 'debug' => TRUE)
     );
-    $twig->addExtension(new Twig_Extension_Debug());
+//    $twig->addExtension(new Twig_Extension_Debug());
 
 /**
  * Find out where we are
