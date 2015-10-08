@@ -23,7 +23,7 @@
         {
             $cname = R::findOne('rolecontext', 'name=?', array($contextname));
             $rname = R::findOne('rolename', 'name=?', array($rolename));
-            return R::findOne('role', 'rolecontext_id=? and rolename_id=? and user_id=? and start <= NOW() and (end is NULL or end >= NOW())',
+            return R::findOne('role', 'rolecontext_id=? and rolename_id=? and user_id=? and start <= UTC_TIMESTAMP() and (end is NULL or end >= UTC_TIMESTAMP())',
                 array($cname->getID(), $rname->getID(), $this->bean->getID()));
         }
 /**
@@ -38,7 +38,7 @@
         {
             $cname = R::findOne('rolecontext', 'name=?', array($contextname));
             $rname = R::findOne('rolename', 'name=?', array($rolename));
-            $bn = R::findOne('role', 'rolecontext_id=? and rolename_id=? and user_id=? and start <= NOW() and (end is NULL or end >= NOW())',
+            $bn = R::findOne('role', 'rolecontext_id=? and rolename_id=? and user_id=? and start <= UTC_TIMESTAMP() and (end is NULL or end >= UTC_TIMESTAMP())',
                 array($cname->getID(), $rname->getID(), $this->bean->getID()));
             if (is_object($bn))
             {
@@ -105,7 +105,7 @@
 	    {
 	        return $this->bean->with('order by start,end')->ownRole;
 	    }
-            return $this->bean->withCondition('start <= NOW() and (end is null or end >= NOW()) order by start, end')->ownRole;
+            return $this->bean->withCondition('start <= UTC_TIMESTAMP() and (end is null or end >= UTC_TIMESTAMP()) order by start, end')->ownRole;
         }
 /**
  * Is this user an admin?
@@ -180,6 +180,8 @@
 /**
  * Generate a token for this user that can be used as a unique id from a phone.
  *
+ * @param string    $device     Currently not used!!
+ *
  * @return string
  */
 	public function maketoken($device = '')
@@ -192,6 +194,8 @@
 	}
 /**
  * Handle an edit form for this user
+ *
+ * @param onbject   $context    The context object
  *
  * @return void
  */
