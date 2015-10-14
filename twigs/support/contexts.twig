@@ -71,7 +71,7 @@
 		    var tr = $(x).parent().parent()
 		    $.post('{{base}}/ajax.php', {
 			    op :'delbean',
-			    'bean' : 'contextname',
+			    'bean' : 'rolecontext',
 			    id : tr.data('id')
 			},
 			function(data){
