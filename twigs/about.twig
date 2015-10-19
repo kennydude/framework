@@ -31,19 +31,23 @@
  * DOCUMENT_ROOT
  *    /sitename         This can be omitted if the site is the only one present and at the root
  *        /assets
- *            /css      CSS files
- *            /i18n     Any internationalisation files you may need
- *            /images   Image files
- *            /js       JavaScript
- *            /...      Any other stuff that can be accessed without intermediation through PHP
- *        /class        PHP class definition files named "classname.php"
- *        /class/admin  PHP class files for the administrative functions provided by the framework
- *        /errors       Files used for generating error pages.
- *        /lib          PHP files containing non-class definitions
- *        /twigcache    If twigcacheing is on this is where it caches
- *        /twigs        TWIG template files go in here
- *        /twigs/admin  Twig files for the admin support of the framework
- *        /vendor       If you are using composer then it puts stuff in here.
+ *            /css         CSS files
+ *            /i18n        Any internationalisation files you may need
+ *            /images      Image files
+ *            /js          JavaScript
+ *            /...         Any other stuff that can be accessed without intermediation through PHP
+ *        /class           PHP class definition files named "classname.php"
+ *        /class/models    PHP class definition for RedBean model classes
+ *        /class/support   PHP class files for the administrative functions provided by the framework
+ *        /errors          Files used for generating error pages.
+ *        /install         Files needed by the installer - can be delted after succesful installation
+ *        /lib             PHP files containing non-class definitions
+ *        /tests           Unit testing files
+ *        /twigcache       If twig cacheing is on this is where it caches
+ *        /twigs           Twig template files go in here
+ *        /twigs/error     Twig template files for error messages
+ *        /twigs/support   Twig files for the admin support of the framework
+ *        /vendor          If you are using composer then it puts stuff in here.
  *
  * The .htaccess file directs
  * 	anything in /assets to be served by Apache.
