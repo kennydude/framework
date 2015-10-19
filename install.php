@@ -43,9 +43,7 @@
             $pp = pathinfo($sdn);
             array_unshift($sdr, $pp['basename']);
             $sdn = $pp['dirname'];
-            echo $sdn."\n";
         }
-        echo $sdn."\n";
         if (is_link($sdn))
         { # not a symbolic link clearly.
             $sdir = preg_replace('#/+$#', '', readlink($sdn).'/'.implode('/', $sdr));
@@ -236,6 +234,8 @@
                 'login'         => array(Siteaction::OBJECT, 'UserLogin', 0, 0, 0),
                 'logout'        => array(Siteaction::OBJECT, 'UserLogin', 0, 1, 0),
                 'register'      => array(Siteaction::OBJECT, 'UserLogin', 0, 0, 0),
+                'robots.txt'    => array(Siteaction::OBJECT, 'Robot', 0, 0, 0),
+                'sitemap.xml'   => array(Siteaction::OBJECT, 'Sitemap', 0, 0, 0),
             );
             foreach ($pages as $name => $data)
             {
