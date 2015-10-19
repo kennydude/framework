@@ -3,7 +3,7 @@
  * A class that contains code to handle sitemap.xml requests
  *
  * @author Lindsay Marshall <lindsay.marshall@ncl.ac.uk>
- * @copyright 2012-2013 Newcastle University
+ * @copyright 2015 Newcastle University
  *
  */
 /**
