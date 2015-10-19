@@ -3,7 +3,7 @@
  * Contains the definition of the Context class
  *
  * @author Lindsay Marshall <lindsay.marshall@ncl.ac.uk>
- * @copyright 2012-2013 Newcastle University
+ * @copyright 2012-2015 Newcastle University
  */
 /**
  * A class that stores various useful pieces of data for access throughout the rest of the system.
