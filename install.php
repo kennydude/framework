@@ -217,25 +217,25 @@
                 $vals['timezone'] = TRUE;
             }
 /**
- * See code below for significance of the entries (kind, source, admin, needlogin, devel)
+ * See code below for significance of the entries (kind, source, admin, needlogin, devel, active)
  *
  * the link for install.php is to catch when people try to run install again after a successful install
  */
             $pages = array(
-                'about'         => array(Siteaction::TEMPLATE, 'about.twig', 0, 0, 0),
-                'admin'         => array(Siteaction::OBJECT, 'Admin', 1, 1, 0),
-                'confirm'       => array(Siteaction::OBJECT, 'UserLogin', 0, 0, 0),
-                'contact'       => array(Siteaction::OBJECT, 'Contact', 0, 0, 0),
-                'devel'         => array(Siteaction::OBJECT, 'Developer', 1, 1, 1),
-                'error'         => array(Siteaction::OBJECT, 'Error', 0, 0, 0),
-                'forgot'        => array(Siteaction::OBJECT, 'UserLogin', 0, 0, 0),
-                'home'          => array(Siteaction::TEMPLATE, 'index.twig', 0, 0, 0),
-                'install.php'   => array(Siteaction::TEMPLATE, 'oops.twig', 0, 0, 0),
-                'login'         => array(Siteaction::OBJECT, 'UserLogin', 0, 0, 0),
-                'logout'        => array(Siteaction::OBJECT, 'UserLogin', 0, 1, 0),
-                'register'      => array(Siteaction::OBJECT, 'UserLogin', 0, 0, 0),
-                'robots.txt'    => array(Siteaction::OBJECT, 'Robot', 0, 0, 0),
-                'sitemap.xml'   => array(Siteaction::OBJECT, 'Sitemap', 0, 0, 0),
+                'about'         => array(Siteaction::TEMPLATE, 'about.twig', 0, 0, 0, 1),
+                'admin'         => array(Siteaction::OBJECT, 'Admin', 1, 1, 0, 1),
+                'confirm'       => array(Siteaction::OBJECT, 'UserLogin', 0, 0, 0, 1),
+                'contact'       => array(Siteaction::OBJECT, 'Contact', 0, 0, 0, 1),
+                'devel'         => array(Siteaction::OBJECT, 'Developer', 1, 1, 1, 1),
+                'error'         => array(Siteaction::OBJECT, 'Error', 0, 0, 0, 1),
+                'forgot'        => array(Siteaction::OBJECT, 'UserLogin', 0, 0, 0, 1),
+                'home'          => array(Siteaction::TEMPLATE, 'index.twig', 0, 0, 0, 1),
+                'install.php'   => array(Siteaction::TEMPLATE, 'oops.twig', 0, 0, 0, 1),
+                'login'         => array(Siteaction::OBJECT, 'UserLogin', 0, 0, 0, 1),
+                'logout'        => array(Siteaction::OBJECT, 'UserLogin', 0, 1, 0, 1),
+                'register'      => array(Siteaction::OBJECT, 'UserLogin', 0, 0, 0, 1),
+                'robots.txt'    => array(Siteaction::OBJECT, 'Robot', 0, 0, 0, 0),
+                'sitemap.xml'   => array(Siteaction::OBJECT, 'Sitemap', 0, 0, 0, 0),
             );
             foreach ($pages as $name => $data)
             {
@@ -247,7 +247,7 @@
                 $p->needlogin = $data[3];
                 $p->devel = $data[4];
                 $p->mobileonly = 0;
-                $p->active = 1;
+                $p->active = $data[5];
                 R::store($p);
             }
 /**
