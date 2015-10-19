@@ -10,6 +10,9 @@
  * Of course, this is entirely arbitrary and you can do whatever you want!
  *
  */
+/**
+ * Handle Ajax operations in this class
+ */
     class Ajax
     {
         use Singleton;
