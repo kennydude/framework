@@ -1,8 +1,5 @@
 <?php
 /**
- * Contains definition of CRSFGuard class
- */
-/**
  * A class to generate and handling CSRF prevention tokens.
  *
  * This is derived directly from the code to be found at
@@ -14,7 +11,9 @@
  *
  * ****************** NB This is just me playing around at the moment!!!! Not tested at all *******************
  */
-    class CSRFGuard
+/**
+ * Contains definition of CRSFGuard class
+ */    class CSRFGuard
     {
 /**
  * @var string		Used for generating unique ids when there is no sha512
