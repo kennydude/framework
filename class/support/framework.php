@@ -1,7 +1,5 @@
 <?php
 /**
- * Class for doing initial setup of the Framework.
- *
  * This is loaded in index.php and ajax.php. It does mean that it has to be included as
  * it is setting up the autoloader and stuff. But it does keep things DRY - only one place to
  * add any new autoload places etc.
@@ -11,6 +9,11 @@
  * be used again. (Equally this could just be code in a file rather than being a function
  * or a class, but that just seems nasty)
  *
+ * @author Lindsay Marshall <lindsay.marshall@ncl.ac.uk>
+ * @copyright 2015 Newcastle University
+ */
+/**
+ * Class for doing initial setup of the Framework.
  */
     class Framework
     {
