@@ -6,6 +6,9 @@
  * @copyright 2012-2013 Newcastle University
  *
  */
+/**
+ * Provide support for a nested static page structure
+ */
     class Multi extends Siteaction
     {
 /**

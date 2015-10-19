@@ -11,6 +11,9 @@
  * @copyright 2012-2013 Newcastle University
  *
  */
+/**
+ * Support / or /home
+ */
     class Home extends Siteaction
     {
 /**

@@ -6,6 +6,9 @@
  * @copyright 2012-2013 Newcastle University
  *
  */
+/**
+ * Generate a phpinfo page
+ */
     class Info extends Siteaction
     {
 /**

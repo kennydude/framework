@@ -6,6 +6,9 @@
  * @copyright 2014 Newcastle University
  *
  */
+/**
+ * Utility class that returns generally useful information about parts of the site
+ */
     class SiteInfo
     {
 /**

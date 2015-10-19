@@ -6,6 +6,9 @@
  * @copyright 2012-2013 Newcastle University
  *
  */
+/**
+ * Support the /contact page
+ */
     class Contact extends Siteaction
     {
 /**
