@@ -459,11 +459,10 @@
             if (isset($_SERVER['REDIRECT_URL']) && !preg_match('/index.php/', $_SERVER['REDIRECT_URL']))
             {
 /**
- * @todo There seems to be varying behavious across systems that generate REDIRECT_URL
- * that needs to be investigated and handled properly. Some systems seems to have the original in here
- * and others the rewritten. Weird.
+ *  Apache v 2.4.17 changed the the REDIRECT_URL value to be a full URL, so we need to strip this.
+ *  Older versions will not have this so the code will do nothing.
  */
-                $uri = $_SERVER['REDIRECT_URL'];
+                $uri = preg_replace('#^https?://[^/]+#', '', $_SERVER['REDIRECT_URL']);
             }
             else
             {
