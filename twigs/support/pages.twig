@@ -38,7 +38,7 @@
     $('#addb').on('click', function(e){
         e.preventDefault()
         var pn = $('#npname').val().toLowerCase()
-	if (!pn.match(/^[a-z][a-z0-9]*$/))
+	if (!pn.match(/^[a-z][a-z0-9.]*$/))
 	{
 	    bootbox.alert('&quot;'+pn+'&quot; is not a valid page name. Letters and numbers only')
 	    return
