@@ -178,7 +178,12 @@
 /**
  * Return the part of the URL after the main action as set by .htaccess
  *
- * @return string
+ * See setup() below for how the URL is processed to create the result array.
+ *
+ * Note that if there is nothing after the action in the URL this function returns
+ * an array with a single element containing an empty string.
+ *
+ * @return array
  */
         public function rest()
         {
