@@ -217,7 +217,7 @@
  */
 	public function sendfile($path, $name = '', $mime = '', $cache	= '', $etag = '')
 	{
-	    if ($mime == '')
+	    if ($mime === '')
 	    {
                 $finfo = finfo_open(FILEINFO_MIME_TYPE);
 		$mime = finfo_file($finfo, $path);
@@ -225,15 +225,15 @@
 	    }
             header('Content-Type: '.$mime);
             header('Content-Length: '.filesize($path));
-	    if ($name != '')
+	    if ($name !== '')
 	    {
                 header('Content-Disposition: attachment; filename="'.$name.'"');
 	    }
-	    if ($cache != '')
+	    if ($cache !== '')
 	    {
                 header('Cache-Control: '.$cache);
 	    }
-	    if ($etag != '')
+	    if ($etag !== '')
 	    {
                 header('ETag: "'.$cache.'"');
 	    }
@@ -262,7 +262,7 @@
  */
         public function sameuser($user)
         {
-            return $this->hasuser() && $this->user()->getID() == $user->getID();
+            return $this->hasuser() && $this->user()->equals($user);
         }
 /**
  * Do we have a logged in user?
