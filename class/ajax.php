@@ -9,6 +9,8 @@
  *
  * Of course, this is entirely arbitrary and you can do whatever you want!
  *
+ * @author Lindsay Marshall <lindsay.marshall@ncl.ac.uk>
+ * @copyright 2014-2015 Newcastle University
  */
 /**
  * Handle Ajax operations in this class
@@ -147,7 +149,7 @@
             $field = $context->mustpostpar('field');
 
             $bn = $context->load($type, $context->mustpostpar('id'));
-            if ($type == 'user' && ctype_upper($field[0]))
+            if ($type === 'user' && ctype_upper($field[0]))
             { # not simple toggling...
                 if (is_object($bn->hasrole('Site', $field)))
                 {
