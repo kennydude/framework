@@ -220,10 +220,10 @@
             $local = $context->local();
 	    $tpl = 'index.twig';
 	    $rest = $context->rest();
-	    if ($rest[0] == '' || $rest[0] == 'resend')
+	    if ($rest[0] === '' || $rest[0] == 'resend')
 	    { # asking for resend
 		$lg = $context->postpar('eorl', '');
-		if ($lg == '')
+		if ($lg === '')
 		{ # show the form
 		    $tpl = 'resend.twig';
 		}
@@ -281,7 +281,7 @@
             $local = $context->local();
 	    $tpl = 'index.twig';
 	    $rest = $context->rest();
-	    if ($rest[0] == '')
+	    if ($rest[0] === '')
 	    {
 		$lg = $context->postpar('eorl', '');
 		$tpl = 'reset.twig';
@@ -301,7 +301,7 @@
 		    }
 		}
 	    }
-	    elseif ($rest[0] == 'reset')
+	    elseif ($rest[0] === 'reset')
 	    {
 		$tpl = 'pwreset.twig';
 		$user = $context->load('user', $context->mustpostpar('uid'));
@@ -313,8 +313,7 @@
 		    if ($interval->days <= 1)
 		    {
 			$pw = $context->mustpostpar('password');
-			$rpw = $context->mustpostpar('repeat');
-			if ($pw == $rpw)
+			if ($pw === $context->mustpostpar('repeat'))
 			{
 			    $xc->user->setpw($pw);
 			    R::trash($xc);
