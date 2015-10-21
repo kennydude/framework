@@ -19,7 +19,7 @@
  */
 	private static function setup()
 	{
-	    if (self::$fd == NULL)
+	    if (self::$fd === NULL)
 	    {
 	        self::$fd = fopen('/tmp/'.Config::SITENAME.'debug.txt', 'a');
 	    }
