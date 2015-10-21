@@ -1,6 +1,9 @@
 <?php
 /**
  * This contains the code to initialise the framework from the web
+ *
+ * @author Lindsay Marshall <lindsay.marshall@ncl.ac.uk>
+ * @copyright 2014-2015 Newcastle University
  */
     set_time_limit(120); # some people have very slow laptops and they run out of time on the installer.
 
@@ -172,7 +175,7 @@
             exit;
         }
         fputs($fd, 'RewriteEngine on'.PHP_EOL.'Options -Indexes +FollowSymlinks'.PHP_EOL);
-        fputs($fd, 'RewriteBase '.($dir == '' ? '/' : $dir).PHP_EOL);
+        fputs($fd, 'RewriteBase '.($dir === '' ? '/' : $dir).PHP_EOL);
         fputs($fd, 'RewriteRule ^(ajax.*) $1 [L,NC,QSA]'.PHP_EOL.'RewriteRule ^(assets)/(.*) $1/$2 [L,NC]'.PHP_EOL.
             'RewriteRule ^.*$ index.php [L,QSA]'.PHP_EOL);
         fclose($fd);
