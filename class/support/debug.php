@@ -3,7 +3,7 @@
  * Contains definition of Debug class
  *
  * @author Lindsay Marshall <lindsay.marshall@ncl.ac.uk>
- * @copyright 2014 Newcastle University
+ * @copyright 2014-2015 Newcastle University
  */
 /**
  * A class that handles various debugging related things
