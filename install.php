@@ -15,18 +15,29 @@
  */
     include 'vendor/autoload.php';
 
-    #if (!(@include 'Twig/Autoloader.php'))
-    #{
-    #    include 'errors/notwig.php';
-    #    exit;
-    #}
+    try
+    {
+        $twig = new Twig_Environment(
+            new Twig_Loader_Filesystem('./install/twigs'),
+            array('cache' => FALSE, 'debug' => TRUE)
+        );
+    }
+    catch (Exception $e)
+    {
+        include 'install/errors/notwig.php';
+        exit;
+    }
+/**
+ * Test some PHP installation features...
+ */
+    $hasmb = function_exists('mb_strlen');
+    $haspdo = in_array('mysql', PDO::getAvailableDrivers());
 
-    $twig = new Twig_Environment(
-        new Twig_Loader_Filesystem('./install/twigs'),
-        array('cache' => FALSE, 'debug' => TRUE)
-    );
-//    $twig->addExtension(new Twig_Extension_Debug());
-
+    if (!$hasmb || $haspdo)
+    {
+        include 'install/errors/phpbuild.php';
+        exit;
+    }
 /**
  * Find out where we are
  *
@@ -53,7 +64,7 @@
         }
         else
         {
-            include 'errors/symlink.php';
+            include 'install/errors/symlink.php';
             exit;
         }
     }
