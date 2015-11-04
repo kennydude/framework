@@ -15,7 +15,8 @@
 
         public function __construct(array &$array)
         {
-            $this->position = 0;
+	    reset($array)
+            $this->position = key($array);
             $this->value = $array;
         }
 
