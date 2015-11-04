@@ -136,6 +136,71 @@
             return filter_has_var(INPUT_POST, $name) ? trim($_POST[$name]) : $dflt;
         }
 /**
+ * Look in the _GET array for a key that is an array and return its trimmed value
+ *
+ * @param string	$name	The key
+ * @param boolean	$fail	If TRUE then generate a 400 if the key does not exist in the array
+ *
+ * @return ArrayIterator
+ */
+        public function mustgetapar($name, $fail = TRUE)
+        {
+            if (filter_has_var(INPUT_GET, $name) && is_array($_GET[$name]))
+            {
+                return new ArrayIterator($_GET[$name]);
+            }
+            if ($fail)
+            {
+                (new Web)->bad();
+            }
+            return NULL;
+        }
+
+/**
+ * Look in the _POST array for a key that is an array and return an iterator
+ *
+ * @param string	$name	The key
+ * @param boolean	$fail	If TRUE then generate a 400 if the key does not exist in the array
+ *
+ * @return ArrayIterator
+ */
+        public function mustpostapar($name, $fail = TRUE)
+        {
+            if (filter_has_var(INPUT_POST, $name) && is_array($_POST[$name]))
+            {
+                return new ArrayIterator($_POST[$name]);
+            }
+            if ($fail)
+            {
+                (new Web)->bad();
+            }
+            return NULL;
+        }
+/**
+ * Look in the _GET array for a key that is an array and return its trimmed value or a default value
+ *
+ * @param string	$name	The key
+ * @param mixed		$dflt	Returned if the key does not exist
+ *
+ * @return ArrayIterator
+ */
+        public function getapar($name, array $dflt = array())
+        {
+            return new ArrayIterator(filter_has_var(INPUT_GET, $name) && is_array($_GET[$name]) ? $_GET[$name] : $dflt);
+        }
+/**
+ * Look in the _POST array for a key that is an array and return its trimmed value or a default value
+ *
+ * @param string	$name	The key
+ * @param mixed		$dflt	Returned if the key does not exist
+ *
+ * @return ArrayIterator
+ */
+        public function postapar($name, array $dflt = array())
+        {
+            return new ArrayIterator(filter_has_var(INPUT_POST, $name) && is_array($_POST[$name]) ? $_POST[$name] : $dflt);
+        }
+/**
  * Look in the _GET array for a key and apply filters
  *
  * @param string	$name		The key
@@ -175,6 +240,32 @@
         {
             return $this->reqaction;
         }
+/**
+ * $_FILES helper functions
+ */
+/**
+ * Make arrays of files work more like singletons
+ *
+ * @param string    $name
+ * @param string    $key
+ *
+ * @return array
+ */
+    public function filedata($name, $key = '')
+    {
+        $x = $_FILES[$name];
+        if ($key !== '')
+	{
+            return array(
+	        'name'     => $x['name'][$key],
+		'type'     => $x['type'][$key],
+		'size'     => $x['size'][$key],
+		'tmp_name' => $x['tmp_name'][$key],
+		'error'    => $x['error'][$key]
+	    );
+	}
+        return $x;
+    }
 /**
  * Return the part of the URL after the main action as set by .htaccess
  *
