@@ -11,9 +11,7 @@
     class FAIterator extends ArrayIterator
     {
 /**
- * @var array   The 'error' array fron the named file.
- *
- * This is just used an aiteration control and any of the field arrays could be used.
+ * @var array   The base entry in the $_FILES array.
  */
         private $far;
 /**
@@ -24,7 +22,10 @@
         public function __construct($name)
         {
 	    $this->far = $_FILES[$name];
-	    parent::_construct($_FILES[$name]['error']);
+/*
+ *  The 'error' sub-array is just used an iteration control and any of the field arrays could be used.
+ */
+            parent::_construct($_FILES[$name]['error']);
         }
 /**
  * Returns the value of the current element of the "array"
