@@ -24,12 +24,13 @@
 /**
  * Make a confirmation code and store it in the database
  *
- * @param object	$bn	A User bean
+ * @param object	$context The context bean
+ * @param object	$bn	 A User bean
  * @param string	$kind
  *
  * @return string
  */
-	private function makecode($bn, $kind)
+	private function makecode($context, $bn, $kind)
 	{
 	    R::trashAll(R::find('confirm', 'user_id=?', array($bn->getID())));
 	    $code = hash('sha256', $bn->getID.$bn->email.$bn->login.uniqid());
@@ -44,13 +45,14 @@
 /**
  * Mail a confirmation code
  *
- * @param object	$bn	A User bean
+ * @param object	$context The context object
+ * @param object	$bn	 A User bean
  *
  * @return string
  */
-	private function sendconfirm($bn)
+	private function sendconfirm($context, $bn)
 	{
-	    $code = $this->makecode($bn, 'C');
+	    $code = $this->makecode($context, $bn, 'C');
 	    mail($bn->email, 'Please confirm your email address for '.Config::SITENAME,
 		"Please use this link to confirm your email address\n\n\n".
 		Config::SITEURL.'/confirm/'.$code."\n\n\nThank you,\n\n The ".Config::SITENAME." Team\n\n",
@@ -60,13 +62,14 @@
 /**
  * Mail a password reset code
  *
+ * @param object	$context The context object
  * @param object	$bn	A User bean
  *
  * @return string
  */
-	private function sendreset($bn)
+	private function sendreset($context, $bn)
 	{
-	    $code = $this->makecode($bn, 'P');
+	    $code = $this->makecode($context, $bn, 'P');
 	    mail($bn->email, 'Reset your '.Config::SITENAME.' password',
 		"Please use this link to reset your password\n\n\n".
 		Config::SITEURL.'/forgot/'.$code."\n\n\nThank you,\n\n The ".Config::SITENAME." Team\n\n",
@@ -189,7 +192,7 @@
 			$x->joined = $context->utcnow();
 			R::store($x);
 			$x->setpw($pw);
-			$this->sendconfirm($x);
+			$this->sendconfirm($context, $x);
 			$context->local()->addval('regok', 'A confirmation link has been sent to your email address.');
 		    }
 		}
@@ -240,7 +243,7 @@
 		    }
 		    else
 		    {
-			$this->sendconfirm($user);
+			$this->sendconfirm($context, $user);
 			$local->message('message', 'A new confirmation link has been sent to your email address.');
 		    }
 		}
@@ -290,7 +293,7 @@
 		    $user = $this->eorl($lg);
 		    if (is_object($user))
 		    {
-			$this->sendreset($user);
+			$this->sendreset($context, $user);
 			$local->message('message', 'A password reset link has been sent to your email address.');
 			$tpl = 'index.twig';
 		    }
