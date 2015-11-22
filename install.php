@@ -309,7 +309,6 @@
             R::store($user);
             R::store($cname);
             R::store($rname);
-	    $vals['base'] = $name;
             $tpl = 'success.twig';
         }
         catch (Exception $e)
