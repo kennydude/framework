@@ -33,7 +33,7 @@
     $hasmb = function_exists('mb_strlen');
     $haspdo = in_array('mysql', PDO::getAvailableDrivers());
 
-    if (!$hasmb || $haspdo)
+    if (!$hasmb || !$haspdo)
     {
         include 'install/errors/phpbuild.php';
         exit;
@@ -309,6 +309,7 @@
             R::store($user);
             R::store($cname);
             R::store($rname);
+	    $vals['base'] = $name;
             $tpl = 'success.twig';
         }
         catch (Exception $e)
