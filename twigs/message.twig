@@ -1,14 +1,14 @@
     {%if errmessage is defined %}
 	<div class="alert alert-danger" role="alert">
             {% for msg in errmessage %}
-                <p class="text-dabger">{{eraw is defined ? msg|raw : msg}}</p>
+                <p class="text-danger">{{eraw is defined ? msg|raw : msg}}</p>
             {% endfor %}
         </div>
     {% endif %}
     {%if warnmessage is defined %}
 	<div class="alert alert-warn" role="alert">
             {% for msg in warnmessage %}
-                <p class="text-warn">{{eraw is defined ? msg|raw : msg}}</p>
+                <p class="text-warn">{{wraw is defined ? msg|raw : msg}}</p>
             {% endfor %}
         </div>
     {% endif %}
