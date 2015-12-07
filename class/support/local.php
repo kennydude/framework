@@ -256,10 +256,21 @@
  *
  * Add new key/value pairs to this array to pass values into the twigs
  */
-            $this->tvals = array(
-                'base'          => $this->base(),
-                'assets'	=> $this->base().'/assets', # for HTML use so the / is OK here
-            );
+            $this->twig->addGlobal('base', $this->base());
+            $this->twig->addGlobal('assets', $this->base().'/assets'); # for HTML so the / is OK to use here
+            $this->tvals = array();
+        }
+/**
+ * Calls a user defined function with the twig object as a paramter.
+ * The user can then add extensions, filters etc.
+ *
+ * @param function     $fn
+ *
+ * @return void
+ */
+        public function extendtwig($fn)
+        {
+            $fn($this->twig);
         }
 /**
  * Render a twig and return the string - do nothing if the template is the empty string
@@ -307,6 +318,18 @@
         }
 /**
  * Add a message into the messages stored for rendering the template
+ *
+ * The currently supported values for kind are :
+ *
+ *      'errmessage'
+ *      'warnmessage'
+ *      'message'
+ *
+ * To have your Twig deal with these you need
+ *
+ * {% include 'message.twig %}
+ *
+ * somewhere in the relevant twig (usually at the top of the main body)
  *
  * @param string	$kind		The kind of message
  * @param mixed		$value		The value to be stored
@@ -377,7 +400,7 @@
         }
 /**
  * Set up local information. Returns self
- * 
+ *
  * The $loadrb parameter simplifies some of the unit testing for this class
  *
  * @param string	$basedir	The full path to the site directory
