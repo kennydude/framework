@@ -58,7 +58,7 @@
     $action = $context->action();
     if (!isset($pages[$action]))
     { # oops, we've been asked to do something that we don't do
-        (new Web)->notfound('No such page'); # a basic 404 - the page should be much more helpful
+        Web::getinstance()->notfound('No such page'); # a basic 404 - the page should be much more helpful
         # DOES NOT RETURN
     }
 
@@ -78,7 +78,7 @@
         break;
 
     default :
-        (new Web)->internal('Weird error');
+        Web::getinstance()->internal('Weird error');
     }
 
     $local->render($tpl);

@@ -89,8 +89,10 @@
         break;
 
     default :
-        (new Web)->internal('Weird error');
+        Web::getinstance()->internal('Weird error');
     }
 
+    ob_start('ob_gzhandler');
     $local->render($tpl);
+    ob_end_flush();
 ?>

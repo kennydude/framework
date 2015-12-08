@@ -57,7 +57,7 @@
 	    }
 	    else
 	    {
-                (new Web)->noaccess();
+                Web::getinstance()->noaccess();
 	    }
 	    return $tpl;
 	}

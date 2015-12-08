@@ -49,19 +49,19 @@
 	    case 'edit' : // Edit something - at the moment just a User
 	        if (count($rest) < 3)
 		{
-		    (new Web)->bad();
+		    Web::getinstance()->bad();
 		}
 	        $kind = $rest[1];
                 $obj = $context->load($kind, $rest[2]);
                 if (!is_object($obj))
                 {
-                    (new Web)->bad();
+                    Web::getinstance()->bad();
                 }
                 if (($bid = $context->postpar('bean', '')) != '')
                 { # this is a post
                     if ($bid != $obj->getID())
                     { # something odd...
-                        (new Web)->bad();
+                        Web::getinstance()->bad();
                     }
                     $obj->edit($context);
                     // The edit call might divert to somewhere else so sometimes we may not get here.

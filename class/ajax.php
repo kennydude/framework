@@ -179,7 +179,7 @@
             { # this is a parsley generated username check call
                 if (R::count('user', 'login=?', array($lg)) > 0)
                 {
-                    return (new Web)->notfound(); // error if it exists....
+                    return Web::getinstance()->notfound(); // error if it exists....
                 }
             }
             else
@@ -203,7 +203,7 @@
                 }
                 else
                 { # return a 400
-                    (new Web)->bad();
+                    Web::getinstance()->bad();
                 }
             }
             exit;

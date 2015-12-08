@@ -61,12 +61,12 @@
             $cname = R::findOne('rolecontext', 'name=?', array($contextname));
             if (!is_object($cname))
             {
-                (new Web)->bad();
+                Web::getinstance()->bad();
             }
             $rname = R::findOne('rolename', 'name=?', array($rolename));
             if (!is_object($rname))
             {
-                (new Web)->bad();
+                Web::getinstance()->bad();
             }
             $this->addrolebybean($cname, $rname, $otherinfo, $start, $end);
         }

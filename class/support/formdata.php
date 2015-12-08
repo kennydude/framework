@@ -83,7 +83,7 @@
             }
             if ($fail)
             {
-                (new Web)->bad();
+                Web::getinstance()->bad();
             }
             return NULL;
         }
@@ -115,7 +115,7 @@
             }
             if ($fail)
             {
-                (new Web)->bad();
+                Web::getinstance()->bad();
             }
             return NULL;
         }
@@ -165,7 +165,7 @@
             }
             if ($fail)
             {
-                (new Web)->bad();
+                Web::getinstance()->bad();
             }
             return NULL;
         }
@@ -199,7 +199,7 @@
             }
             if ($fail)
             {
-                (new Web)->bad();
+                Web::getinstance()->bad();
             }
             return NULL;
         }
@@ -251,7 +251,7 @@
             }
             if ($fail)
             {
-                (new Web)->bad();
+                Web::getinstance()->bad();
             }
             return NULL;
         }

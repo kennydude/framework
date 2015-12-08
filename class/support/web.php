@@ -3,19 +3,24 @@
  * Contains definition of ther Web class
  *
  * @author Lindsay Marshall <lindsay.marshall@ncl.ac.uk>
- * @copyright 2012-2013 Newcastle University
+ * @copyright 2012-2015 Newcastle University
  */
 /**
  * A class that handles various web related things.
  */
     class Web
     {
+        use Singleton;
 /**
  * @var object  Holds reference to current context object
  */
         private $context;
 /**
- * Constructor - if you pass in a conext object then thw web functions can divert to error pages
+ * @var array   Holds values for headers that are required. Keyed by the name of the header
+ */
+        private $headers    = array();
+/**
+ * Constructor - if you pass in a context object then thw web functions can divert to error pages
  * if they have been implemented.
  *
  * @param object   $ctxt   The current context object
@@ -90,5 +95,61 @@
 	{
 	    $this->sendhead(500, $msg);
 	}
+/**
+ * Add a header to the header list.
+ *
+ * This supports having more than one header with the same name.
+ *
+ * @param string        $name
+ * @param string        $value
+ *
+ * @return void
+ */
+        public function addheader($key, $value)
+        {
+            $this->headers[$key][] = $value;
+        }
+/**
+ * Output the headers
+ *
+ * @return void
+ **/
+        public function putheaders()
+        {
+            foreach ($this->headers as $name => $vals)
+            {
+                foreach ($vals as $v)
+                {
+                    header($name.': '.$v);
+                }
+            }
+        }
+/**
+ * Check to see if the client accepts gzip encoding
+ *
+ * @return boolean
+ */
+        public function acceptgzip()
+        {
+            return substr_count($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip') > 0;
+        }
+/**
+ * What kind of request was this?
+ *
+ * @return string
+ */
+        public function method()
+        {
+            return $_SERVER['REQUEST_METHOD'];
+        }
+/**
+ * Is this a POST?
+ *
+ * @return boolean
+ */
+        public function ispost()
+        {
+            return $this->method() == 'POST';
+        }
     }
 ?>

@@ -86,7 +86,7 @@
             }
             if ($fail)
             {
-                (new Web)->bad();
+                Web::getinstance()->bad();
             }
             return NULL;
         }
@@ -107,7 +107,7 @@
             }
             if ($fail)
             {
-                (new Web)->bad();
+                Web::getinstance()->bad();
             }
             return NULL;
         }
@@ -151,7 +151,7 @@
             }
             if ($fail)
             {
-                (new Web)->bad();
+                Web::getinstance()->bad();
             }
             return NULL;
         }
@@ -172,7 +172,7 @@
             }
             if ($fail)
             {
-                (new Web)->bad();
+                Web::getinstance()->bad();
             }
             return NULL;
         }
@@ -311,10 +311,16 @@
 	    if ($mime === '')
 	    {
                 $finfo = finfo_open(FILEINFO_MIME_TYPE);
-		$mime = finfo_file($finfo, $path);
+		if (($mime = finfo_file($finfo, $path)) === FALSE)
+                { # there was an error of some kind.
+                    $mime = '';
+                }
                 finfo_close($finfo);
 	    }
-            header('Content-Type: '.$mime);
+            if ($mime !== '')
+            {
+                header('Content-Type: '.$mime);
+            }
             header('Content-Length: '.filesize($path));
 	    if ($name !== '')
 	    {
@@ -328,7 +334,9 @@
 	    {
                 header('ETag: "'.$cache.'"');
 	    }
+            ob_start('ob_gzhandler'); # generate compressed output if the other end accepts it
             readfile($path);
+            ob_end_flush();
 	}
 /**
  ***************************************
@@ -398,7 +406,7 @@
         {
             if (!$this->hasuser())
             {
-                (new Web)->noaccess();
+                Web::getinstance()->noaccess();
             }
         }
 /**
@@ -408,7 +416,7 @@
         {
             if (!$this->hasadmin())
             {
-                (new Web)->noaccess();
+                Web::getinstance()->noaccess();
             }
         }
 /**
@@ -418,7 +426,7 @@
         {
             if (!$this->hasdeveloper())
             {
-                (new Web)->noaccess();
+                Web::getinstance()->noaccess();
             }
         }/*
  ***************************************
@@ -466,7 +474,7 @@
             }
             if ($fail)
             {
-                (new Web)->noaccess();
+                Web::getinstance()->noaccess();
             }
             return NULL;
         }
@@ -477,7 +485,7 @@
  */
         public function divert($where)
         {
-            (new Web)->relocate($this->local->base().$where);
+            Web::getinstance()->relocate($this->local->base().$where);
         }
 
 /**
@@ -493,7 +501,7 @@
             $foo = R::load($bean, $id);
             if ($foo->getID() == 0)
             {
-                (new Web)->bad($bean.' '.$id);
+                Web::getinstance()->bad($bean.' '.$id);
             }
             return $foo;
         }
