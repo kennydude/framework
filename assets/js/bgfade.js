@@ -1,11 +1,14 @@
-    function easeInOut(minValue,maxValue,totalSteps,actualStep,powr)
+    function easeInOut(minValue, maxValue, totalSteps, actualStep, powr)
     {
-	return Math.ceil(minValue+(Math.pow(((1 / totalSteps)*actualStep),powr)*(maxValue - minValue)))
+	return Math.ceil(minValue + (Math.pow(((1 / totalSteps) * actualStep), powr) * (maxValue - minValue)))
     }
 
-    function doBGFade(elem,startRGB,endRGB,finalColor,steps,intervals,powr)
+    function doBGFade(elem, startRGB, endRGB, finalColor, steps, intervals, powr)
     {
-	if (elem.bgFadeInt) window.clearInterval(elem.bgFadeInt);
+	if (elem.bgFadeInt)
+        {
+            window.clearInterval(elem.bgFadeInt)
+        }
 	var actStep = 0;
 	elem.bgFadeInt = window.setInterval(
 	    function() {
@@ -20,6 +23,7 @@
 		        elem.css('backgroundcolor', finalColor)
 		        window.clearInterval(elem.bgFadeInt)
 		    }
-	    }
-	    ,intervals)
+	    },
+	    intervals
+        )
     }
