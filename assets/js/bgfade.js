@@ -14,7 +14,7 @@
 			    easeInOut(startRGB[1], endRGB[1], steps, actStep, powr) + ',' +
 			    easeInOut(startRGB[2], endRGB[2], steps, actStep, powr) + ')'
 		    )
-		    actStep++;
+		    actStep += 1;
 		    if (actStep > steps)
                     {
 		        elem.css('backgroundcolor', finalColor)
