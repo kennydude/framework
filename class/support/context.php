@@ -334,6 +334,10 @@
 	    {
                 header('ETag: "'.$cache.'"');
 	    }
+            while (ob_get_length() > 0)
+            { # just in case we are inside some buffering
+                ob_end_clean();
+            }
             ob_start('ob_gzhandler'); # generate compressed output if the other end accepts it
             readfile($path);
             ob_end_flush();
