@@ -12,6 +12,12 @@
     class Model_User extends RedBean_SimpleModel
     {
 /**
+ * @var Array   Key is name of field and the array contains flags for checks
+ */
+        private static $editfields = array(
+            'email'     => array(TRUE),         # array(NOTEMPTY)
+        );
+/**
  * Check for a role
  *
  * @param string        $contextname    The name of a context...
@@ -195,18 +201,21 @@
 /**
  * Handle an edit form for this user
  *
- * @param onbject   $context    The context object
+ * @param object   $context    The context object
  *
  * @return void
  */
         public function edit($context)
         {
             $change = FALSE;
-            foreach (array('email') as $fld)
-            { // might eneed more fields for different applications
-                $val = $context->postpar($fld, '');
-                if ($fld == '')
-                { // this is an error as these must be present
+            $error = FALSE;
+            $fdt = $context->formdata();
+            foreach (self::$editfields as $fld => $flags)
+            { // might need more fields for different applications
+                $val = $fdt->post($fld, '');
+                if ($flags[0] && $val == '')
+                { // this is an error as this is a required field
+                    $error = TRUE;
                 }
                 elseif ($val != $this->bean->$fld)
                 {
@@ -214,18 +223,24 @@
                     $change = TRUE;
                 }
             }
-            $pw = $context->postpar('pw', '');
-            if ($pw != '' && $pw == $context->postpar('rpw', ''))
-            {
-                $this->setpw($pw);
-                $change = FALSE; // setting the password will do a store...
-            }
             if ($change)
             {
                 R::store($this->bean);
             }
+            $pw = $fdt->post('pw', '');
+            if ($pw != '')
+            {
+                if ($pw == $fdt->post('rpw', ''))
+                {
+                    $this->setpw($pw); // setting the password will do a store
+                }
+                else
+                {
+                    $error = TRUE;
+                }
+            }
             $uroles = $this->roles();
-	    if (filter_has_var(INPUT_POST, 'exist'))
+	    if ($fdt->haspost('exist'))
 	    {
                 foreach ($_POST['exist'] as $ix => $rid)
                 {
