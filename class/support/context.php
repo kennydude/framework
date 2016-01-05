@@ -294,8 +294,9 @@
 /**
  * Load a bean or fail with a 400 error
  *
- * @param string		$table	A bean type name
- * @param integer	$id	A bean id
+ * @param string	$table	    A bean type name
+ * @param integer	$id	    A bean id
+ * @param integer       $onerror    A flag indicating what to do on error (see constants above)
  *
  * @return object
  */
