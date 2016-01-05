@@ -40,19 +40,20 @@
         private function adduser($context)
         {
             $now = $context->utcnow(); # make sure time is in UTC
+            $fdt = $context->formdata();
             $u = R::dispense('user');
-            $u->login = $context->mustpostpar('login');
-            $u->email = $context->mustpostpar('email');
+            $u->login = $fdt->mustpost('login');
+            $u->email = $fdt->mustpost('email');
             $u->active = 1;
             $u->confirm = 1;
             $u->joined = $now;
             R::store($u);
-            $u->setpw($context->mustpostpar('password'));
-            if ($context->postpar('admin', 0) == 1)
+            $u->setpw($fdt->mustpost('password'));
+            if ($fdt->post('admin', 0) == 1)
             {
                 $u->addrole('Site', 'Admin', '', $now);
             }
-            if ($context->postpar('devel', 0) == 1)
+            if ($fdt->post('devel', 0) == 1)
             {
                 $u->addrole('Site', 'Developer', '', $now);
             }
@@ -67,15 +68,16 @@
  */
         private function addpage($context)
         {
+            $fdt = $context->formdata();
             $p = R::dispense('page');
-            $p->name = $context->mustpostpar('name');
-            $p->kind = $context->mustpostpar('kind');
-            $p->source = $context->mustpostpar('source');
-            $p->active = $context->mustpostpar('active');
-            $p->admin = $context->mustpostpar('admin');
-            $p->needlogin = $context->mustpostpar('login');
-            $p->mobileonly = $context->mustpostpar('mobile');
-            $p->devel = $context->mustpostpar('devel');
+            $p->name = $fdt->mustpost('name');
+            $p->kind = $fdt->mustpost('kind');
+            $p->source = $fdt->mustpost('source');
+            $p->active = $fdt->mustpost('active');
+            $p->admin = $fdt->mustpost('admin');
+            $p->needlogin = $fdt->mustpost('login');
+            $p->mobileonly = $fdt->mustpost('mobile');
+            $p->devel = $fdt->mustpost('devel');
             R::store($p);
             echo $p->getID();
         }
@@ -89,7 +91,7 @@
         private function addrole($context)
         {
             $p = R::dispense('rolename');
-            $p->name = $context->mustpostpar('name');
+            $p->name = $context->formdata()->mustpost('name');
             $p->fixed = 0;
             R::store($p);
             echo $p->getID();
@@ -104,7 +106,7 @@
         private function addcontext($context)
         {
             $p = R::dispense('rolecontext');
-            $p->name = $context->mustpostpar('name');
+            $p->name = $context->formdata()->mustpost('name');
             $p->fixed = 0;
             R::store($p);
             echo $p->getID();
@@ -120,7 +122,8 @@
  */
         private function delbean($context)
         {
-            R::trash($context->load($context->mustpostpar('bean'), $context->mustpostpar('id')));
+            $fdt = $context->formdata();
+            R::trash($context->load($fdt->mustpost('bean'), $fdt->mustpost('id'), Context::R400));
         }
 /**
  * Delete a User
@@ -131,7 +134,7 @@
  */
         private function deluser($context)
         {
-            R::trash($context->load('user', $context->mustpostpar('id')));
+            R::trash($context->load('user', $context->formdata()->mustpost('id'), Context::R400));
         }
 /**
  * Toggle a flag field in a bean
@@ -145,10 +148,11 @@
  */
         private function toggle($context)
         {
-            $type = $context->mustpostpar('bean');
-            $field = $context->mustpostpar('field');
+            $fdt = $context->formdata();
+            $type = $fdt->mustpost('bean');
+            $field = $fdt->mustpost('field');
 
-            $bn = $context->load($type, $context->mustpostpar('id'));
+            $bn = $context->load($type, $fdt->mustpost('id'), Context::R400);
             if ($type === 'user' && ctype_upper($field[0]))
             { # not simple toggling...
                 if (is_object($bn->hasrole('Site', $field)))
@@ -175,16 +179,17 @@
  */
         public function handle($context)
         {
-            if (($lg = $context->getpar('login', '')) != '')
+            $fdt = $context->formdata();
+            if (($lg = $fdt->get('login', '')) != '')
             { # this is a parsley generated username check call
                 if (R::count('user', 'login=?', array($lg)) > 0)
                 {
-                    return Web::getinstance()->notfound(); // error if it exists....
+                    return $context->web()->notfound(); // error if it exists....
                 }
             }
             else
             {
-                $op = $context->mustpostpar('op');
+                $op = $fdt->mustpost('op');
                 if (isset(self::$ops[$op]))
                 { # a valid operation
                     if (self::$ops[$op][0])
@@ -203,10 +208,9 @@
                 }
                 else
                 { # return a 400
-                    Web::getinstance()->bad();
+                    $context->web()->bad();
                 }
             }
-            exit;
         }
     }
 ?>

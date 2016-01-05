@@ -24,7 +24,7 @@
             $rest = $action.'/'.implode(DIRECTORY_SEPARATOR, $context->rest());
             if (!file_exists($context->local()->basedir().'/twigs/'.$rest.'.twig'))
             {
-                Web::getinstance()->notfound();
+                $context->web()->notfound();
             }
             return $rest.'.twig';
         }

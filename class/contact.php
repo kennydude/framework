@@ -20,9 +20,10 @@
  */
         public function handle($context)
         {
-            if (($msg = $context->postpar('message', '')) !== '')
+            $fdt = $context->formdata();
+            if (($msg = $fdt->post('message', '')) !== '')
             { # there is a post
-                mail(Config::SYSADMIN, $context->postpar('subject', 'No Subject'), $msg);
+                mail(Config::SYSADMIN, $fdt->post('subject', 'No Subject'), $msg);
                 $context->local()->addval('done', TRUE);
             }
             return 'contact.twig';
