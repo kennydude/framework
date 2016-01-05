@@ -12,5 +12,6 @@
     Framework::initialise();
 
     // Ajax on, debug on, load twig, load RB
-    Ajax::getinstance()->handle(Context::getinstance()->setup(Local::getinstance()->setup(__DIR__, TRUE, TRUE, TRUE, TRUE)));
+    $ld = Local::getinstance()->setup(__DIR__, TRUE, TRUE, TRUE, TRUE); # setup the Local singleton
+    Ajax::getinstance()->handle(Context::getinstance()->setup());
 ?>

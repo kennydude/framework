@@ -39,7 +39,7 @@
     Framework::initialise();
 
     $local = Local::getinstance()->setup(__DIR__, FALSE, TRUE, TRUE, TRUE); # Not Ajax, debug on, load twig, load RB
-    $context = Context::getinstance()->setup($local);
+    $context = Context::getinstance()->setup();
 
     $action = $context->action();
     if ($action === '')
@@ -89,7 +89,7 @@
         break;
 
     default :
-        Web::getinstance()->internal('Weird error');
+        $context->web()->internal('Weird error');
     }
 
     ob_start('ob_gzhandler');
