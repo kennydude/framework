@@ -21,7 +21,6 @@
  */
 	public function handle($context)
 	{
-	    $tpl = 'support/admin.twig';
 	    $rest = $context->rest();
 	    switch ($rest[0])
 	    {
@@ -57,7 +56,7 @@
                 {
                     Web::getinstance()->bad();
                 }
-                if (($bid = $context->postpar('bean', '')) != '')
+                if (($bid = FormData::getinstance()->post('bean', '')) != '')
                 { # this is a post
                     if ($bid != $obj->getID())
                     { # something odd...
@@ -66,11 +65,12 @@
                     $obj->edit($context);
                     // The edit call might divert to somewhere else so sometimes we may not get here.
                 }
-		$context->local()->addval($kind, $obj);
+		Local::getinstance()->addval($kind, $obj);
 		$tpl = 'support/edit'.$kind.'.twig';
 		break;
 
 	    default :
+                $tpl = 'support/admin.twig';
 		break;
 	    }
 	    return $tpl;

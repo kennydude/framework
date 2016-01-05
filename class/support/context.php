@@ -20,9 +20,17 @@
  */
 	const KEY	= 'Some string of text.....';
 /**
- * @var object		an instance of Local
+ * Value indicating to generate a 400 output from load function when id does not exist
  */
-        private $local		= NULL;		# singleton local object
+        const R400      = 0;
+/**
+ * Value indicating to generate a NULL return from load function when id does not exist
+ */
+        const RNULL     = 1;
+/**
+ * Value indicating to throw an error from load function when id does not exist
+ */
+        const RTHROW    = 2;
 /**
  * @var object		NULL or an object decribing the current logged in User
  */
@@ -45,192 +53,9 @@
 	private $tokauth	= FALSE;
 /*
  ***************************************
- * $_GET and $_POST fetching methods
+ * URL and REST support functions
  ***************************************
  */
-/**
- * Is the key in the $_GET array?
- *
- * @param string	$name	The key
- *
- * @return boolean
- */
-        public function hasgetpar($name)
-        {
-            return filter_has_var(INPUT_GET, $name);
-        }
-/**
- * Is the key in the $_POST array?
- *
- * @param string	$name	The key
- *
- * @return boolean
- */
-        public function haspostpar($name)
-        {
-            return filter_has_var(INPUT_POST, $name);
-        }
-/**
- * Look in the _GET array for a key and return its trimmed value
- *
- * @param string	$name	The key
- * @param boolean	$fail	If TRUE then generate a 400 if the key does not exist in the array
- *
- * @return mixed
- */
-        public function mustgetpar($name, $fail = TRUE)
-        {
-            if (filter_has_var(INPUT_GET, $name))
-            {
-                return trim($_GET[$name]);
-            }
-            if ($fail)
-            {
-                Web::getinstance()->bad();
-            }
-            return NULL;
-        }
-
-/**
- * Look in the _POST array for a key and return its trimmed value
- *
- * @param string	$name	The key
- * @param boolean	$fail	If TRUE then generate a 400 if the key does not exist in the array
- *
- * @return mixed
- */
-        public function mustpostpar($name, $fail = TRUE)
-        {
-            if (filter_has_var(INPUT_POST, $name))
-            {
-                return trim($_POST[$name]);
-            }
-            if ($fail)
-            {
-                Web::getinstance()->bad();
-            }
-            return NULL;
-        }
-/**
- * Look in the _GET array for a key and return its trimmed value or a default value
- *
- * @param string	$name	The key
- * @param mixed		$dflt	Returned if the key does not exist
- *
- * @return mixed
- */
-        public function getpar($name, $dflt)
-        {
-            return filter_has_var(INPUT_GET, $name) ? trim($_GET[$name]) : $dflt;
-        }
-/**
- * Look in the _POST array for a key and return its trimmed value or a default value
- *
- * @param string	$name	The key
- * @param mixed		$dflt	Returned if the key does not exist
- *
- * @return mixed
- */
-        public function postpar($name, $dflt)
-        {
-            return filter_has_var(INPUT_POST, $name) ? trim($_POST[$name]) : $dflt;
-        }
-/**
- * Look in the _GET array for a key that is an array and return its trimmed value
- *
- * @param string	$name	The key
- * @param boolean	$fail	If TRUE then generate a 400 if the key does not exist in the array
- *
- * @return ArrayIterator
- */
-        public function mustgetapar($name, $fail = TRUE)
-        {
-            if (filter_has_var(INPUT_GET, $name) && is_array($_GET[$name]))
-            {
-                return new ArrayIterator($_GET[$name]);
-            }
-            if ($fail)
-            {
-                Web::getinstance()->bad();
-            }
-            return NULL;
-        }
-
-/**
- * Look in the _POST array for a key that is an array and return an iterator
- *
- * @param string	$name	The key
- * @param boolean	$fail	If TRUE then generate a 400 if the key does not exist in the array
- *
- * @return ArrayIterator
- */
-        public function mustpostapar($name, $fail = TRUE)
-        {
-            if (filter_has_var(INPUT_POST, $name) && is_array($_POST[$name]))
-            {
-                return new ArrayIterator($_POST[$name]);
-            }
-            if ($fail)
-            {
-                Web::getinstance()->bad();
-            }
-            return NULL;
-        }
-/**
- * Look in the _GET array for a key that is an array and return its trimmed value or a default value
- *
- * @param string	$name	The key
- * @param mixed		$dflt	Returned if the key does not exist
- *
- * @return ArrayIterator
- */
-        public function getapar($name, array $dflt = array())
-        {
-            return new ArrayIterator(filter_has_var(INPUT_GET, $name) && is_array($_GET[$name]) ? $_GET[$name] : $dflt);
-        }
-/**
- * Look in the _POST array for a key that is an array and return its trimmed value or a default value
- *
- * @param string	$name	The key
- * @param mixed		$dflt	Returned if the key does not exist
- *
- * @return ArrayIterator
- */
-        public function postapar($name, array $dflt = array())
-        {
-            return new ArrayIterator(filter_has_var(INPUT_POST, $name) && is_array($_POST[$name]) ? $_POST[$name] : $dflt);
-        }
-/**
- * Look in the _GET array for a key and apply filters
- *
- * @param string	$name		The key
- * @param int		$filter		Filter values - see PHP manual
- * @param mixed		$options	see PHP manual
- *
- * @return mixed
- */
-        public function filtergetpar($name, $filter, $options = '')
-        {
-            return filter_input(INPUT_GET, $name, $filter, $options);
-        }
-/**
- * Look in the _POST array for a key and  apply filters
- *
- * @param string	$name		The key
- * @param int		$filter		Filter values - see PHP manual
- * @param mixed		$options	see PHP manual
- *
- * @return mixed
- */
-        public function filterpostpar($name, $filter, $options = '')
-        {
-            return filter_input(INPUT_POST, $name, $filter, $options);
-        }
- /*
-  ***************************************
-  * REST functions
-  ***************************************
-  */
 /**
  * Return the main action part of the URL as set by .htaccess
  *
@@ -240,32 +65,6 @@
         {
             return $this->reqaction;
         }
-/**
- * $_FILES helper functions
- */
-/**
- * Make arrays of files work more like singletons
- *
- * @param string    $name
- * @param string    $key
- *
- * @return array
- */
-    public function filedata($name, $key = '')
-    {
-        $x = $_FILES[$name];
-        if ($key !== '')
-	{
-            return array(
-	        'name'     => $x['name'][$key],
-		'type'     => $x['type'][$key],
-		'size'     => $x['size'][$key],
-		'tmp_name' => $x['tmp_name'][$key],
-		'error'    => $x['error'][$key]
-	    );
-	}
-        return $x;
-    }
 /**
  * Return the part of the URL after the main action as set by .htaccess
  *
@@ -281,7 +80,7 @@
             return $this->reqrest;
         }
 /**
- * Deliver JSON response. Does not return
+ * Deliver JSON response.
  *
  * @param object    $res
  *
@@ -293,7 +92,6 @@
             header('Content-Type: application/json');
             header('Content-Length: '.strlen($foo));
             echo $foo;
-            exit;
         }
 /**
  * Deliver a file as a response.
@@ -308,6 +106,7 @@
  */
 	public function sendfile($path, $name = '', $mime = '', $cache	= '', $etag = '')
 	{
+            header('Content-Description: File Transfer');
 	    if ($mime === '')
 	    {
                 $finfo = finfo_open(FILEINFO_MIME_TYPE);
@@ -489,7 +288,7 @@
  */
         public function divert($where)
         {
-            Web::getinstance()->relocate($this->local->base().$where);
+            Web::getinstance()->relocate(Local::getinstance()->base().$where);
         }
 
 /**
@@ -500,12 +299,25 @@
  *
  * @return object
  */
-        public function load($bean, $id)
+        public function load($bean, $id, $onerror = self::R400)
         {
             $foo = R::load($bean, $id);
             if ($foo->getID() == 0)
-            {
-                Web::getinstance()->bad($bean.' '.$id);
+            { # a bean with that id does not exist
+                switch ($onerror)
+                {
+                case self::R400:
+                    Web::getinstance()->bad($bean.' '.$id);
+
+                case self::RNULL:
+                    return NULL;
+
+                case self::RTHROW:
+                    throw new Exception('No such bean');
+
+                default:
+                    throw new Exception('Weird error');
+                }
             }
             return $foo;
         }
@@ -516,7 +328,25 @@
  */
         public function local()
         {
-            return $this->local;
+            return Local::getinstance();
+        }
+/**
+ * Return the Formdata object
+ *
+ * @return object
+ */
+        public function formdata()
+        {
+            return Formdata::getinstance();
+        }
+/**
+ * Return the Web object
+ *
+ * @return object
+ */
+        public function web()
+        {
+            return Web::getinstance();
         }
 /**
  * Return an iso formatted time for NOW  in UTC
@@ -550,9 +380,8 @@
  *
  * @return object
  */
-        public function setup($local)
+        public function setup()
         {
-            $this->local = $local;
             $this->luser = $this->sessioncheck('user', FALSE); # see if there is a user variable in the session....
             foreach (getallheaders() as $k => $v)
             {
@@ -589,9 +418,9 @@
  * The code here is to make it easier to move your code around within the hierarchy. If you don't need
  * this then optimise the hell out of it.
  */
-            if ($this->local->base() != '')
+            if (Local::getinstance()->base() != '')
             { # we are in at least one sub-directory
-                $bsplit = array_filter(explode('/', $this->local->base()));
+                $bsplit = array_filter(explode('/', Local::getinstance()->base()));
                 foreach (range(1, count($bsplit)) as $c)
                 {
                     array_shift($req); # pop off the directory name...

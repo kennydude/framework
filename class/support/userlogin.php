@@ -116,16 +116,18 @@
  */
 	public function login($context)
 	{
+            $local = $context->local();
 	    if ($context->hasuser())
 	    { # already logged in
-		$context->local()->message('message', 'Please log out before trying to login');
+		$local->message('message', 'Please log out before trying to login');
 	    }
 	    else
 	    {
-		if (($lg = $context->postpar('login', '')) !== '')
+                $fdt = $context->formdata();
+		if (($lg = $fdt->post('login', '')) !== '')
 		{
-                    $page = $context->postpar('page', '');
-		    $pw = $context->postpar('password', '');
+                    $page = $fdt->post('page', '');
+		    $pw = $fdt->post('password', '');
 		    if ($pw !== '')
 		    {
 			$user = $this->eorl($lg);
@@ -139,13 +141,13 @@
 			    $context->divert($page === '' ? '/' : $page); # success - divert to home page
 			}
 		    }
-		    $context->local()->message('message', 'Please try again.');
+		    $local->message('message', 'Please try again.');
 		}
                 else
                 {
-                    $page = $context->getpar('page', '');
+                    $page = $fdt->get('page', '');
                 }
-                $context->local()->addval('page', $page);
+                $local->addval('page', $page);
 	    }
 	    return 'login.twig';
 	}
@@ -159,16 +161,17 @@
  */
 	public function register($context)
 	{
-	    $login = $context->postpar('login', '');
+            $fdt = $context->formdata();
+	    $login = $fdt->post('login', '');
 	    if ($login !== '')
 	    {
                 $errmess = array();
 		$x = R::findOne('user', 'login=?', array($login));
 		if (!is_object($x))
 		{
-		    $pw = $context->mustpostpar('password');
-		    $rpw = $context->mustpostpar('repeat');
-		    $email = $context->mustpostpar('email');
+		    $pw = $fdt->mustpost('password');
+		    $rpw = $fdt->mustpost('repeat');
+		    $email = $fdt->mustpost('email');
                     $errmess = array();
 		    if ($pw != $rpw)
 		    {
@@ -225,7 +228,7 @@
 	    $rest = $context->rest();
 	    if ($rest[0] === '' || $rest[0] == 'resend')
 	    { # asking for resend
-		$lg = $context->postpar('eorl', '');
+		$lg = $context->formdata()->post('eorl', '');
 		if ($lg === '')
 		{ # show the form
 		    $tpl = 'resend.twig';
@@ -282,11 +285,12 @@
 		$context->divert('/');
 	    }
             $local = $context->local();
+            $fdt = $context->formdata();
 	    $tpl = 'index.twig';
 	    $rest = $context->rest();
 	    if ($rest[0] === '')
 	    {
-		$lg = $context->postpar('eorl', '');
+		$lg = $fdt->post('eorl', '');
 		$tpl = 'reset.twig';
 		if ($lg != '')
 		{
@@ -308,15 +312,15 @@
 	    {
 		$tpl = 'pwreset.twig';
 		$user = $context->load('user', $context->mustpostpar('uid'));
-		$code = $context->mustpostpar('code');
+		$code = $fdt->mustpost('code');
 		$xc = R::findOne('confirm', 'code=? and kind=?', array($code, 'P'));
 		if (is_object($xc) && $xc->user_id == $user->getID())
 		{
 		    $interval = (new DateTime($context->utcnow()))->diff(new DateTime($xc->issued));
 		    if ($interval->days <= 1)
 		    {
-			$pw = $context->mustpostpar('password');
-			if ($pw === $context->mustpostpar('repeat'))
+			$pw = $fdt->mustpost('password');
+			if ($pw === $fdt->mustpost('repeat'))
 			{
 			    $xc->user->setpw($pw);
 			    R::trash($xc);
@@ -368,7 +372,7 @@
  */
 	public function handle($context)
 	{
-	    $action = $context->action();
+	    $action = $context->action(); # the validity of the action value has been checked before we get here
 	    return $this->$action($context);
 	}
     }

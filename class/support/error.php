@@ -19,16 +19,16 @@
  */
 	public function handle($context)
 	{
-	    $tpl = 'error/error.twig';
 	    $rest = $context->rest();
 	    switch ($rest[0])
 	    {
             case '404':
                 $tpl = 'error/404.twig';
-                $context->local()->addval('page', $context->getpar('page', ''));
+                $context->local()->addval('page', $context->formdata()->get('page', ''));
                 break;
 
 	    default :
+                $tpl = 'error/error.twig';
                 $context->local()->addval(array(
                     'code'      => $rest[0],
                     'message'   => StatusCodes::getMessage($rest[0])

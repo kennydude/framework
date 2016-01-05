@@ -45,19 +45,19 @@
 		    break;
 /*
 		case 'errlog' : # this will show you the contents of the PHP error log file.
-		    $context->local()->addval('errlog', file_get_contents(Config::PHPLOG));
+		    Local::getinstance()->addval('errlog', file_get_contents(Config::PHPLOG));
 		    exit;
 
 		case 'clearlog' :
 		    fclose(fopen(Config::PHPLOG, 'w'));
-		    $context->local()->message('message', 'Log Cleared');
+		    Local::getinstance()->message('message', 'Log Cleared');
 		    break;
 */
                 }
 	    }
 	    else
 	    {
-                Web::getinstance()->noaccess();
+                $context->web()->noaccess();
 	    }
 	    return $tpl;
 	}
