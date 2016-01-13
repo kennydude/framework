@@ -17,8 +17,9 @@
     <link rel="apple-touch-icon" sizes="72x72" href="{{assets}}/ico/apple-touch-icon-72x72.png">
     <link rel="apple-touch-icon" sizes="114x114" href="{{assets}}/ico/apple-touch-icon-114x114.png">
 #}
-    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" media="screen,print"/>
-    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css"/>
+    <link rel="stylesheet" href="{{fwurls.bootcss}}" media="screen,print"/>
+    <link rel="stylesheet" href="{{fwurls.facss}}"/>
+    <link rel='stylesheet' href='//fonts.googleapis.com/css?family=Quicksand'/>
     <link rel="stylesheet" href="{{assets}}/css/layout.css" media="screen"/>
 
 {% block links %}
@@ -56,14 +57,14 @@
     </div>
 
     <!--[if lt IE 9]>
-        <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+        <script src="{{fwurls.jquery1}}"></script>
     <![endif]-->
     <!--[if gte IE 9]><!-->
-        <script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+        <script src="{{fwurls.jquery2}}"></script>
     <!--<![endif]-->
 
-    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/bootbox.js/4.4.0/bootbox.min.js"></script>
+    <script src="{{fwurls.bootjs}}"></script>
+    <script src="{{fwurls.bootbox}}"></script>
 
     {% block scripts %}
     {% endblock scripts %}
