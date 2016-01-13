@@ -258,6 +258,7 @@
  */
             $this->twig->addGlobal('base', $this->base());
             $this->twig->addGlobal('assets', $this->base().'/assets'); # for HTML so the / is OK to use here
+            $this->twig->addGlobal('fwurls', Config::URLS); # Package URL values for use in Twigs
             $this->tvals = array();
         }
 /**
