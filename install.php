@@ -185,7 +185,7 @@
             'jquery2'   => '//code.jquery.com/jquery-2.2.0.min.js',
             'bootjs'    => '//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js',
             'bootbox'   => '//cdnjs.cloudflare.com/ajax/libs/bootbox.js/4.4.0/bootbox.min.js',
-            'parsely'   => 'https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.1.2/parsley.min.js',
+            'parsley'   => 'https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.1.2/parsley.min.js',
             'parsleyr'  => 'https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.1.2/parsley.remote.js',
         );".PHP_EOL);
         fputs($fd,'    }'.PHP_EOL.'?>');
