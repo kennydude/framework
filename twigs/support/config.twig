@@ -1,0 +1,33 @@
+{% extends 'page.twig' %}
+
+{% import 'form.twig' as f %}
+
+{% block scripts %}
+    <script src="{{assets}}/js/util.js"></script>
+{% endblock scripts %}
+
+{% block onload %}
+    $('#cfr').on('submit', false);
+{% endblock onload %}
+
+{% block header %}
+    <div class="col-md-12">
+	<h1>Configuration Values</h1>
+    </div>
+{% endblock header %}
+
+{% block main %}
+    <div class="row">
+        <div class="col-md-offset-2 col-md-8">
+            <form id="cfr" action="#" method="post">
+                {% for p in siteinfo.siteconfig %}
+                    {{f.text({label: p.name, id: 'X'~p.name, value: p.value })}}
+                {% endfor %}
+            </form>
+        </div>
+    </div>
+{% endblock main %}
+
+{% block pagefooter %}
+{# I don't want a footer #}
+{% endblock pagefooter %}
