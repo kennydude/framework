@@ -40,6 +40,10 @@
 		$tpl = 'support/users.twig';
 		break;
 
+	    case 'config':
+		$tpl = 'support/config.twig';
+		break;
+
 	    case 'info':
 		$_SERVER['PHP_AUTH_PW'] = '*************'; # hide the password in case it is showing.
 	        phpinfo();
