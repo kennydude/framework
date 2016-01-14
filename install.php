@@ -40,7 +40,6 @@
         include 'install/errors/notwig.php';
         exit;
     }
-    $vals['fwurls'] = $fwurls;  # Twig variable for URLs
 /**
  * Test some PHP installation features...
  */
@@ -101,7 +100,7 @@
     }
 
     $tpl = 'install.twig';
-    $vals = array('name' => $name, 'dir' => __DIR__);
+    $vals = array('name' => $name, 'dir' => __DIR__, 'fwurls' => $fwurls);
 
     $fail = FALSE;
     if (preg_match('/#/', $name))
