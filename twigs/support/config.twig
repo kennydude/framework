@@ -13,7 +13,7 @@
         var t = $(this)
         $.post('{{base}}/ajax.php', {
                 op :'confvalue',
-                name : t.attr('name'),
+                name : t.prop('name'),
                 value: t.val()
             },
             function(data){
@@ -34,7 +34,7 @@
         <div class="col-md-offset-2 col-md-8">
             <form id="cfr" action="#" method="post">
                 {% for p in siteinfo.siteconfig %}
-                    {{f.text({label: p.name, class: 'cval', id: 'X'~p.name, value: p.value })}}
+                    {{f.text({label: p.name, name: p.name, class: 'cval', id: 'X'~p.name, value: p.value })}}
                 {% endfor %}
             </form>
         </div>
