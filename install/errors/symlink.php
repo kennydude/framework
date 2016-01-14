@@ -11,7 +11,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE8" />
 -->
 
-    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" media="screen,print"/>
+    <link rel="stylesheet" href="<?= $fwurls['bootcss'] ?>" media="screen,print"/>
 
 </head>
 <body lang="en-GB">
@@ -25,6 +25,6 @@
 	   </div>
 	</div>
     </article>
-    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="<?= $fwurls['bootjs'] ?>"></script>
 </body>
 </html>
