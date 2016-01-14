@@ -47,5 +47,14 @@
         {
             return R::findAll('rolecontext', 'order by name');
         }
+/**
+ * Get all the site config information
+ *
+ * @return array
+ */
+        public function siteconfig()
+        {
+            return R::findAll('fwconfig');
+        }
     }
 ?>
