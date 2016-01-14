@@ -159,10 +159,10 @@
             'dbname'        => array('DB', FALSE),
             'dbuser'        => array('DBUSER', FALSE),
             'dbpass'        => array('DBPW', FALSE),
-            'sitename'      => array('SITENAME', TRUE, ''),
-            'siteurl'       => array('SITEURL', TRUE, ''),
-            'sitenoreply'   => array('SITENOREPLY', TRUE, ''),
-            'email'         => array('SYSADMIN', TRUE, 'sysadmin'),
+            'sitename'      => array('SITENAME', TRUE),
+            'siteurl'       => array('SITEURL', TRUE),
+            'sitenoreply'   => array('SITENOREPLY', TRUE),
+            'sysadmin'      => array('SYSADMIN', TRUE),
             'admin'         => array('', FALSE),
             'adminpw'       => array('', FALSE),
             'cadminpw'      => array('', FALSE),
@@ -277,7 +277,7 @@
             {
                 if ($pars[1])
                 {
-                    addfwconfig($pars[2] == '' ? $fld : $pars[2], $cvalue[$fld]);
+                    addfwconfig($fld, $cvalue[$fld]);
                 }
             }
             foreach ($fwurls as $k => $v)
