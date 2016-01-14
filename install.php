@@ -14,6 +14,19 @@
  *
  */
     include 'vendor/autoload.php';
+/*
+ * URLs for various clientside packages that are used by the installer and by the framework
+ */
+    $fwurls = array(
+        'bootcss'   => '//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css',
+        'facss'     => '//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css',
+        'jquery1'   => '//code.jquery.com/jquery-1.12.0.min.js',
+        'jquery2'   => '//code.jquery.com/jquery-2.2.0.min.js',
+        'bootjs'    => '//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js',
+        'bootbox'   => '//cdnjs.cloudflare.com/ajax/libs/bootbox.js/4.4.0/bootbox.min.js',
+        'parsley'   => 'https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.1.2/parsley.min.js',
+        'parsleyr'  => 'https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.1.2/parsley.remote.js',
+    );
 
     try
     {
@@ -27,6 +40,7 @@
         include 'install/errors/notwig.php';
         exit;
     }
+    $vals['fwurls'] = $fwurls;  # Twig variable for URLs
 /**
  * Test some PHP installation features...
  */
@@ -173,22 +187,17 @@
                 fputs($fd, "\tconst ".$name."\t= '".$cvalue[$fld]."';".PHP_EOL);
             }
         }
-        fputs($fd, "/**
+        fputs($fd, '/**
  * The following constant defines an array of URLs that are used in various Twigs.
- * It's easier to have them all here than to have to patch them in a variety of twigs.
+ * It\'s easier to have them all here than to have to patch them in a variety of twigs.
  * The array gets passed into Twig from Local as the variable fwurls and is accessed using the relevant index.
  */
-        const URLS      = array(
-            'bootcss'   => '//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css',
-            'facss'     => '//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css',
-            'jquery1'   => '//code.jquery.com/jquery-1.12.0.min.js',
-            'jquery2'   => '//code.jquery.com/jquery-2.2.0.min.js',
-            'bootjs'    => '//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js',
-            'bootbox'   => '//cdnjs.cloudflare.com/ajax/libs/bootbox.js/4.4.0/bootbox.min.js',
-            'parsley'   => 'https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.1.2/parsley.min.js',
-            'parsleyr'  => 'https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.1.2/parsley.remote.js',
-        );".PHP_EOL);
-        fputs($fd,'    }'.PHP_EOL.'?>');
+        const URLS      = array('.PHP_EOL);
+        foreach ($fwurls as $k => $v)
+        {
+            fputs($fd, "\t'".$k."' => '".$v."',".PHP_EOL);
+        }
+        fputs($fd, ');'.PHP_EOL.'    }'.PHP_EOL.'?>');
         fclose($fd);
 /*
  * Setup the .htaccess file
