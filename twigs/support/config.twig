@@ -8,7 +8,8 @@
 
 {% block onload %}
     $('#cfr').on('submit', false);
-    $('.cval').on('change', function(e){
+    $('.cval').on('blur', function(e){
+        e.preventDefault()
         var t = $(this)
         $.post('{{base}}/ajax.php', {
                 op :'confvalue',
