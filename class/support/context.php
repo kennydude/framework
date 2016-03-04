@@ -34,7 +34,7 @@
 /**
  * @var object		NULL or an object decribing the current logged in User
  */
-        private $luser		= NULL;		# Current user bean if we have logins....
+        private $luser	= NULL;		# Current user bean if we have logins....
 /**
  * @var integer		Counter used for generating unique ids
  */
