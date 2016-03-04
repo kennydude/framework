@@ -206,7 +206,7 @@
  * It\'s easier to have them all here than to have to patch them in a variety of twigs.
  * The array gets passed into Twig from Local as the variable fwurls and is accessed using the relevant index.
  */
-        const URLS      = array('.PHP_EOL);
+        public static urls     = array('.PHP_EOL);
         foreach ($fwurls as $k => $v)
         {
             fputs($fd, "\t'".$k."' => '".$v."',".PHP_EOL);
