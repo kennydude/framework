@@ -201,17 +201,6 @@
                 fputs($fd, "\tconst ".$pars[0]."\t= '".$cvalue[$fld]."';".PHP_EOL);
             }
         }
-        fputs($fd, '/**
- * The following constant defines an array of URLs that are used in various Twigs.
- * It\'s easier to have them all here than to have to patch them in a variety of twigs.
- * The array gets passed into Twig from Local as the variable fwurls and is accessed using the relevant index.
- */
-        public static urls     = array('.PHP_EOL);
-        foreach ($fwurls as $k => $v)
-        {
-            fputs($fd, "\t'".$k."' => '".$v."',".PHP_EOL);
-        }
-        fputs($fd, ');'.PHP_EOL.'    }'.PHP_EOL.'?>');
         fclose($fd);
 /*
  * Setup the .htaccess file
