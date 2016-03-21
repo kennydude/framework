@@ -35,8 +35,8 @@
     $fwurls = array(
         'bootcss'   => '//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css',
         'facss'     => '//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css',
-        'jquery1'   => '//code.jquery.com/jquery-1.12.1.min.js',
-        'jquery2'   => '//code.jquery.com/jquery-2.2.1.min.js',
+        'jquery1'   => '//code.jquery.com/jquery-1.12.2.min.js',
+        'jquery2'   => '//code.jquery.com/jquery-2.2.2.min.js',
         'bootjs'    => '//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js',
         'bootbox'   => '//cdnjs.cloudflare.com/ajax/libs/bootbox.js/4.4.0/bootbox.min.js',
         'parsley'   => 'https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.3.3/parsley.min.js',
