@@ -201,6 +201,7 @@
                 fputs($fd, "\tconst ".$pars[0]."\t= '".$cvalue[$fld]."';".PHP_EOL);
             }
         }
+        fputs($fd, '    }'.PHP_EOL.'?>');
         fclose($fd);
 /*
  * Setup the .htaccess file
