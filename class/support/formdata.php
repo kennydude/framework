@@ -13,7 +13,7 @@
         use Singleton;
 /*
  *******************************************************************
- * Existence checking functions for _GET, _POST, _COOKIE and _FILES
+ * Existence checking functions for $_GET, $_POST, $_COOKIE and $_FILES
  *******************************************************************
  */
 /**
@@ -68,7 +68,7 @@
  ***************************************
  */
 /**
- * Look in the _GET array for a key and return its trimmed value
+ * Look in the $_GET array for a key and return its trimmed value
  *
  * N.B. This function assumes the value is a string and will fail if used on array values
  *
@@ -90,7 +90,7 @@
             return NULL;
         }
 /**
- * Look in the _GET array for a key and return its trimmed value or a default value
+ * Look in the $_GET array for a key and return its trimmed value or a default value
  * 
  * N.B. This function assumes the value is a string and will fail if used on array values
  *
@@ -104,7 +104,7 @@
             return filter_has_var(INPUT_GET, $name) ? trim($_GET[$name]) : $dflt;
         }
 /**
- * Look in the _GET array for a key that is an array and return an ArrayIterator over it
+ * Look in the $_GET array for a key that is an array and return an ArrayIterator over it
  *
  * @param string	$name	The key
  * @param boolean	$fail	If TRUE then generate a 400 if the key does not exist in the array
@@ -124,7 +124,7 @@
             return NULL;
         }
 /**
- * Look in the _GET array for a key that is an array and return an ArrayIterator over it
+ * Look in the $_GET array for a key that is an array and return an ArrayIterator over it
  *
  * @param string	$name	The key
  * @param array		$dflt	Returned if the key does not exist
@@ -136,7 +136,7 @@
             return new ArrayIterator(filter_has_var(INPUT_GET, $name) && is_array($_GET[$name]) ? $_GET[$name] : $dflt);
         }
 /**
- * Look in the _GET array for a key and apply filters
+ * Look in the $_GET array for a key and apply filters
  *
  * @param string	$name		The key
  * @param int		$filter		Filter values - see PHP manual
@@ -154,7 +154,7 @@
  ***************************************
  */
 /**
- * Look in the _POST array for a key and return its trimmed value
+ * Look in the $_POST array for a key and return its trimmed value
  * 
  * N.B. This function assumes the value is a string and will fail if used on array values
  *
@@ -177,7 +177,7 @@
         }
 
 /**
- * Look in the _POST array for a key and return its trimmed value or a default value
+ * Look in the $_POST array for a key and return its trimmed value or a default value
  * 
  * N.B. This function assumes the value is a string and will fail if used on array values
  *
@@ -192,7 +192,7 @@
         }
 
 /**
- * Look in the _POST array for a key that is an array and return an iterator
+ * Look in the $_POST array for a key that is an array and return an ArrayIterator over it
  *
  * @param string	$name	The key
  * @param boolean	$fail	If TRUE then generate a 400 if the key does not exist in the array
@@ -213,7 +213,8 @@
         }
 
 /**
- * Look in the _POST array for a key that is an array and return its trimmed value or a default value
+ * Look in the $_POST array for a key that is an array and return an
+ ArrayIterator over it
  *
  * @param string	$name	The key
  * @param array		$dflt	Returned if the key does not exist
@@ -226,7 +227,7 @@
         }
 
 /**
- * Look in the _POST array for a key and  apply filters
+ * Look in the $_POST array for a key and  apply filters
  *
  * @param string	$name		The key
  * @param int		$filter		Filter values - see PHP manual
@@ -244,7 +245,7 @@
  ******************************
  */
 /**
- * Look in the _COOKIE array for a key and return its trimmed value or fail
+ * Look in the $_COOKIE array for a key and return its trimmed value or fail
  *
  * @param string    $name
  * @param boolean    $fail
@@ -264,7 +265,7 @@
             return NULL;
         }
 /**
- * Look in the _COOKIE array for a key and return its trimmed value or a default value
+ * Look in the $_COOKIE array for a key and return its trimmed value or a default value
  *
  * @param string	$name	The key
  * @param mixed		$dflt	Returned if the key does not exist
