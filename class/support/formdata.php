@@ -127,7 +127,7 @@
  * Look in the _GET array for a key that is an array and return an ArrayIterator over it
  *
  * @param string	$name	The key
- * @param mixed		$dflt	Returned if the key does not exist
+ * @param array		$dflt	Returned if the key does not exist
  *
  * @return ArrayIterator
  */
@@ -216,7 +216,7 @@
  * Look in the _POST array for a key that is an array and return its trimmed value or a default value
  *
  * @param string	$name	The key
- * @param mixed		$dflt	Returned if the key does not exist
+ * @param array		$dflt	Returned if the key does not exist
  *
  * @return ArrayIterator
  */
