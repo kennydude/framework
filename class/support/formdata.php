@@ -70,6 +70,8 @@
 /**
  * Look in the _GET array for a key and return its trimmed value
  *
+ * N.B. This function assumes the value is a string and will fail if used on array values
+ *
  * @param string	$name	The key
  * @param boolean	$fail	If TRUE then generate a 400 if the key does not exist in the array
  *
@@ -89,18 +91,20 @@
         }
 /**
  * Look in the _GET array for a key and return its trimmed value or a default value
+ * 
+ * N.B. This function assumes the value is a string and will fail if used on array values
  *
  * @param string	$name	The key
  * @param mixed		$dflt	Returned if the key does not exist
  *
  * @return mixed
  */
-        public function get($name, $dflt)
+        public function get($name, $dflt = '')
         {
             return filter_has_var(INPUT_GET, $name) ? trim($_GET[$name]) : $dflt;
         }
 /**
- * Look in the _GET array for a key that is an array and return its trimmed value
+ * Look in the _GET array for a key that is an array and return an ArrayIterator over it
  *
  * @param string	$name	The key
  * @param boolean	$fail	If TRUE then generate a 400 if the key does not exist in the array
@@ -120,7 +124,7 @@
             return NULL;
         }
 /**
- * Look in the _GET array for a key that is an array and return its trimmed value or a default value
+ * Look in the _GET array for a key that is an array and return an ArrayIterator over it
  *
  * @param string	$name	The key
  * @param mixed		$dflt	Returned if the key does not exist
@@ -151,6 +155,8 @@
  */
 /**
  * Look in the _POST array for a key and return its trimmed value
+ * 
+ * N.B. This function assumes the value is a string and will fail if used on array values
  *
  * @param string	$name	The key
  * @param boolean	$fail	If TRUE then generate a 400 if the key does not exist in the array
@@ -172,13 +178,15 @@
 
 /**
  * Look in the _POST array for a key and return its trimmed value or a default value
+ * 
+ * N.B. This function assumes the value is a string and will fail if used on array values
  *
  * @param string	$name	The key
  * @param mixed		$dflt	Returned if the key does not exist
  *
  * @return mixed
  */
-        public function post($name, $dflt)
+        public function post($name, $dflt = '')
         {
             return filter_has_var(INPUT_POST, $name) ? trim($_POST[$name]) : $dflt;
         }
@@ -263,7 +271,7 @@
  *
  * @return mixed
  */
-        public function cookie($name, $dflt)
+        public function cookie($name, $dflt = '')
         {
             return filter_has_var(INPUT_COOKIE, $name) ? trim($_COOKIE[$name]) : $dflt;
         }
