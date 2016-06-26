@@ -36,7 +36,7 @@
         'bootcss'   => '//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css',
         'facss'     => '//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css',
         'jquery1'   => '//code.jquery.com/jquery-1.12.4.min.js',
-        'jquery2'   => '//code.jquery.com/jquery-3.0.0.min.js',
+        'jquery2'   => '//code.jquery.com/jquery-2.2.4.min.js',
         'bootjs'    => '//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js',
         'bootbox'   => '//cdnjs.cloudflare.com/ajax/libs/bootbox.js/4.4.0/bootbox.min.js',
         'parsley'   => 'https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.3.11/parsley.min.js',
@@ -115,12 +115,16 @@
     }
 
     $tpl = 'install.twig';
-    $vals = array('name' => $name, 'dir' => __DIR__, 'fwurls' => $fwurls);
+    $vals = array('name' => $name, 'dir' => __DIR__, 'fwurls' =>
+    $fwurls);
 
     $fail = FALSE;
     if (preg_match('/#/', $name))
     { // names with # in them will break the regexp in Local debase()
         $fail = $vals['hashname'] = TRUE;
+    }
+    elseif (version_compare(phpversion(), '5.5.0', '<')) {
+        $fail = $vals['phpversion'] = TRUE;
     }
     elseif (!function_exists('password_hash'))
     {
