@@ -236,7 +236,7 @@
             R::freeze(FALSE);
             R::nuke(); # clear everything.....
             $user = R::dispense('user');
-            $user->email = $cvalue['email'];
+            $user->email = $cvalue['sysadmin'];
             $user->login = $cvalue['admin'];
             $user->password = password_hash($cvalue['adminpw'], PASSWORD_DEFAULT);
             $user->active = 1;
