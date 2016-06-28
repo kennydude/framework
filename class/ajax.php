@@ -29,6 +29,7 @@
             'confvalue'     => array(TRUE, TRUE, FALSE),
             'delbean'       => array(TRUE, TRUE, FALSE),
             'deluser'       => array(TRUE, TRUE, FALSE),
+            'newconf'       => array(TRUE, TRUE, FALSE),
             'toggle'        => array(TRUE, TRUE, FALSE),
         );
 /**
@@ -113,7 +114,7 @@
             echo $p->getID();
         }
 /**
- * Change a configvalue
+ * Change a config value
  *
  * @param object	$context	The context object for the site
  *
@@ -127,6 +128,26 @@
             {
                 $context->web()->bad();
             }
+            $v->value = $fdt->mustpost('value');
+            R::store($v);
+        }
+/**
+ * Add a new  config value
+ *
+ * @param object	$context	The context object for the site
+ *
+ * @return void
+ */
+        private function newconf($context)
+        {
+            $fdt = $context->formdata();
+            $v = R::findOne('fwconfig', 'name=?', array($fdt->mustpost('name')));
+            if (is_object($v))
+            {
+                $context->web()->bad();
+            }
+	    $v = R::dispense('fwconfig');
+	    $v->name = $fdt->mustpost('name');
             $v->value = $fdt->mustpost('value');
             R::store($v);
         }
