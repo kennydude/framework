@@ -40,6 +40,7 @@
 	{% block pageheader %}
 	    <header class="row">
 		{% block header %}
+                    {% include 'header.twig' %}
 		{% endblock header %}
 	    </header>
 	{% endblock pageheader %}
@@ -50,6 +51,7 @@
 	{% block pagefooter %}
 	    <footer class="row">
 		{% block footer %}
+                    {% include 'footer.twig' %}
 		{% endblock footer %}
 	    </footer>
 	{% endblock pagefooter %}
