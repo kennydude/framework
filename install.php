@@ -40,7 +40,6 @@
         'bootjs'    => '//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js',
         'bootbox'   => '//cdnjs.cloudflare.com/ajax/libs/bootbox.js/4.4.0/bootbox.min.js',
         'parsley'   => 'https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.3.11/parsley.min.js',
-//        'parsleyr'  => 'https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.3.11/parsley.remote.js',
     );
 
     try
