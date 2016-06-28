@@ -7,6 +7,7 @@
 {% endblock scripts %}
 
 {% block onload %}
+    $('#inval').hide()
     $('#cfr').on('submit', false);
     $('.cval').on('blur', function(e){
         e.preventDefault()
@@ -17,7 +18,46 @@
                 value: t.val()
             },
             function(data){
-                t.parent().css('background-color', 'yellow').fadeOut(1500, false)
+            }
+        )
+    })
+    $('.nname').on('blur', function(e){
+        e.preventDefault()
+        var t = $(this)
+	var name = t.val()
+	if (name != '')
+        {
+	    if (!name.match(/^[a-z][a-z0-9]+$/i))
+	    {
+	        bootbox.alert('Invalid name format')
+		t.val('')
+	    }
+	    else if ($('input[name="'+name+'"]').length != 0)
+	    {
+	        bootbox.alert('That item already exists')
+	    }
+	    else
+	    {
+	        $('#inval').show()
+	    }
+        }
+    })
+    $('.nval').on('blur', function(e){
+        e.preventDefault()
+        var t = $(this)
+	var name = $('.nname').val()
+	var value = t.val()
+        $.post('{{base}}/ajax.php', {
+                op :'newconf',
+                name : name,
+                value: value
+            },
+            function(data){
+	        $('.nname').parent().prev().after('<div class="form-group"><label for="X'+name+'">'+name+'</label><input type="text" id="X'+
+		    name+'" name="'+name+'" value="'+value+'" class="form-control cval"/></div>')
+		$('.nname').val('')
+		t.val('')
+		$('#inval').hide()
             }
         )
     })
@@ -36,6 +76,10 @@
                 {% for p in siteinfo.siteconfig %}
                     {{f.text({label: p.name, name: p.name, class: 'cval', id: 'X'~p.name, value: p.value })}}
                 {% endfor %}
+                {{f.text({label: 'New Config', name: 'newconf', class: 'nname', id: 'Xnewconf', ph: 'Name for new config item' })}}
+		<div id="inval">
+                    {{f.text({label: 'New Value', name: 'newval', class: 'nval', id: 'Xnewval', ph: 'Value for new config item' })}}
+	        </div>
             </form>
         </div>
     </div>
