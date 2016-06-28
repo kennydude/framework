@@ -43,6 +43,12 @@
 {% endblock pageheader %}
 #}
 
+{#
+    if you have a standard header for all (most) pages then put the
+    content in the file header.twig. It is included by page.twig by
+    default. You then don't need to have a header block either.
+#}
+
 {% block header %}
     <article class="col-md-12">
 	<h1 class="center-block">Header</h1>
@@ -63,6 +69,12 @@
 {# uncomment this  and delete footer block to remove the <footer> tag altogether
 {% block pagefooter %}
 {% endblock pagefooter %}
+#}
+
+{#
+    if you have a standard footer for all (most) pages then put the
+    content in the file footer.twig. It is included by page.twig by
+    default. You then don't need to have a footer block either.
 #}
 
 {% block footer %}
