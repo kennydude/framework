@@ -291,7 +291,6 @@
  */
         public function render($tpl)
         {
-            $this->addmessages(); # add in any messages
             echo $this->getrender($tpl);
         }
 /**
