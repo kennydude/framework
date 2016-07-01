@@ -231,20 +231,12 @@
             {
                 Web::getinstance()->noaccess();
             }
-        }/*
+        }
+/*
  ***************************************
  * Miscellaneous utility functions
  ***************************************
  */
-/**
- * Return a name for this site
- *
- * @string
- */
-        public function sitename()
-        {
-            return Config::SITENAME;
-        }
 /**
  * Generates a new, unique, sequential id value
  *
