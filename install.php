@@ -33,13 +33,13 @@
  * URLs for various clientside packages that are used by the installer and by the framework
  */
     $fwurls = array(
-        'bootcss'   => '//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css',
+        'bootcss'   => '//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css',
         'facss'     => '//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css',
         'jquery1'   => '//code.jquery.com/jquery-1.12.4.min.js',
-        'jquery2'   => '//code.jquery.com/jquery-2.2.4.min.js',
-        'bootjs'    => '//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js',
+        'jquery2'   => '//code.jquery.com/jquery-3.1.0.min.js',
+        'bootjs'    => '//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js',
         'bootbox'   => '//cdnjs.cloudflare.com/ajax/libs/bootbox.js/4.4.0/bootbox.min.js',
-        'parsley'   => 'https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.3.11/parsley.min.js',
+        'parsley'   => 'https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.4.4/parsley.min.js',
     );
 
     try
