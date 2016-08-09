@@ -218,8 +218,12 @@
         }
         fputs($fd, 'RewriteEngine on'.PHP_EOL.'Options -Indexes +FollowSymlinks'.PHP_EOL);
         fputs($fd, 'RewriteBase '.($dir === '' ? '/' : $dir).PHP_EOL);
-        fputs($fd, 'RewriteRule ^(ajax.*) $1 [L,NC,QSA]'.PHP_EOL.'RewriteRule ^(assets)/(.*) $1/$2 [L,NC]'.PHP_EOL.
-            'RewriteRule ^.*$ index.php [L,QSA]'.PHP_EOL);
+        fputs($fd,
+            'RewriteRule ^(ajax.*) $1 [L,NC,QSA]'.PHP_EOL.
+            'RewriteRule ^(assets)/(.*) $1/$2 [L,NC]'.PHP_EOL.
+            'RewriteRule ^(themes/.*/assets/.*) $1 [L,NC,QSA]'.PHP_EOL.
+            'RewriteRule ^.*$ index.php [L,QSA]'.PHP_EOL
+        );
         fclose($fd);
 /*
  * Try opening the database and setting up the User table
@@ -227,7 +231,7 @@
         require('rb.php');
         try
         {
-            $now = r::isodatetime(time() - date('Z')); # make sure the timestamp is in UTC (this should fix a weird problem with some XAMPP installations)
+            $now = R::isodatetime(time() - date('Z')); # make sure the timestamp is in UTC (this should fix a weird problem with some XAMPP installations)
             $vals['dbhost'] = $cvalue['dbhost'];
             $vals['dbname'] = $cvalue['dbname'];
             $vals['dbuser'] = $cvalue['dbuser'];
