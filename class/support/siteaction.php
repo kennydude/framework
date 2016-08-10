@@ -34,5 +34,206 @@
 	    $context->divert('/');
 	    /* NOT REACHED */
 	}
+/**
+ * Look to see if there are any IF... headers, and deal with them. Exit if a 304 or 412 is generated.
+ *
+ * @link https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html
+ *
+ * This should be used in page classes where there is some way of
+ * determining page freshness (ETags, last modified etc.), otherwise it need not be called.
+ *
+ * The actual ways of determining page freshness will be page specific and you may
+ * need to override some of the other methods that this method calls in order to make things work!
+ *
+ * The Data class provides (or will in the future...) an example of how to use this code when dealing with file data.
+ *
+ * @param object	$context	The context object for the site
+ *
+ * @return void
+ */
+	public function ifmodcheck($context)
+	{
+	    $ifms = FALSE; # the IF_MODIFIED_SINCE status is needed to correctly implement IF_NONE_MATCH
+	    if (filter_has_var(INPUT_SERVER, 'HTTP_IF_MODIFIED_SINCE'))
+	    {
+		$ifmod = $_SERVER['HTTP_IF_MODIFIED_SINCE'];
+		if (preg_match('/^(.*);(.*)$/', $ifmod, $m))
+		{
+		    $ifmod = $m[1];
+		}
+		$st = strtotime($ifmod);
+		if ($st !== FALSE && $this->checkmodtime($context, $st))
+		{
+		    $ifms = TRUE; # will 304 later if there is no NONE_MATCH or nothing matches
+		}
+	    }
+	    if (filter_has_var(INPUT_SERVER, 'HTTP_IF_NONE_MATCH'))
+	    {
+		if ($_SERVER['HTTP_IF_NONE_MATCH'] == '*')
+		{
+		    if ($this->exists($context))
+		    { # this request would generate a page and has not been modified
+			$this->etagmatched();
+			/* NOT REACHED */			
+		    }
+		}
+		else
+		{
+		    foreach (explode(',', $_SERVER['HTTP_IF_NONE_MATCH']) as $etag)
+		    {
+			if ($this->checketag($context, substr(trim($etag), 1, -1))) # extract the ETag from its surrounding quotes
+			{ # We have matched the etag and file has not been modified
+			    $this->etagmatched();
+			    /* NOT REACHED */			
+			}
+		    }
+		}
+		$ifms = FALSE; # no entity tags matched  or matched but modified, so we must ignore any IF_MODIFIED_SINCE
+	    }
+	    if ($ifms)
+	    { # we dont need to send the page
+		Web::getinstance()->send304($this->makeetag($context), $this->makemaxage($context));
+		exit;
+	    }
+	    if (filter_has_var(INPUT_SERVER, 'HTTP_IF_MATCH'))
+	    {
+		$match = FALSE;
+		if ($_SERVER['HTTP_IF_MATCH'] == '*')
+		{
+		    $match = $this->exists($context);
+		}
+		else
+		{
+		    foreach (explode(',', $_SERVER['HTTP_IF_MATCH']) as $etag)
+		    {
+			$match |= $this->checketag($context, substr(trim($etag), 1, -1)); # extract the ETag from its surrounding quotes
+		    }
+		}
+		if (!$match)
+		{ # nothing matched or did not exist
+		    Web::getinstance()->sendheaders(StatusCodes::HTTP_PRECONDITION_FAILED);
+		    exit;
+		}
+	    }
+	    if (filter_has_var(INPUT_SERVER, 'HTTP_IF_UNMODIFIED_SINCE'))
+	    {
+		$ifus = $_SERVER['HTTP_IF_UNMODIFIED_SINCE'];
+		if (preg_match('/^(.*);(.*)$/', $ifus, $m))
+		{
+		    $ifus = $m[1];
+		}
+		$st = strtotime($ifus); # ignore if not a valid time
+		if ($st !== FALSE && $st < $this->lastmodified($context))
+		{
+		    Web::getinstance()->sendheaders(StatusCodes::HTTP_PRECONDITION_FAILED);
+		    exit;
+		}
+	    }
+	}
+/**
+ * Make an etag for an item
+ *
+ * This needs to be overridden by pages that can generate etags
+ *
+ * @param object	$context	The context object for the site
+ *
+ * @return string
+ */
+	public function makeetag($context)
+	{
+	    return '';
+	}
+/**
+ * Make a max age value for an item
+ *
+ * This needs to be overridden by pages that want to use this
+ *
+ * @param object	$context	The context object for the site
+ *
+ * @return string
+ */
+	public function makemaxage($context)
+	{
+	    return '';
+	}
+/**
+ * Returns true of the request would generate a page.
+ *
+ * This needs to be overridden if it is to be used. Currently returns TRUE,
+ * thus assuming that pages always exist....
+ *
+ * @param object	$context	The context object for the site
+ *
+ * @return boolean
+ */
+	public function exists($context)
+	{
+	    return TRUE;
+	}
+/**
+ * Get a last modified time for the page
+ *
+ * By default this returns the current time. For pages that need to use this in anger,
+ * then this function needs to be overridden.
+ *
+ * @param object	$context	The context object for the site
+ *
+ * @return integer
+ */
+	public function lastmodified($context)
+	{
+	    return time();
+	}
+/**
+ * Check a timestamp to see if we need to send the page again or not.
+ *
+ * This always returns FALSE, indicating that we need to send the page again.
+ * The assumption is that pages that implement etags will override this function
+ * appropriately to do actual value checking.
+ *
+ * @param string	$tag	The etag value to check
+ *
+ * @return boolean
+ */
+	public function checkmodtime($context, $tag)
+	{
+	    return FALSE;
+	}
+/**
+ * Check an etag to see if we need to send the page again or not.
+ *
+ * This always returns FALSE, indicating that we need to send the page again.
+ * The assumption is that pages that implement etags will override this function
+ * appropriately to do actual value checking.
+ *
+ * @param string	$tag	The etag value to check
+ *
+ * @return boolean
+ */
+	public function checketag($context, $tag)
+	{
+	    return FALSE;
+	}
+/**
+ * We have a matched etag - check request method and send the appropriate header.
+ * Does not return
+ *
+ * @link https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.26
+ *
+ * @return void
+ */
+	private function etagmatched()
+	{
+	    $rqm = Web::getinstance()->method();
+	    if ($rqm != 'GET' && $rqm != 'HEAD')
+	    { # fail if not a GET or HEAD - see W3C specification
+		Web::getinstance()->sendheaders(StatusCodes::HTTP_PRECONDITION_FAILED);
+	    }
+	    else
+	    {
+		Web::getinstance()->send304($this->makeetag($context), $this->makemaxage($context));
+	    }
+	    exit;
+	}
     }
 ?>
