@@ -87,6 +87,15 @@
 	    $this->sendhead(404, $msg);
 	}
 /**
+ * Generate a 416 Not Satisfiable error return
+ *
+ * @param string	$msg	A message to be sent
+ */
+	public function notsatisfiable($msg = '')
+	{
+	    $this->sendhead(416, $msg);
+	}
+/**
  * Generate a 500 Internal Error error return
  *
  * @param string		$msg	A message to be sent
@@ -94,6 +103,49 @@
 	public function internal($msg = '')
 	{
 	    $this->sendhead(500, $msg);
+	}
+/**
+ * Generate a 304 header (NOT_MODIFIED) and possibly some other headers and exit
+ *
+ * @param string	$etag	An etag for this item
+ * @param integer	$maxage	A maximum age for the item for use by caches.
+ *
+ * @return void
+ */
+    function send304($etag = '', $maxage = '')
+    {
+	heads(304, 'Not Modified');
+	if ($etag != '')
+	{
+	    header('ETag: "'.$etag.'"');
+	}
+	if ($maxage != '')
+	{
+	    header('Expires: '.gmdate('D, d M Y H:i:s', time()+$mag) . ' GMT');
+	    header('Cache-Control: max-age='.$mag);
+	}
+	exit;
+    }
+/**
+ * Make a header sequence for a particualr return code and add some other useful headers
+ *
+ * @param integer	$code	The HTTP return code
+ *
+ * @return void
+ */
+	public function sendheaders($code, $debug = '')
+	{
+	    header(StatusCodes::httpHeaderFor($code));
+	    header('Date: '.gmstrftime('%b %d %Y %H:%M:%S', time()));
+	    header('Server: Framework');	# don't reveal server info
+	    header('Window-target: _top');	# deframes things
+	    header('X-Frame-Options: DENY');	# deframes things
+	    header('Content-Language: en');
+	    header('Vary: Accept-Encoding');
+	    if ($debug != '')
+	    {
+		header('X-Debug-Info: '.$debug);
+	    }
 	}
 /**
  * Add a header to the header list.
