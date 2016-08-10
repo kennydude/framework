@@ -47,11 +47,9 @@
  *
  * The Data class provides (or will in the future...) an example of how to use this code when dealing with file data.
  *
- * @param object	$context	The context object for the site
- *
  * @return void
  */
-	public function ifmodcheck($context)
+	public function ifmodcheck()
 	{
 	    $ifms = FALSE; # the IF_MODIFIED_SINCE status is needed to correctly implement IF_NONE_MATCH
 	    if (filter_has_var(INPUT_SERVER, 'HTTP_IF_MODIFIED_SINCE'))
@@ -62,7 +60,7 @@
 		    $ifmod = $m[1];
 		}
 		$st = strtotime($ifmod);
-		if ($st !== FALSE && $this->checkmodtime($context, $st))
+		if ($st !== FALSE && $this->checkmodtime($st))
 		{
 		    $ifms = TRUE; # will 304 later if there is no NONE_MATCH or nothing matches
 		}
@@ -71,7 +69,7 @@
 	    {
 		if ($_SERVER['HTTP_IF_NONE_MATCH'] == '*')
 		{
-		    if ($this->exists($context))
+		    if ($this->exists())
 		    { # this request would generate a page and has not been modified
 			$this->etagmatched();
 			/* NOT REACHED */			
@@ -81,7 +79,7 @@
 		{
 		    foreach (explode(',', $_SERVER['HTTP_IF_NONE_MATCH']) as $etag)
 		    {
-			if ($this->checketag($context, substr(trim($etag), 1, -1))) # extract the ETag from its surrounding quotes
+			if ($this->checketag(substr(trim($etag), 1, -1))) # extract the ETag from its surrounding quotes
 			{ # We have matched the etag and file has not been modified
 			    $this->etagmatched();
 			    /* NOT REACHED */			
@@ -92,7 +90,7 @@
 	    }
 	    if ($ifms)
 	    { # we dont need to send the page
-		Web::getinstance()->send304($this->makeetag($context), $this->makemaxage($context));
+		Web::getinstance()->send304($this->makeetag(), $this->makemaxage());
 		exit;
 	    }
 	    if (filter_has_var(INPUT_SERVER, 'HTTP_IF_MATCH'))
@@ -100,13 +98,13 @@
 		$match = FALSE;
 		if ($_SERVER['HTTP_IF_MATCH'] == '*')
 		{
-		    $match = $this->exists($context);
+		    $match = $this->exists();
 		}
 		else
 		{
 		    foreach (explode(',', $_SERVER['HTTP_IF_MATCH']) as $etag)
 		    {
-			$match |= $this->checketag($context, substr(trim($etag), 1, -1)); # extract the ETag from its surrounding quotes
+			$match |= $this->checketag(substr(trim($etag), 1, -1)); # extract the ETag from its surrounding quotes
 		    }
 		}
 		if (!$match)
@@ -123,7 +121,7 @@
 		    $ifus = $m[1];
 		}
 		$st = strtotime($ifus); # ignore if not a valid time
-		if ($st !== FALSE && $st < $this->lastmodified($context))
+		if ($st !== FALSE && $st < $this->lastmodified())
 		{
 		    Web::getinstance()->sendheaders(StatusCodes::HTTP_PRECONDITION_FAILED);
 		    exit;
@@ -135,11 +133,9 @@
  *
  * This needs to be overridden by pages that can generate etags
  *
- * @param object	$context	The context object for the site
- *
  * @return string
  */
-	public function makeetag($context)
+	public function makeetag()
 	{
 	    return '';
 	}
@@ -148,11 +144,9 @@
  *
  * This needs to be overridden by pages that want to use this
  *
- * @param object	$context	The context object for the site
- *
  * @return string
  */
-	public function makemaxage($context)
+	public function makemaxage()
 	{
 	    return '';
 	}
@@ -162,11 +156,9 @@
  * This needs to be overridden if it is to be used. Currently returns TRUE,
  * thus assuming that pages always exist....
  *
- * @param object	$context	The context object for the site
- *
  * @return boolean
  */
-	public function exists($context)
+	public function exists()
 	{
 	    return TRUE;
 	}
@@ -176,11 +168,9 @@
  * By default this returns the current time. For pages that need to use this in anger,
  * then this function needs to be overridden.
  *
- * @param object	$context	The context object for the site
- *
  * @return integer
  */
-	public function lastmodified($context)
+	public function lastmodified()
 	{
 	    return time();
 	}
@@ -195,7 +185,7 @@
  *
  * @return boolean
  */
-	public function checkmodtime($context, $tag)
+	public function checkmodtime($tag)
 	{
 	    return FALSE;
 	}
@@ -210,7 +200,7 @@
  *
  * @return boolean
  */
-	public function checketag($context, $tag)
+	public function checketag($tag)
 	{
 	    return FALSE;
 	}
@@ -231,7 +221,7 @@
 	    }
 	    else
 	    {
-		Web::getinstance()->send304($this->makeetag($context), $this->makemaxage($context));
+		Web::getinstance()->send304($this->makeetag(), $this->makemaxage());
 	    }
 	    exit;
 	}
