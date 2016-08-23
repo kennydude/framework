@@ -203,6 +203,18 @@
                 fputs($fd, "\tconst ".$pars[0]."\t= '".$cvalue[$fld]."';".PHP_EOL);
             }
         }
+	fputs($fd, "
+	public static function setup()
+	{
+	    Web::getinstance()->addheader([
+		'Date'			=> gmstrftime('%b %d %Y %H:%M:%S', time()),
+		'Window-target'		=> '_top',	# deframes things
+		'X-Frame-Options'	=> 'DENY',	# deframes things
+		'Content-Language'	=> 'en',
+		'Vary'			=> 'Accept-Encoding',
+	    ]);
+	}".PHP_EOL);
+
         fputs($fd, '    }'.PHP_EOL.'?>');
         fclose($fd);
 /*
