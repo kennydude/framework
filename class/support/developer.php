@@ -41,7 +41,7 @@
 
 		case 'mail' : # this lets you test email sending
 		    $foo = mail($context->user()->email, 'test', 'test');
-		    $context->local()->message('message', 'sent');
+		    $context->local()->message(Local::MESSAGE, 'sent');
 		    break;
 /*
 		case 'errlog' : # this will show you the contents of the PHP error log file.
@@ -50,7 +50,7 @@
 
 		case 'clearlog' :
 		    fclose(fopen(Config::PHPLOG, 'w'));
-		    Local::getinstance()->message('message', 'Log Cleared');
+		    Local::getinstance()->message(Local::MESSAGE, 'Log Cleared');
 		    break;
 */
                 }
