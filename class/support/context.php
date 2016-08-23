@@ -80,68 +80,6 @@
             return $this->reqrest;
         }
 /**
- * Deliver JSON response.
- *
- * @param object    $res
- *
- * @return void
- */
-        public function sendJSON($res)
-        {
-            $foo = json_encode($res, JSON_UNESCAPED_SLASHES);
-            header('Content-Type: application/json');
-            header('Content-Length: '.strlen($foo));
-            echo $foo;
-        }
-/**
- * Deliver a file as a response.
- *
- * @param string	$path	The path to the file
- * @param string	$name	The name of the file as told to the downloader
- * @param string	$mime	The mime type of the file
- * @param string	$cache	Any cache control parameters
- * @param string	$etag	An etag value
- *
- * @return void
- */
-	public function sendfile($path, $name = '', $mime = '', $cache	= '', $etag = '')
-	{
-            header('Content-Description: File Transfer');
-	    if ($mime === '')
-	    {
-                $finfo = finfo_open(FILEINFO_MIME_TYPE);
-		if (($mime = finfo_file($finfo, $path)) === FALSE)
-                { # there was an error of some kind.
-                    $mime = '';
-                }
-                finfo_close($finfo);
-	    }
-            if ($mime !== '')
-            {
-                header('Content-Type: '.$mime);
-            }
-            header('Content-Length: '.filesize($path));
-	    if ($name !== '')
-	    {
-                header('Content-Disposition: attachment; filename="'.$name.'"');
-	    }
-	    if ($cache !== '')
-	    {
-                header('Cache-Control: '.$cache);
-	    }
-	    if ($etag !== '')
-	    {
-                header('ETag: "'.$cache.'"');
-	    }
-            while (ob_get_length() > 0)
-            { # just in case we are inside some buffering
-                ob_end_clean();
-            }
-            ob_start('ob_gzhandler'); # generate compressed output if the other end accepts it
-            readfile($path);
-            ob_end_flush();
-	}
-/**
  ***************************************
  * User related functions
  ***************************************
@@ -209,7 +147,7 @@
         {
             if (!$this->hasuser())
             {
-                Web::getinstance()->noaccess();
+                $this->web()->noaccess();
             }
         }
 /**
@@ -219,7 +157,7 @@
         {
             if (!$this->hasadmin())
             {
-                Web::getinstance()->noaccess();
+                $this->web()->noaccess();
             }
         }
 /**
@@ -229,7 +167,7 @@
         {
             if (!$this->hasdeveloper())
             {
-                Web::getinstance()->noaccess();
+                $this->web()->noaccess();
             }
         }
 /*
@@ -269,18 +207,23 @@
             }
             if ($fail)
             {
-                Web::getinstance()->noaccess();
+                $this->web()->noaccess();
             }
             return NULL;
         }
 /**
  * Generate a Location header for within this site
  *
- * @param string		$where	The page to divert to
+ * @param string		$where		The page to divert to
+ * @param boolean		$temporary	TRUE if this is a temporary redirect
+ * @param string		$msg		A message to send
+ * @param boolean		$nochange	If TRUE then reply status codes 307 and 308 will be used rather than 301 and 302
+ *
+ * @return void NEVER returns
  */
-        public function divert($where)
+        public function divert($where, $temporary = TRUE, $msg = '', $nochange = FALSE)
         {
-            Web::getinstance()->relocate(Local::getinstance()->base().$where);
+            $this->web()->relocate($this->local()->base().$where, $temporary, $msg, $nochange);
         }
 
 /**
@@ -300,7 +243,7 @@
                 switch ($onerror)
                 {
                 case self::R400:
-                    Web::getinstance()->bad($bean.' '.$id);
+                    $this->web()->bad($bean.' '.$id);
 
                 case self::RNULL:
                     return NULL;
@@ -411,9 +354,9 @@
  * The code here is to make it easier to move your code around within the hierarchy. If you don't need
  * this then optimise the hell out of it.
  */
-            if (Local::getinstance()->base() != '')
+            if ($this->local()->base() != '')
             { # we are in at least one sub-directory
-                $bsplit = array_filter(explode('/', Local::getinstance()->base()));
+                $bsplit = array_filter(explode('/', $this->local()->base()));
                 foreach (range(1, count($bsplit)) as $c)
                 {
                     array_shift($req); # pop off the directory name...
