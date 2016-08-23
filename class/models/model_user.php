@@ -192,10 +192,7 @@
  */
 	public function maketoken($device = '')
 	{
-	    $token = new stdClass;
-	    $token->iss = Config::SITEURL;
-	    $token->iat = idate('U');
-	    $token->sub = $this->bean->getID();
+	    $token = (object)['iss' => Config::SITEURL, 'iat' => idate('U'), 'sub' => $this->bean->getID()];
 	    return JWT::encode($token, Context::KEY);
 	}
 /**
