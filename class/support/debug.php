@@ -30,6 +30,8 @@
  * @param string    $str
  *
  * @todo use the new ... stuff in PHP 5.6 to allow many parameters
+ * 
+ * @return void
  */
 	public static function show($str)
 	{
@@ -42,6 +44,8 @@
  * @param mixed    $var
  *
  * @todo use the new ... stuff in PHP 5.6 to allow many parameters
+ *
+ * @return void
  */
 	public static function vdump($var)
 	{
@@ -62,5 +66,19 @@
 	        fflush($fd);
 	    }
         }
+/**
+ * Display a string in an X-DEBUG-INFO header
+ *
+ * @param string    $str
+ *
+ * @todo use the new ... stuff in PHP 5.6 to allow many parameters
+ *
+ * @return void
+ */
+	public static function head($str)
+	{
+	    Web::getinstance()->addheader('X-DEBUG-INFO', $str);
+	}
+
     }
 ?>
