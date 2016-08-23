@@ -119,7 +119,7 @@
             $local = $context->local();
 	    if ($context->hasuser())
 	    { # already logged in
-		$local->message('message', 'Please log out before trying to login');
+		$local->message(Local::MESSAGE, 'Please log out before trying to login');
 	    }
 	    else
 	    {
@@ -141,7 +141,7 @@
 			    $context->divert($page === '' ? '/' : $page); # success - divert to home page
 			}
 		    }
-		    $local->message('message', 'Please try again.');
+		    $local->message(Local::MESSAGE, 'Please try again.');
 		}
                 else
                 {
@@ -205,7 +205,7 @@
 		}
                 if (!empty($errmess))
                 {
-                    $context->local()->message('errmessage', $errmess);
+                    $context->local()->message(Local::ERROR, $errmess);
                 }
 	    }
 	    return 'register.twig';
@@ -238,16 +238,16 @@
 		    $user = $this->eorl($lg);
 		    if (!is_object($user))
 		    {
-			$local->message('errmessage', 'Sorry, there is no user with that name or email address.');
+			$local->message(Local::ERROR, 'Sorry, there is no user with that name or email address.');
 		    }
 		    elseif ($user->confirm)
 		    {
-			$local->message('warnmessage', 'Your email address has already been confirmed.');
+			$local->message(Local::WARNING, 'Your email address has already been confirmed.');
 		    }
 		    else
 		    {
 			$this->sendconfirm($context, $user);
-			$local->message('message', 'A new confirmation link has been sent to your email address.');
+			$local->message(Local::MESSAGE, 'A new confirmation link has been sent to your email address.');
 		    }
 		}
 	    }
@@ -261,11 +261,11 @@
 		    {
 			$x->user->doconfirm();
 			R::trash($x);
-			$local->message('message', 'Thank you for confirming your email address. You can now login.');
+			$local->message(Local::MESSAGE, 'Thank you for confirming your email address. You can now login.');
 		    }
 		    else
 		    {
-			$local->message('errmessage', 'Sorry, that code has expired!');
+			$local->message(Local::ERROR, 'Sorry, that code has expired!');
 		    }
 		}
 	    }
@@ -298,12 +298,12 @@
 		    if (is_object($user))
 		    {
 			$this->sendreset($context, $user);
-			$local->message('message', 'A password reset link has been sent to your email address.');
+			$local->message(Local::MESSAGE, 'A password reset link has been sent to your email address.');
 			$tpl = 'index.twig';
 		    }
 		    else
 		    {
-			$local->message('errmessage', 'Sorry, there is no user with that name or email address.');
+			$local->message(Local::WARNING, 'Sorry, there is no user with that name or email address.');
 			$tpl = 'reset.twig';
 		    }
 		}
@@ -324,17 +324,17 @@
 			{
 			    $xc->user->setpw($pw);
 			    R::trash($xc);
-			    $local->message('message', 'You have reset your password. You can now login.');
+			    $local->message(Local::MESSAGE, 'You have reset your password. You can now login.');
 			    $tpl = 'index.twig';
 			}
 			else
 			{
-			    $local->message('errmessage', 'Sorry, the passwords do not match!');
+			    $local->message(Local::ERROR, 'Sorry, the passwords do not match!');
 			}
 		    }
 		    else
 		    {
-			$local->message('errmessage', 'Sorry, that code has expired!');
+			$local->message(Local::ERROR, 'Sorry, that code has expired!');
 		    }
 
 		}
@@ -357,7 +357,7 @@
 		    }
 		    else
 		    {
-			$local->message('errmessage', 'Sorry, that code has expired!');
+			$local->message(Local::ERROR, 'Sorry, that code has expired!');
 		    }
 		}
 	    }
