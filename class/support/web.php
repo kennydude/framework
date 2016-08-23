@@ -12,31 +12,31 @@
     {
         use Singleton;
 /**
- * @var object  Holds reference to current context object
- */
-        private $context;
-/**
  * @var array   Holds values for headers that are required. Keyed by the name of the header
  */
         private $headers    = array();
 /**
- * Constructor - if you pass in a context object then thw web functions can divert to error pages
- * if they have been implemented.
- *
- * @param object   $ctxt   The current context object
- */
-        public function __construct($ctxt = NULL)
-        {
-            $this->context = $ctxt;
-        }
-/**
  * Generate a Location header
  *
  * @param string		$where	The URL to divert to
+ * @param boolean		$temporary	TRUE if this is a temporary redirect
+ * @param boolean		$nochange	If TRUE then reply status codes 307 and 308 will be used rather than 301 and 302
  */
-	public function relocate($where)
+	public function relocate($where, $temporary = TRUE, $msg = '', $nochange = FALSE)
 	{
-	    header('Location: '.$where);
+	    if ($temporary)
+	    {
+		$code = $nochange ? StatusCodes::HTTP_TEMPORARY_REDIRECT : StatusCodes::HTTP_FOUND;
+	    }
+	    else
+	    {
+/**
+ * @todo Check status of 308 code which should be used if nochage is TRUE. May not yet be official.
+ */
+		$code = StatusCodes::HTTP_MOVED_PERMANENTLY;		
+	    }
+	    $this->addheader('Location', $where);
+	    $this->sendstring($code, $msg, 'text/html');
 	    exit;
 	}
 /**
@@ -48,16 +48,39 @@
  */
 	private function sendhead($code, $msg, $divert = FALSE)
 	{
-            if ($divert && is_object(self::$context))
+            if ($divert)
             { # divert to an error page, passing the message as a parameter
-                $context->divert('/error/'.$code);
+                Context::getinstance()->divert('/error/'.$code);
+		/* NOT REACHED */
             }
-	    header(StatusCodes::httpHeaderFor($code));
+	    $this->sendheaders(StatusCodes::httpHeaderFor($code));
 	    if ($msg != '')
 	    {
 		echo '<p>'.$msg.'</p>';
 	    }
 	    exit;
+	}
+/**
+ * Make a header sequence for a particular return code and add some other useful headers
+ *
+ * @param integer	$code	The HTTP return code
+ * @param string	$mtype	The mime-type of the file
+ * @param string 	$debug	A debug message to include in the headers.
+ *
+ * @return void
+ */
+	public function sendheaders($code, $mtype = '', $name = '')
+	{
+	    header(StatusCodes::httpHeaderFor($code));
+	    $this->putheaders();
+	    if ($mtype != '')
+	    {
+		header('Content-Type: '.$mtype);
+	    }
+	    if ($name != '')
+	    {
+		header('Content-Disposition: attachment; filename="'.$name.'"');
+	    }
 	}
 /**
  * Generate a 400 Bad Request error return
@@ -114,37 +137,88 @@
  */
     function send304($etag = '', $maxage = '')
     {
-	heads(304, 'Not Modified');
-	if ($etag != '')
-	{
-	    header('ETag: "'.$etag.'"');
-	}
-	if ($maxage != '')
-	{
-	    header('Expires: '.gmdate('D, d M Y H:i:s', time()+$mag) . ' GMT');
-	    header('Cache-Control: max-age='.$mag);
-	}
+	$this->sendheaders(StatusCodes::HTTP_NOT_MODIFIED);
 	exit;
     }
 /**
- * Make a header sequence for a particualr return code and add some other useful headers
+ * Deliver a file as a response.
  *
- * @param integer	$code	The HTTP return code
+ * @param string	$path	The path to the file
+ * @param string	$name	The name of the file as told to the downloader
+ * @param string	$mime	The mime type of the file
  *
  * @return void
  */
-	public function sendheaders($code, $debug = '')
+	public function sendfile($path, $name = '', $mime = '', $range = [])
 	{
-	    header(StatusCodes::httpHeaderFor($code));
-	    header('Date: '.gmstrftime('%b %d %Y %H:%M:%S', time()));
-	    header('Server: Framework');	# don't reveal server info
-	    header('Window-target: _top');	# deframes things
-	    header('X-Frame-Options: DENY');	# deframes things
-	    header('Content-Language: en');
-	    header('Vary: Accept-Encoding');
-	    if ($debug != '')
+	    if ($mime === '')
 	    {
-		header('X-Debug-Info: '.$debug);
+                $finfo = finfo_open(FILEINFO_MIME_TYPE);
+		if (($mime = finfo_file($finfo, $path)) === FALSE)
+                { # there was an error of some kind.
+                    $mime = '';
+                }
+                finfo_close($finfo);
+	    }
+	    $this->sendheaders(StatusCodes::HTTP_OK, $mime);
+            header('Content-Description: File Transfer');
+	    if ($name !== '')
+	    {
+                header('Content-Disposition: attachment; filename="'.$name.'"');
+	    }
+            $this->debuffer();
+	    $gz = $this->acceptgzip();
+	    if ($gz)
+	    {
+		ob_start('ob_gzhandler');
+	    }
+	    else
+	    {
+		header('Content-Length: '.filesize($path));
+	    }
+	    if (!empty($range))
+	    {
+                    header('Content-Range: bytes '.$m[1].'-'.$m[2].'/'.$sz);
+                    $fd = fopen($this->file, 'r'); # open the file, seek to the required place and read and return the required amount.
+                    fseek($fd, $m[1]);
+		    $this->debuffer(); # get rid of any buffering that we might be in
+                    echo fread($fd, $m[2]-$m[1]+1);
+                    fclose($fd); 
+	    }
+	    else
+	    {
+		readfile($path);
+	    }
+	    if ($gz)
+	    {
+		ob_end_flush();
+	    }
+	}
+/**
+ * Deliver a file as a response.
+ *
+ * @param string	$value	The data to send
+ * @param string	$mime	The mime type of the file
+ *
+ * @return void
+ */
+	public function sendstring($code, $value, $mime = '')
+	{
+	    $this->sendheaders($code, $mime);
+            $this->debuffer();
+	    $gz = $this->acceptgzip();
+	    if ($gz)
+	    {
+		ob_start('ob_gzhandler');
+	    }
+	    else
+	    {
+		header('Content-Length: '.strlen($value));
+	    }
+	    echo $value;
+	    if ($gz)
+	    {
+		ob_end_flush();
 	    }
 	}
 /**
@@ -157,9 +231,19 @@
  *
  * @return void
  */
-        public function addheader($key, $value)
+        public function addheader($key, $value = '')
         {
-            $this->headers[$key][] = $value;
+	    if (is_array($key))
+	    {
+		foreach ($key as $k => $val)
+		{
+		    $this->headers[$k][] = $val;
+		}
+	    }
+	    else
+	    {
+		$this->headers[$key][] = $value;
+	    }
         }
 /**
  * Output the headers
@@ -183,7 +267,8 @@
  */
         public function acceptgzip()
         {
-            return substr_count($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip') > 0;
+            return filter_has_var(INPUT_SERVER, 'HTTP_ACCEPT_ENCOIDNG') &&
+	        substr_count($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip') > 0;
         }
 /**
  * What kind of request was this?
@@ -203,5 +288,56 @@
         {
             return $this->method() == 'POST';
         }
+/*************************************
+ * Functions to send things to the user
+ */
+/**
+ * Debuffer - sometimes when we need to do output we are inside buffering. This seems
+ * to be a problem with some LAMP stack systems.
+ *
+ * @return void
+ */
+	public function debuffer()
+	{
+            while (ob_get_length() > 0)
+            { # just in case we are inside some buffering
+                ob_end_clean();
+            }
+	}
+/**
+ * Deliver JSON response.
+ *
+ * @param object    $res
+ *
+ * @return void
+ */
+        public function sendJSON($res)
+        {
+	    $this->sendstring(StatusCode::HTTP_OK, json_encode($res, JSON_UNESCAPED_SLASHES), 'application/json');
+        }
+/**
+ * Render a template as a response
+ *
+ * @param string	$template	The template file name
+ * @param integer	$code		The response code
+ * @param string	$mime		The mimetype of the response
+ * @param array		$vals		Values to pass to the twig.
+ *
+ * @return void
+ */
+	public function sendtemplate($template, $code, $mime, $vals = [])
+	{
+	    $this->sendheaders($code, $mime);
+	    $gz = $this->acceptgzip();
+	    if ($gz)
+	    {
+		ob_start('ob_gzhandler');
+	    }
+	    Local::getinstance()->render($template, $vals);
+	    if ($gz)
+	    {
+		ob_end_flush();
+	    }
+	}
     }
 ?>
