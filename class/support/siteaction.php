@@ -23,6 +23,14 @@
  */
 	const TEMPLATE	= 2;
 /**
+ * Indicates that the URL should be temporarily redirected
+ */
+	const REDIRECT	= 3;
+/**
+ * Indicates that the URL should be permanently redirected
+ */
+	const REHOME	= 4;
+/**
  * Handle an action
  *
  * @param object	$context	The context object for the site
@@ -79,7 +87,7 @@
 		{
 		    foreach (explode(',', $_SERVER['HTTP_IF_NONE_MATCH']) as $etag)
 		    {
-			if ($this->checketag(substr(trim($etag), 1, -1))) # extract the ETag from its surrounding quotes
+			if ($this->checketag(str_replace('"', '', $etag))) # extract the ETag from its surrounding quotes
 			{ # We have matched the etag and file has not been modified
 			    $this->etagmatched();
 			    /* NOT REACHED */			
@@ -144,7 +152,7 @@
  *
  * This needs to be overridden by pages that want to use this
  *
- * @return string
+ * @return mixed
  */
 	public function makemaxage()
 	{
@@ -175,26 +183,33 @@
 	    return time();
 	}
 /**
+ * Format a time suitable for Last-Modified header
+ *
+ * @param integer	$time	The last modified time
+ *
+ * @return string
+ */
+	public function makemod($time)
+	{
+	    return gmdate('D, d M Y H:i:s', $time).' GMT';
+	}
+/**
  * Check a timestamp to see if we need to send the page again or not.
  *
  * This always returns FALSE, indicating that we need to send the page again.
  * The assumption is that pages that implement etags will override this function
  * appropriately to do actual value checking.
  *
- * @param string	$tag	The etag value to check
+ * @param string	$time	The time value to check
  *
  * @return boolean
  */
-	public function checkmodtime($tag)
+	public function checkmodtime($time)
 	{
 	    return FALSE;
 	}
 /**
  * Check an etag to see if we need to send the page again or not.
- *
- * This always returns FALSE, indicating that we need to send the page again.
- * The assumption is that pages that implement etags will override this function
- * appropriately to do actual value checking.
  *
  * @param string	$tag	The etag value to check
  *
@@ -202,7 +217,8 @@
  */
 	public function checketag($tag)
 	{
-	    return FALSE;
+	    Debug::head($tag.' '.$this->makeetag());
+	    return $tag === $this->makeetag();
 	}
 /**
  * We have a matched etag - check request method and send the appropriate header.
