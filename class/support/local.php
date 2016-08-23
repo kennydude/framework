@@ -15,6 +15,10 @@
     class Local
     {
         use Singleton;
+        const ERROR     = 'errmessage';
+        const WARNING   = 'warnmessage';
+        const MESSAGE   = 'message';
+
 /**
  * @var	string		The absolute path to the site directory
  */
@@ -234,6 +238,15 @@
             return implode(DIRECTORY_SEPARATOR, func_get_args());
         }
 /**
+ * Return a path to the assets directory
+ *
+ * @return string
+ */
+        public function assets()
+        {
+            return $this->base().'/assets'; # for HTML so the / is OK to use here
+        }
+/**
  * Initialise twig template engine
  *
  * @param boolean	$debug	if TRUE then enable in the TWIG debug mode
@@ -257,14 +270,14 @@
  * Add new key/value pairs to this array to pass values into the twigs
  */
             $this->twig->addGlobal('base', $this->base());
-            $this->twig->addGlobal('assets', $this->base().'/assets'); # for HTML so the / is OK to use here
+            $this->twig->addGlobal('assets', $this->assets()); 
             $this->tvals = array();
         }
 /**
- * Calls a user defined function with the twig object as a paramter.
+ * Calls a user defined function with the twig object as a parameter.
  * The user can then add extensions, filters etc.
  *
- * @param function     $fn
+ * @param function     $fn      A user defined function
  *
  * @return void
  */
@@ -276,22 +289,28 @@
  * Render a twig and return the string - do nothing if the template is the empty string
  *
  * @param string	$tpl	The template
+ * @param array	        $vals	Values to set for the twig
  *
  * @return string
  */
-        public function getrender($tpl)
+        public function getrender($tpl, $vals = [])
         {
             $this->addmessages(); # add in any messages
+            if (!empty($vals))
+            {
+                $this->addval($vals);
+            }
             return $tpl != '' ? $this->twig->loadtemplate($tpl)->render($this->tvals) : '';
         }
 /**
  * Render a twig - do nothing if the template is the empty string
  *
  * @param string	$tpl	The template
+ * @param array	        $vals	Values to set for the twig
  */
-        public function render($tpl)
+        public function render($tpl, $vals = [])
         {
-            echo $this->getrender($tpl);
+            echo $this->getrender($tpl, $vals);
         }
 /**
  * Add a value into the values stored for rendering the template
@@ -435,7 +454,7 @@
             register_shutdown_function(array($this, 'shutdown'));
 
             if ($loadtwig)
-            { # we want twig - there are some autoloader issues out there that addign twig seems to fix....
+            { # we want twig - there are some autoloader issues out there that adding twig seems to fix....
                 $this->setuptwig($debug, FALSE);
             }
 
