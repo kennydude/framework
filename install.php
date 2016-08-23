@@ -32,7 +32,7 @@
 /*
  * URLs for various clientside packages that are used by the installer and by the framework
  */
-    $fwurls = array(
+    $fwurls = [
         'bootcss'   => '//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css',
         'facss'     => '//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css',
         'jquery1'   => '//code.jquery.com/jquery-1.12.4.min.js',
@@ -40,13 +40,13 @@
         'bootjs'    => '//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js',
         'bootbox'   => '//cdnjs.cloudflare.com/ajax/libs/bootbox.js/4.4.0/bootbox.min.js',
         'parsley'   => 'https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.4.4/parsley.min.js',
-    );
+    ];
 
     try
     {
         $twig = new Twig_Environment(
             new Twig_Loader_Filesystem('./install/twigs'),
-            array('cache' => FALSE, 'debug' => TRUE)
+            ['cache' => FALSE, 'debug' => TRUE]
         );
     }
     catch (Exception $e)
@@ -78,7 +78,7 @@
     while (strpos($dn, $sdir) === FALSE)
     { # ugh - not on the same path
         $sdn = $sdir;
-        $sdr = array();
+        $sdr = [];
         while (!is_link($sdn) && $sdn != '/')
         {
             $pp = pathinfo($sdn);
@@ -95,7 +95,7 @@
             exit;
         }
     }
-    $bdr = array();
+    $bdr = [];
     while ($dn != $sdir)
     {
         $pp = pathinfo($dn);
@@ -114,8 +114,7 @@
     }
 
     $tpl = 'install.twig';
-    $vals = array('name' => $name, 'dir' => __DIR__, 'fwurls' =>
-    $fwurls);
+    $vals = ['name' => $name, 'dir' => __DIR__, 'fwurls' => $fwurls];
 
     $fail = FALSE;
     if (preg_match('/#/', $name))
@@ -157,21 +156,21 @@
 //    $vals['hashtaccess'] =  $hashtaccess;
     if (!$fail && filter_has_var(INPUT_POST, 'sitename'))
     { # this is an installation attempt
-        $cvars = array(
-            'dbhost'        => array('DBHOST', FALSE), # name of const, add to DB, DB fieldname
-            'dbname'        => array('DB', FALSE),
-            'dbuser'        => array('DBUSER', FALSE),
-            'dbpass'        => array('DBPW', FALSE),
-            'sitename'      => array('SITENAME', TRUE),
-            'siteurl'       => array('SITEURL', TRUE),
-            'sitenoreply'   => array('SITENOREPLY', TRUE),
-            'sysadmin'      => array('SYSADMIN', TRUE),
-            'admin'         => array('', FALSE),
-            'adminpw'       => array('', FALSE),
-            'cadminpw'      => array('', FALSE),
-        );
+        $cvars = [
+            'dbhost'        => ['DBHOST', FALSE], # name of const, add to DB, DB fieldname
+            'dbname'        => ['DB', FALSE],
+            'dbuser'        => ['DBUSER', FALSE],
+            'dbpass'        => ['DBPW', FALSE],
+            'sitename'      => ['SITENAME', TRUE],
+            'siteurl'       => ['SITEURL', TRUE],
+            'sitenoreply'   => ['SITENOREPLY', TRUE],
+            'sysadmin'      => ['SYSADMIN', TRUE],
+            'admin'         => ['', FALSE],
+            'adminpw'       => ['', FALSE],
+            'cadminpw'      => ['', FALSE],
+        ];
 
-        $cvalue = array();
+        $cvalue = [];
         foreach (array_keys($cvars) as $v)
         {
             if (filter_has_var(INPUT_POST, $v))
@@ -219,9 +218,9 @@
         fputs($fd, 'RewriteEngine on'.PHP_EOL.'Options -Indexes +FollowSymlinks'.PHP_EOL);
         fputs($fd, 'RewriteBase '.($dir === '' ? '/' : $dir).PHP_EOL);
         fputs($fd,
-            'RewriteRule ^(ajax.*) $1 [L,NC,QSA]'.PHP_EOL.
-            'RewriteRule ^(assets)/(.*) $1/$2 [L,NC]'.PHP_EOL.
-            'RewriteRule ^(themes/.*/assets/.*) $1 [L,NC,QSA]'.PHP_EOL.
+            'RewriteRule ^ajax.* ajax.php [L,NC,QSA]'.PHP_EOL.
+            'RewriteRule ^(assets|public)/(.*) $1/$2 [L,NC]'.PHP_EOL.
+            'RewriteRule ^(themes/[^/]*/assets/(css|js)/[^/]*) $1 [L,NC]'.PHP_EOL.
             'RewriteRule ^.*$ index.php [L,QSA]'.PHP_EOL
         );
         fclose($fd);
@@ -287,22 +286,20 @@
  *
  * the link for install.php is to catch when people try to run install again after a successful install
  */
-            $pages = array(
-                'about'         => array(Siteaction::TEMPLATE, 'about.twig', 0, 0, 0, 1),
-                'admin'         => array(Siteaction::OBJECT, 'Admin', 1, 1, 0, 1),
-                'confirm'       => array(Siteaction::OBJECT, 'UserLogin', 0, 0, 0, 1),
-                'contact'       => array(Siteaction::OBJECT, 'Contact', 0, 0, 0, 1),
-                'devel'         => array(Siteaction::OBJECT, 'Developer', 1, 1, 1, 1),
-                'error'         => array(Siteaction::OBJECT, 'Error', 0, 0, 0, 1),
-                'forgot'        => array(Siteaction::OBJECT, 'UserLogin', 0, 0, 0, 1),
-                'home'          => array(Siteaction::TEMPLATE, 'index.twig', 0, 0, 0, 1),
-                'install.php'   => array(Siteaction::TEMPLATE, 'oops.twig', 0, 0, 0, 1),
-                'login'         => array(Siteaction::OBJECT, 'UserLogin', 0, 0, 0, 1),
-                'logout'        => array(Siteaction::OBJECT, 'UserLogin', 0, 1, 0, 1),
-                'register'      => array(Siteaction::OBJECT, 'UserLogin', 0, 0, 0, 1),
-                'robots.txt'    => array(Siteaction::OBJECT, 'Robot', 0, 0, 0, 0),
-                'sitemap.xml'   => array(Siteaction::OBJECT, 'Sitemap', 0, 0, 0, 0),
-            );
+            $pages = [
+                'about'         => [Siteaction::TEMPLATE, 'about.twig', 0, 0, 0, 1],
+                'admin'         => [Siteaction::OBJECT, 'Admin', 1, 1, 0, 1],
+                'confirm'       => [Siteaction::OBJECT, 'UserLogin', 0, 0, 0, 1],
+                'contact'       => [Siteaction::OBJECT, 'Contact', 0, 0, 0, 1],
+                'devel'         => [Siteaction::OBJECT, 'Developer', 1, 1, 1, 1],
+                'error'         => [Siteaction::OBJECT, 'Error', 0, 0, 0, 1],
+                'forgot'        => [Siteaction::OBJECT, 'UserLogin', 0, 0, 0, 1],
+                'home'          => [Siteaction::TEMPLATE, 'index.twig', 0, 0, 0, 1],
+                'install.php'   => [Siteaction::TEMPLATE, 'oops.twig', 0, 0, 0, 1],
+                'login'         => [Siteaction::OBJECT, 'UserLogin', 0, 0, 0, 1],
+                'logout'        => [Siteaction::OBJECT, 'UserLogin', 0, 1, 0, 1],
+                'register'      => [Siteaction::OBJECT, 'UserLogin', 0, 0, 0, 1],
+            ];
             foreach ($pages as $name => $data)
             {
                 $p = R::dispense('page');
