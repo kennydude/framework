@@ -214,7 +214,6 @@
 		'Vary'			=> 'Accept-Encoding',
 	    ]);
 	}".PHP_EOL);
-
         fputs($fd, '    }'.PHP_EOL.'?>');
         fclose($fd);
 /*
