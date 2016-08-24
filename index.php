@@ -93,7 +93,7 @@
     $code = StatusCodes::HTTP_OK;
     switch ($page->kind)
     {
-    case Siteaction::OBJECT:
+    case Siteaction::OBJECT: # fire up the object to handle the request
         $tpl = (new $page->source)->handle($context);
 	if (is_array($tpl))
 	{
@@ -101,16 +101,24 @@
 	}
         break;
 
-    case Siteaction::TEMPLATE:
+    case Siteaction::TEMPLATE: # render a template
         $tpl = $page->source;
         break;
 
-    case Siteaction::REDIRECT:
+    case Siteaction::REDIRECT: # redirect to somewhere else on the this site (temporary)
         $context->divert($page->source, TRUE);
         /* NOT REACHED */
 
-    case Siteaction::REHOME:
+    case Siteaction::REHOME: # redirect to somewhere else on the this site (permanent)
         $context->divert($page->source, FALSE);
+        /* NOT REACHED */
+
+    case Siteaction::XREDIRECT: # redirect to an external URL (temporary)
+        $context->web()->relocate($page->source, TRUE);
+        /* NOT REACHED */
+
+    case Siteaction::XREHOME: # redirect to an external URL (permanent)
+        $context->web()->relocate($page->source, FALSE);
         /* NOT REACHED */
 
     default :
