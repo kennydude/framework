@@ -17,12 +17,11 @@
  * as part of Content-Disposition. Allowing sharing with specified other users, groups of users or users with particular roles
  * would not be hard to add.
  *
- * If you want to implement some kind of cache control/expiry then you should generate the headers in the
- * sendheaders method.
- *
  * @author Lindsay Marshall <lindsay.marshall@ncl.ac.uk>
  * @copyright 2012-2016 Newcastle University
- *
+ */
+/**
+ * Supporting access controlled file retrieval via URL
  */
     class GetFile extends Siteaction
     {
@@ -46,9 +45,9 @@
  */
 	public function handle($context)
 	{
-	    $web = Web::getinstance(); # it's used all over the place so grab it once
+	    $web = $context->web(); # it's used all over the place so grab it once
 
-            chdir(implode(DIRECTORY_SEPARATOR, array($_SERVER['DOCUMENT_ROOT'], self::DATADIR)));
+            chdir(implode(DIRECTORY_SEPARATOR, [$_SERVER['DOCUMENT_ROOT'], self::DATADIR]));
             $fpt = $context->rest();
 /**
  * Depending on how you construct the URL, it's possible to do some sanity checks on the
@@ -63,19 +62,22 @@
 	    if (!preg_match('#^[0-9]+/[0-9]+/[0-9]+/[^/]+#i', $this->file))
 	    { # filename constructed is not the right format
                 $web->bad();		
+		/* NOT REACHED */
 	    }
 	    $this->mtime = filemtime($this->file);
 
 # Now do an access control check
             $file = R::findOne('upload', 'fname=?',
-		array(DIRECTORY_SEPARATOR . self::DATADIR . DIRECTORY_SEPARATOR . $this->file));
+		[DIRECTORY_SEPARATOR . self::DATADIR . DIRECTORY_SEPARATOR . $this->file]);
             if (!is_object($file))
             { # not recorded in the database so 404 it
                 $web->notfound();
+		/* NOT REACHED */
             }
             if (!$file->canaccess($context->user()))
             { # caurrent user cannot access the file
                 $web->noaccess();
+		/* NOT REACHED */
             }
 
             if (!file_exists($this->file))
@@ -103,10 +105,11 @@
                         $m[2] = $sz - 1;
                     }
 		    elseif ($m[2] > $sz-1)
-		    { # end is after end of file
-			$web->notsatisfiable();			
+		    { # end is after end of file so return error
+			$web->notsatisfiable();
+			/* NOT REACHED */
 		    }
-		    $range = array($m[1], $m[2]);
+		    $range = [$m[1], $m[2]];
 		    $code = StatusCodes::HTTP_PARTIAL_CONTENT;
                 }
                 else
@@ -120,33 +123,17 @@
 		$range = [];
 		$code = StatusCodes::HTTP_OK;
 	    }
+/*
+ * Cache control headers should be added here if necessary
+ */
 	    $web->addheaders([
-		'Last-Modified'	=> $this->mtime
+		'Last-Modified'	=> $this->mtime,
+		'ETag'		=> $this->makeetag(),
 	    ]);
 	    $web->sendfile($code, $file->filename, '', $range, '', $this->makeetag());
             return '';
 	}
-/**
- * Send headers for the file
- *
- * @param integer	$code		The HTTP status code
- * @param mixed		$length		The content length or ''
- * @param string	$name		The file name or ''
- *
- * @return void
- */
-	private function sendheaders($code, $length, $name = '')
-	{
-	    $finfo = finfo_open(FILEINFO_MIME_TYPE);
-            Web::getinstance()->sendheaders($code, finfo_file($finfo, $this->file), $name);
-	    finfo_close($finfo);
-	    header('Last-Modified: '.$this->mtime);
-	    header('ETag: "'.$this->makeetag().'"');
-	    if ($length !== '')
-	    { # send the length if we are not compressing
-		header('Content-Length: '.$length);
-	    }
-	}
+
 /**
  * Make an etag for an item
  *
@@ -156,7 +143,7 @@
  */
 	public function makeetag()
 	{
-	    return $filemtime;
+	    return $this->mtime;
 	}
 /**
  * Get a last modified time for the page
@@ -198,7 +185,7 @@
  */
 	public function checketag($tag)
 	{
-	    return $tag == $this->mtime;
+	    return $tag == $this->makeetag();
 	}
     }
 ?>
