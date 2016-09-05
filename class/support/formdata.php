@@ -131,7 +131,7 @@
  *
  * @return ArrayIterator
  */
-        public function geta($name, array $dflt = array())
+        public function geta($name, array $dflt = [])
         {
             return new ArrayIterator(filter_has_var(INPUT_GET, $name) && is_array($_GET[$name]) ? $_GET[$name] : $dflt);
         }
@@ -221,7 +221,7 @@
  *
  * @return ArrayIterator
  */
-        public function posta($name, array $dflt = array())
+        public function posta($name, array $dflt = [])
         {
             return new ArrayIterator(filter_has_var(INPUT_POST, $name) && is_array($_POST[$name]) ? $_POST[$name] : $dflt);
         }
@@ -294,13 +294,13 @@
             $x = $_FILES[$name];
             if ($key !== '')
 	    {
-                return array(
+                return [
 	            'name'     => $x['name'][$key],
 		    'type'     => $x['type'][$key],
 		    'size'     => $x['size'][$key],
 		    'tmp_name' => $x['tmp_name'][$key],
 		    'error'    => $x['error'][$key]
-	        );
+	        ];
 	    }
             return $x;
         }
