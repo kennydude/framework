@@ -18,8 +18,9 @@
 /**
  * Generate a Location header
  *
- * @param string		$where	The URL to divert to
+ * @param string		$where		The URL to divert to
  * @param boolean		$temporary	TRUE if this is a temporary redirect
+ * @param string		$msg		A message to add to the reply	
  * @param boolean		$nochange	If TRUE then reply status codes 307 and 308 will be used rather than 301 and 302
  */
 	public function relocate($where, $temporary = TRUE, $msg = '', $nochange = FALSE)
@@ -146,6 +147,7 @@
  * @param string	$path	The path to the file
  * @param string	$name	The name of the file as told to the downloader
  * @param string	$mime	The mime type of the file
+ * @param array		$range	Specifies if a sub-range of the file is wanted. Used mainly for video.
  *
  * @return void
  */
@@ -197,6 +199,7 @@
 /**
  * Deliver a file as a response.
  *
+ * @param integer	$code	The HTTP return code to use
  * @param string	$value	The data to send
  * @param string	$mime	The mime type of the file
  *
