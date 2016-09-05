@@ -238,13 +238,22 @@
             return implode(DIRECTORY_SEPARATOR, func_get_args());
         }
 /**
- * Return a path to the assets directory
+ * Return a path to the assets directory suitable for use in links
  *
  * @return string
  */
         public function assets()
         {
             return $this->base().'/assets'; # for HTML so the / is OK to use here
+        }
+/**
+ * Return a filesystem path to the assets directory
+ *
+ * @return string
+ */
+        public function assetsdir()
+        {
+            return $this->basedir().DIRECTORY_SEPARATOR.'assets';
         }
 /**
  * Initialise twig template engine
