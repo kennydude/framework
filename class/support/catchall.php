@@ -29,16 +29,16 @@
 	    switch ($context->action())
 	    {
 	    case 'favicon.ico':
-		$context->web()->sendfile($context->local()->assets().'/favicon/favicon.ico', 'favicon.ico', 'image/x-icon');
+		$context->web()->sendfile($context->local()->assetsdir().'/favicons/favicon.ico', 'favicon.ico', 'image/x-icon');
 		break;
 
 	    case 'robots.txt':
-		Web::getinstance()->sendheaders(StatusCodes::HTTP_OK, 'text/plain');
+		$context->web()->sendheaders(StatusCodes::HTTP_OK, 'text/plain');
 		return ['robot.twig', 'text/plain', StatusCodes::HTTP_OK];
 		break;
 
 	    case 'sitemap.xml':
-		Web::getinstance()->sendheaders(StatusCodes::HTTP_OK, 'application/xml');
+		$context->web()->sendheaders(StatusCodes::HTTP_OK, 'application/xml');
 		$context->local()->addval('url', Config::SITEURL);
 		return ['sitemap.twig', 'application/xml', StatusCodes::HTTP_OK];
 		break;
