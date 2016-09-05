@@ -35,8 +35,8 @@
                 ));
 		break;
 	    }
-	    header(StatusCodes::httpHeaderFor($rest[0]));
-	    return $tpl;
+	    $context->web()->addheader('Cache-Control', 'no-cache');
+	    return [$tpl, 'text/html; charset=utf-8', $rest[0]];
 	}
     }
 ?>
