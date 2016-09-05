@@ -12,6 +12,7 @@
  *    /sitename         This can be omitted if the site is the only one present and at the root
  *        /assets
  *            /css      CSS files
+ *	      /favicons Favicon files
  *            /i18n     Any internationalisation files you may need
  *            /images   Image files
  *            /js       JavaScript
@@ -21,7 +22,7 @@
  *        /class/models	RedBean Model class files
  *        /errors       Files used for generating error pages.
  *        /lib          PHP files containing non-class definitions
- *        /twigcache    If twigcacheing is on this is where it caches
+ *        /twigcache    If twig cacheing is on this is where it stores the files
  *        /twigs        TWIG template files go in here
  *        /twigs/admin  Twig files for the admin support of the framework
  *        /vendor       If you are using composer then it puts stuff in here.
@@ -43,19 +44,22 @@
     $local = Local::getinstance()->setup(__DIR__, FALSE, TRUE, TRUE, TRUE); # Not Ajax, debug on, load twig, load RB
     $context = Context::getinstance()->setup();
 
-    if (file_exists($local->makepath($local->basedir(), 'maintenance')) && !$context->hasadmin())
-    { # only let administrators in as we are doing maintenance. Could have a similar feature for
+    $mfl = $local->makepath($local->basedir(), 'maintenance'); # maintenance mode indicator file
+    if (file_exists($mfl) && !$context->hasadmin())
+    { # only let administrators in as we are doing maintenance. Could have a similar feature for other roles
 	$context->web()->sendtemplate('support/maintenance.twig', StatusCodes::HTTP_OK, 'text/html',
-	    ['msg' => file_get_contents($local->makepath($local->basedir(), 'maintenance'))]);
+	    ['msg' => file_get_contents($mfl)]);
 	exit;
     }
     $action = $context->action();
     if ($action === '')
-    {
+    { # default to home if there is nothing
         $action = 'home';
     }
-
-    $page = R::findOne('page', 'name=? and active=?', array($action, 1));
+/*
+ * Look in the database for what to do based on the first part of the URL. DBOP is either = or regexp
+ */
+    $page = R::findOne('page', 'name'.Config::DBOP.'? and active=?', [$action, 1]);
     if (!is_object($page))
     { # No such page or it is marked as inactive
        $page = new stdClass;
