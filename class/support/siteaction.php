@@ -43,7 +43,7 @@
  *
  * @param object	$context	The context object for the site
  *
- * @return string	A template name
+ * @return mixed	A template name or an array [template name, mimetype, HTTP code]
  */
 	public function handle($context)
 	{ # should never get called really
