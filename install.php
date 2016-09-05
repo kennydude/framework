@@ -169,7 +169,6 @@
             'adminpw'       => ['', FALSE],
             'cadminpw'      => ['', FALSE],
         ];
-
         $cvalue = [];
         foreach (array_keys($cvars) as $v)
         {
@@ -182,6 +181,16 @@
                 header('HTTP/1.1 400 Bad Request');
                 exit;
             }
+        }
+
+        
+        $flags = [
+            'private', 'public', 'regexp',
+        ];
+        $options = [];
+        foreach ($flags as $fn)
+        {
+            $options[$fn] = filter_has_var(INPUT_POST, $fn);
         }
 
 /*
@@ -203,6 +212,11 @@
                 fputs($fd, "\tconst ".$pars[0]."\t= '".$cvalue[$fld]."';".PHP_EOL);
             }
         }
+        fputs($fd, "\tconst DBOP\t= '".($options['regexp'] ? ' regexp ' : '=')."';".PHP_EOL);
+        fputs($fd, "\tconst UPUBLIC\t= ".($options['public'] ? 'TRUE' : 'FALSE').';'.PHP_EOL);
+        fputs($fd, "\tconst UPRIVATE\t= ".($options['private'] ? 'TRUE' : 'FALSE').';'.PHP_EOL);
+
+        
 	fputs($fd, "
 	public static function setup()
 	{
@@ -230,11 +244,23 @@
         fputs($fd, 'RewriteBase '.($dir === '' ? '/' : $dir).PHP_EOL);
         fputs($fd,
             'RewriteRule ^ajax.* ajax.php [L,NC,QSA]'.PHP_EOL.
-            'RewriteRule ^(assets|public)/(.*) $1/$2 [L,NC]'.PHP_EOL.
-            'RewriteRule ^(themes/[^/]*/assets/(css|js)/[^/]*) $1 [L,NC]'.PHP_EOL.
+            'RewriteRule ^(assets'.($options['public'] ? '|public' : '').')/(.*) $1/$2 [L,NC]'.PHP_EOL.
+//            'RewriteRule ^(themes/[^/]*/assets/(css|js)/[^/]*) $1 [L,NC]'.PHP_EOL.
             'RewriteRule ^.*$ index.php [L,QSA]'.PHP_EOL
         );
         fclose($fd);
+/*
+ *  Make directories for uploads if required
+ */
+        if ($options['private'])
+        { # make the directory for private files
+            mkdir('private', 0766);
+        }
+
+        if ($options['public'])
+        { # make the directory for private files
+            mkdir('public', 0766);
+        }
 /*
  * Try opening the database and setting up the User table
  */
@@ -277,7 +303,7 @@
             }
 /**
  * Save some framework configuration information into the database
- * This will make it easier to remote updating of the system one
+ * This will make it easier to remote updating of the system once
  * it is up and running
  */
             foreach ($cvars as $fld => $pars)
@@ -309,12 +335,14 @@
                 'install.php'   => [Siteaction::TEMPLATE, 'oops.twig', 0, 0, 0, 1],
                 'login'         => [Siteaction::OBJECT, 'UserLogin', 0, 0, 0, 1],
                 'logout'        => [Siteaction::OBJECT, 'UserLogin', 0, 1, 0, 1],
+                'private'       => [Siteaction::OBJECT, 'GetFile', 0, 1, 0, $options['private'] ? 1 : 0],
                 'register'      => [Siteaction::OBJECT, 'UserLogin', 0, 0, 0, 1],
+                'upload'        => [Siteaction::OBJECT, 'Upload', 0, 0, 0, $options['public'] || $options['private'] ? 1 : 0],
             ];
             foreach ($pages as $name => $data)
             {
                 $p = R::dispense('page');
-                $p->name = $name;
+                $p->name = $options['regexp'] ? '^'.$name.'$' : $name;
                 $p->kind = $data[0];
                 $p->source = $data[1];
                 $p->admin = $data[2];
