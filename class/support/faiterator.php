@@ -43,13 +43,13 @@
         {
             $x = $this->far;
 	    $k = $this->key();
-	    return array(
+	    return [
 	        'name'      => $x['name'][$k],
 	        'type'      => $x['type'][$k],
 	        'size'      => $x['size'][$k],
 	        'tmp_name'  => $x['tmp_name'][$k],
 	        'error'     => $x['error'][$k],
-	    );
+	    ];
         }
     }
 ?>
