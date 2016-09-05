@@ -46,7 +46,7 @@
 /**
  * @var array		The rest of the current URL exploded at /
  */
-        private $reqrest	= array();	# the rest of the URL
+        private $reqrest	= [];		# the rest of the URL
 /**
  * @var boolean		True if authenticated by token
  */
@@ -365,7 +365,7 @@
             if (!empty($req))
             { # there was something after the domain name so split it into action and rest...
                 $this->reqaction = strtolower(array_shift($req));
-                $this->reqrest = empty($req) ? array('') : array_values($req);
+                $this->reqrest = empty($req) ? [''] : array_values($req);
             }
 
             return $this;
