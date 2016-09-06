@@ -330,16 +330,19 @@
  */
 	public function sendtemplate($template, $code, $mime, $vals = [])
 	{
-	    $this->sendheaders($code, $mime);
-	    $gz = $this->acceptgzip();
-	    if ($gz)
+	    if ($template != '')
 	    {
-		ob_start('ob_gzhandler');
-	    }
-	    Local::getinstance()->render($template, $vals);
-	    if ($gz)
-	    {
-		ob_end_flush();
+		$this->sendheaders($code, $mime);
+		$gz = $this->acceptgzip();
+		if ($gz)
+		{
+		    ob_start('ob_gzhandler');
+		}
+		Local::getinstance()->render($template, $vals);
+		if ($gz)
+		{
+		    ob_end_flush();
+		}
 	    }
 	}
     }
