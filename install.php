@@ -246,7 +246,9 @@
             'RewriteRule ^ajax.* ajax.php [L,NC,QSA]'.PHP_EOL.
             'RewriteRule ^(assets'.($options['public'] ? '|public' : '').')/(.*) $1/$2 [L,NC]'.PHP_EOL.
 //            'RewriteRule ^(themes/[^/]*/assets/(css|js)/[^/]*) $1 [L,NC]'.PHP_EOL.
-            'RewriteRule ^.*$ index.php [L,QSA]'.PHP_EOL
+            'RewriteRule ^.*$ index.php [L,QSA]'.PHP_EOL.PHP_EOL.
+            'AddOutputFilterByType DEFLATE text/css'.PHP_EOL.
+            'AddOutputFilterByType DEFLATE text/javascript'.PHP_EOL
         );
         fclose($fd);
 /*
