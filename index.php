@@ -71,21 +71,25 @@
 	if (($page->needlogin) && !$context->hasuser())
 	{ # not logged in or not an admin
 	    $context->divert('/login?page='.urlencode($local->debase($_SERVER['REQUEST_URI'])));
+	    /* NOT REACHED */
 	}
     
 	if ($page->admin && !$context->hasadmin())
 	{ # not logged in or not an admin
 	    $context->divert('/error/403');
+	    /* NOT REACHED */
 	}
     
 	if ($page->devel && !$context->hasdeveloper())
 	{ # not logged in or not a developer
 	    $context->divert('/error/403');
+	    /* NOT REACHED */
 	}
     
 	if ($page->mobileonly && !$context->hastoken())
 	{
 	    $context->divert('/error/403');
+	    /* NOT REACHED */
 	}
     }
 
@@ -131,3 +135,4 @@
     }
 
     $context->web()->sendtemplate($tpl, $code, $mime);
+?>
