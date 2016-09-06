@@ -67,7 +67,7 @@
  */
 	public function ifmodcheck()
 	{
-	    $ifms = FALSE; # the IF_MODIFIED_SINCE status is needed to correctly implement IF_NONE_MATCH
+	    $ifms = TRUE; # the IF_MODIFIED_SINCE status is needed to correctly implement IF_NONE_MATCH
 	    if (filter_has_var(INPUT_SERVER, 'HTTP_IF_MODIFIED_SINCE'))
 	    {
 		$ifmod = $_SERVER['HTTP_IF_MODIFIED_SINCE'];
@@ -76,10 +76,7 @@
 		    $ifmod = $m[1];
 		}
 		$st = strtotime($ifmod);
-		if ($st !== FALSE && $this->checkmodtime($st))
-		{
-		    $ifms = TRUE; # will 304 later if there is no NONE_MATCH or nothing matches
-		}
+		$ifms = ($st !== FALSE && $this->checkmodtime($st)); # will 304 later if there is no NONE_MATCH or nothing matches
 	    }
 	    if (filter_has_var(INPUT_SERVER, 'HTTP_IF_NONE_MATCH'))
 	    {
@@ -102,9 +99,9 @@
 			}
 		    }
 		}
-		$ifms = FALSE; # no entity tags matched  or matched but modified, so we must ignore any IF_MODIFIED_SINCE
+		$ifms = TRUE; # no entity tags matched  or matched but modified, so we must ignore any IF_MODIFIED_SINCE
 	    }
-	    if ($ifms)
+	    if (!$ifms)
 	    { # we dont need to send the page
 		Web::getinstance()->send304($this->makeetag(), $this->makemaxage());
 		exit;
