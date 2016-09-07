@@ -27,6 +27,7 @@
 	    'js'	=> 'text/javascript',
 	    'png'	=> 'image/png',
 	    'jpg'	=> 'image/jpeg',
+	    'jpeg'	=> 'image/jpeg',
 	    'gif'	=> 'image/gif',
 	    'ico'	=> 'image/x-icon',
 	];
@@ -53,7 +54,7 @@
  * so wee need to do it ourselves which is a pain
  */
 	    $fname = array_pop($rest);
-	    $ext = $extension = substr(strrchr($fname, "."), 1);
+	    $ext = strtolower(substr(strrchr($fname, "."), 1));
 	    if (isset(self::$mtypes[$ext]))
 	    {
 		$mime = self::$mtypes[$ext];
