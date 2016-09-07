@@ -48,9 +48,25 @@
 	    $rest = $context->rest();
 	    $this->file = implode(DIRECTORY_SEPARATOR, $rest);
 	    $this->mtime = filemtime($this->file);
+/**
+ * PHP file info does not gice the correct mime type for compressed css files
+ * so wee need to do it ourselves which is a pain
+ */
 	    $fname = array_pop($rest);
 	    $ext = $extension = substr(strrchr($fname, "."), 1);
-	    $mime = self::$mtypes[$ext];
+	    if (isset(self::$mtypes[$ext]))
+	    {
+		$mime = self::$mtypes[$ext];
+	    }
+	    else
+	    {
+                $finfo = finfo_open(FILEINFO_MIME_TYPE);
+		if (($mime = finfo_file($finfo, $this->file)) === FALSE)
+                { # there was an error of some kind.
+                    $mime = '';
+                }
+                finfo_close($finfo);
+	    }
 	    $mag = $this->makemaxage();
 	    $web = $context->web();
 	    $web->addheader([
