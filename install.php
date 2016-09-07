@@ -331,7 +331,6 @@
                 'confirm'       => [Siteaction::OBJECT, 'UserLogin', 0, 0, 0, 1],
                 'contact'       => [Siteaction::OBJECT, 'Contact', 0, 0, 0, 1],
                 'devel'         => [Siteaction::OBJECT, 'Developer', 1, 1, 1, 1],
-                'error'         => [Siteaction::OBJECT, 'Error', 0, 0, 0, 1],
                 'forgot'        => [Siteaction::OBJECT, 'UserLogin', 0, 0, 0, 1],
                 'home'          => [Siteaction::TEMPLATE, 'index.twig', 0, 0, 0, 1],
                 'install.php'   => [Siteaction::TEMPLATE, 'oops.twig', 0, 0, 0, 1],
