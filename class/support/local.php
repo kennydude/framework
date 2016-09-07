@@ -295,6 +295,15 @@
             $fn($this->twig);
         }
 /**
+ * Return TRUE if Twig is enabled
+ *
+ * @return boolean
+ */
+        public function hastwig()
+        {
+            return is_object($this->twig);
+        }
+/**
  * Render a twig and return the string - do nothing if the template is the empty string
  *
  * @param string	$tpl	The template
