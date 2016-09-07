@@ -238,6 +238,15 @@
             return implode(DIRECTORY_SEPARATOR, func_get_args());
         }
 /**
+ * Join the arguments with DIRECTORY_SEPARATOR to make a path name and prepend the path to the base directory
+ *
+ * @return string
+ */
+        public function makebasepath()
+        {
+            return $this->basedir().DIRECTORY_SEPARATOR.implode(DIRECTORY_SEPARATOR, func_get_args());
+        }
+/**
  * Return a path to the assets directory suitable for use in links
  *
  * @return string
