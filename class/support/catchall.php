@@ -5,7 +5,7 @@
  * request.
  *
  * @author Lindsay Marshall <lindsay.marshall@ncl.ac.uk>
- * @copyright 2015 Newcastle University
+ * @copyright 2016 Newcastle University
  *
  */
 /**
@@ -33,19 +33,17 @@
 		break;
 
 	    case 'robots.txt':
-		$context->web()->sendheaders(StatusCodes::HTTP_OK, 'text/plain');
+		$context->web()->sendheaders(StatusCodes::HTTP_OK, 'text/plain; charset="utf-8"');
 		return ['robot.twig', 'text/plain', StatusCodes::HTTP_OK];
-		break;
 
 	    case 'sitemap.xml':
-		$context->web()->sendheaders(StatusCodes::HTTP_OK, 'application/xml');
+		$context->web()->sendheaders(StatusCodes::HTTP_OK, 'application/xml; charset="utf-8"');
 		$context->local()->addval('url', Config::SITEURL);
 		return ['sitemap.twig', 'application/xml', StatusCodes::HTTP_OK];
-		break;
 
 	    default:
-	        $context->divert('/error/404?page='.urlencode($_SERVER['REQUEST_URI']));
-		/* NOT REACHED */
+		$context->local()->addval('page', urlencode($_SERVER['REQUEST_URI']));
+		return ['error/404.twig', StatusCodes::HTTP_NOT_FOUND, 'text/html; charset="utf-8"'];
 	    }
 	    return $tpl;
 	}
