@@ -10,6 +10,8 @@
  */
     class Web
     {
+	const HTMLMIME	= 'text/html; charset="utf-8"';
+
         use Singleton;
 /**
  * @var array   Holds values for headers that are required. Keyed by the name of the header
@@ -37,7 +39,7 @@
 		$code = StatusCodes::HTTP_MOVED_PERMANENTLY;		
 	    }
 	    $this->addheader('Location', $where);
-	    $this->sendstring($code, $msg, 'text/html');
+	    $this->sendstring($code, $msg, self::HTMLMIME);
 	    exit;
 	}
 /**
@@ -45,19 +47,26 @@
  *
  * @param number	$code	The return code
  * @param string	$msg	The message (or '')
- * @param boolean       $divert If this TRUE and there is a context stored, divert to page /error/XXX
  */
-	private function sendhead($code, $msg, $divert = FALSE)
+	private function sendhead($code, $msg)
 	{
-            if ($divert)
-            { # divert to an error page, passing the message as a parameter
-                Context::getinstance()->divert('/error/'.$code);
-		/* NOT REACHED */
-            }
-	    $this->sendheaders(StatusCodes::httpHeaderFor($code));
-	    if ($msg != '')
+	    $local = Local::getinstance();
+	    if ($local->hastwig())
 	    {
-		echo '<p>'.$msg.'</p>';
+		$tpl = file_exists($local->makebasepath(['twigs', 'error', $code.'.twig'])) ? $code : 'error';
+		$local->addval([
+		    'code'	=> $code,
+		    'message'	=> $msg,
+		]);
+		$this->sendtemplate($local->makepath(['error', $tpl.'.twig']), $code, self::HTMLMIME);
+	    }
+	    else
+	    {
+		$this->sendheaders(StatusCodes::httpHeaderFor($code));
+		if ($msg != '')
+		{
+		    echo '<p>'.$msg.'</p>';
+		}
 	    }
 	    exit;
 	}

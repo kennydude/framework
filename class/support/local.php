@@ -275,8 +275,8 @@
         public function setuptwig($debug = TRUE, $cache = FALSE)
         {
             $this->twig = new Twig_Environment(
-                new Twig_Loader_Filesystem($this->makepath($this->basepath, 'twigs')),
-                array('cache' => $cache ? $this->makepath($this->basepath, 'twigcache') : FALSE, 'debug' => $debug)
+                new Twig_Loader_Filesystem($this->makebasepath('twigs')),
+                array('cache' => $cache ? $this->makebasepath('twigcache') : FALSE, 'debug' => $debug)
             );
             if ($debug)
             {
@@ -485,9 +485,10 @@
                 $this->setuptwig($debug, FALSE);
             }
 
-            if (file_exists($this->makepath($this->basepath, 'offline')))
+            $offl = $this->makebasepath('offline');
+            if (file_exists($offl))
             { # go offline before we try to do anything else...
-                $this->render('offline.twig', array('msg' => file_get_contents($this->makepath($basedir, 'offline'))));
+                $this->render('offline.twig', array('msg' => file_get_contents($offl)));
                 exit;
             }
 /*

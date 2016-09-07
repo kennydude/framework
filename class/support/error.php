@@ -36,7 +36,7 @@
 		break;
 	    }
 	    $context->web()->addheader('Cache-Control', 'no-cache');
-	    return [$tpl, 'text/html; charset=utf-8', $rest[0]];
+	    return [$tpl, Web::HTMLMIME, $rest[0]];
 	}
     }
 ?>

@@ -33,17 +33,15 @@
 		break;
 
 	    case 'robots.txt':
-		$context->web()->sendheaders(StatusCodes::HTTP_OK, 'text/plain; charset="utf-8"');
-		return ['robot.twig', 'text/plain', StatusCodes::HTTP_OK];
+		return ['robot.twig', 'text/plain; charset="utf-8"', StatusCodes::HTTP_OK];
 
 	    case 'sitemap.xml':
-		$context->web()->sendheaders(StatusCodes::HTTP_OK, 'application/xml; charset="utf-8"');
 		$context->local()->addval('url', Config::SITEURL);
-		return ['sitemap.twig', 'application/xml', StatusCodes::HTTP_OK];
+		return ['sitemap.twig', 'application/xml; charset="utf-8"', StatusCodes::HTTP_OK];
 
 	    default:
 		$context->local()->addval('page', urlencode($_SERVER['REQUEST_URI']));
-		return ['error/404.twig', StatusCodes::HTTP_NOT_FOUND, 'text/html; charset="utf-8"'];
+		return ['error/404.twig', StatusCodes::HTTP_NOT_FOUND,  Web::HTMLMIME];
 	    }
 	    return $tpl;
 	}
