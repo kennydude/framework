@@ -3,7 +3,7 @@
  * Main entry point of the system
  *
  * @author Lindsay Marshall <lindsay.marshall@ncl.ac.uk>
- * @copyright 2012-2015 Newcastle University
+ * @copyright 2012-2016 Newcastle University
  */
 /**
  * The framework assumes a self contained directory structure for a site like this :
@@ -44,7 +44,7 @@
     $local = Local::getinstance()->setup(__DIR__, FALSE, TRUE, TRUE, TRUE); # Not Ajax, debug on, load twig, load RB
     $context = Context::getinstance()->setup();
 
-    $mfl = $local->makepath($local->basedir(), 'maintenance'); # maintenance mode indicator file
+    $mfl = $local->makebasepath('maintenance'); # maintenance mode indicator file
     if (file_exists($mfl) && !$context->hasadmin())
     { # only let administrators in as we are doing maintenance. Could have a similar feature for other roles
 	$context->web()->sendtemplate('support/maintenance.twig', StatusCodes::HTTP_OK, 'text/html',
@@ -56,6 +56,7 @@
     { # default to home if there is nothing
         $action = 'home';
     }
+    $mime = Web::HTMLMIME;
 /*
  * Look in the database for what to do based on the first part of the URL. DBOP is either = or regexp
  */
@@ -76,20 +77,20 @@
     
 	if ($page->admin && !$context->hasadmin())
 	{ # not logged in or not an admin
-	    $context->divert('/error/403');
-	    /* NOT REACHED */
+	    $context->web()->sendtemplate('error/403.twig', StatusCodes::HTTP_FORBIDDEN, $mime);
+	    exit;
 	}
     
 	if ($page->devel && !$context->hasdeveloper())
 	{ # not logged in or not a developer
-	    $context->divert('/error/403');
-	    /* NOT REACHED */
+	    $context->web()->sendtemplate('error/403.twig', StatusCodes::HTTP_FORBIDDEN, $mime);
+	    exit;
 	}
     
 	if ($page->mobileonly && !$context->hastoken())
 	{
-	    $context->divert('/error/403');
-	    /* NOT REACHED */
+	    $context->web()->sendtemplate('error/403.twig', StatusCodes::HTTP_FORBIDDEN, $mime);
+	    exit;
 	}
     }
 
@@ -97,7 +98,6 @@
     $local->addval('page', $action);
     $local->addval('siteinfo', new Siteinfo($local));
 
-    $mime = 'text/html; charset=utf-8';
     $code = StatusCodes::HTTP_OK;
     switch ($page->kind)
     {
