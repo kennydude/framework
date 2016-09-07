@@ -18,17 +18,16 @@
  *            /js       JavaScript
  *            /...      Any other stuff that can be accessed without intermediation through PHP
  *        /class        PHP class definition files named "classname.php"
- *        /class/support  PHP class files for the administrative functions provided by the framework
- *        /class/models	RedBean Model class files
- *        /errors       Files used for generating error pages.
+ *            /support  PHP class files for the administrative functions provided by the framework
+ *            /models	RedBean Model class files
  *        /lib          PHP files containing non-class definitions
  *        /twigcache    If twig cacheing is on this is where it stores the files
- *        /twigs        TWIG template files go in here
- *        /twigs/admin  Twig files for the admin support of the framework
+ *            /error       Twig template files for error messages
+ *            /support     Twig files for the admin support of the framework
  *        /vendor       If you are using composer then it puts stuff in here.
  *
  * The .htaccess file directs
- *         anything in /assets to be served by Apache.
+ * 	   anything in /assets to be served by Apache unless you are usin gthe Assets class to improve caching
  *         anything beginning "ajax" to be called directly i.e. ajax.php (this may or may not be useful - remove it if not)
  *         everything else gets passed into this script where it treats the URL thus:
  *                 /                        =>        /home and then

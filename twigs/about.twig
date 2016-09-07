@@ -25,39 +25,7 @@
 {% block main %}
     <section class="row">
         <article class="col-md-9 col-md-offset-2">
-	    <pre>
- * The framework assumes a self contained directory structure for a site like this :
- *
- * DOCUMENT_ROOT
- *    /sitename         This can be omitted if the site is the only one present and at the root
- *        /assets
- *            /css         CSS files
- *            /i18n        Any internationalisation files you may need
- *            /images      Image files
- *            /js          JavaScript
- *            /...         Any other stuff that can be accessed without intermediation through PHP
- *        /class           PHP class definition files named "classname.php"
- *        /class/models    PHP class definition for RedBean model classes
- *        /class/support   PHP class files for the administrative functions provided by the framework
- *        /errors          Files used for generating error pages.
- *        /install         Files needed by the installer - can be delted after succesful installation
- *        /lib             PHP files containing non-class definitions
- *        /tests           Unit testing files
- *        /twigcache       If twig cacheing is on this is where it caches
- *        /twigs           Twig template files go in here
- *        /twigs/error     Twig template files for error messages
- *        /twigs/support   Twig files for the admin support of the framework
- *        /vendor          If you are using composer then it puts stuff in here.
- *
- * The .htaccess file directs
- * 	anything in /assets to be served by Apache.
- * 	anything beginning "ajax" to be called directly i.e. ajax.php
- *                  (this may or may not be useful - remove it if not)
- * 	everything else gets passed into index.php where it treats the URL thus:
- * 		/		=>	/home and then
- * 		/action/r/e/st/	=>	Broken down in Context class. An action and an array of parameters.
- * 		Query strings and/or post fields are in the $_ arrays as normal.
-	    </pre>
+	    <p>Information about the framework is available at <a href="http://catless.ncl.ac.uk/framework">http://catless.ncl.ac.uk/framework</a></p>
         </article>
     </section>
 {% endblock main %}

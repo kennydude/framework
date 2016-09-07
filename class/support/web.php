@@ -53,12 +53,11 @@
 	    $local = Local::getinstance();
 	    if ($local->hastwig())
 	    {
-		$tpl = file_exists($local->makebasepath(['twigs', 'error', $code.'.twig'])) ? $code : 'error';
-		$local->addval([
+		$tpl = file_exists($local->makebasepath('twigs', 'error', $code.'.twig')) ? $code : 'error';
+		$this->sendtemplate($local->makepath('error', $tpl.'.twig'), $code, self::HTMLMIME, [
 		    'code'	=> $code,
 		    'message'	=> $msg,
 		]);
-		$this->sendtemplate($local->makepath(['error', $tpl.'.twig']), $code, self::HTMLMIME);
 	    }
 	    else
 	    {

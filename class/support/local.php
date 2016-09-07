@@ -65,6 +65,10 @@
  */
         private $messages       = array();
 /**
+ * @var string          Backtrace info - only used with errors
+ */
+        private $back;
+/**
  * See if there are any messages and add them into the Twig values
  * and then clear the messages array.
  *
@@ -90,24 +94,16 @@
  */
         private function telladmin($msg, $type, $file, $line)
         {
-            if ($this->debug)
-            {
-                echo '<pre>';
-                debug_print_backtrace();
-                echo '</pre>';
-//		require 'kint/Kint.class.php';
-//		Kint::dump(1);
-            }
             $ekey = $file.'/'.$line.'/'.$type.'/'.$msg;
             if (!isset($this->senterrors[$ekey]))
             {
                 ob_start();
                 debug_print_backtrace();
-                $ve = ob_get_clean();
+                $this->back = ob_get_clean(); # will get used later in make500
                 mail(implode(',', $this->sysadmin),
                     date('c').' System Error - '.$msg.' ',
-                    'Type : '.$type."\n".
-                    $file.' Line '.$line."\n".$ve);
+                    'Type : '.$type.PHP_EOL.
+                    $file.' Line '.$line.PHP_EOL.$this->back);
                 $this->senterrors[$ekey] = TRUE;
             }
         }
@@ -120,10 +116,13 @@
         {
             if (!headers_sent())
             { # haven't generated any output yet.
-                header('HTTP/1.1 500 Internal Server Error');
                 if (!$this->ajax)
                 { # not in an ajax page so try and send a pretty error
-                    include($this->basepath.'/errors/syserror.php');
+                    Web::getinstance()->internal($this->debug ? str_replace(PHP_EOL, '<br/>'.PHP_EOL, htmlentities($this->back)) : 'There has been an internal error');
+                }
+                else
+                {
+                    header('HTTP/1.1 500 Internal Server Error');
                 }
             }
         }
@@ -149,7 +148,7 @@
                 }
                 else
                 {
-                    echo '<div>There has been a system error</div>';
+                    echo '<h2>There has been a system error</h2>';
                 }
             }
             R::close(); # close RedBean connection
@@ -193,7 +192,6 @@
                 $this->wasignored = TRUE; # remember we did ignore though
                 return TRUE;
             }
-
             $this->telladmin(
                 $errno.' '.$errstr,
                 'Error',
