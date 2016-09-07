@@ -109,7 +109,7 @@
     }
     else
     {
-        $dir = '/'.implode('/', $bdr);
+        $dir = DIRECTORY_SEPARATOR.implode(DIRECTORY_SEPARATOR, $bdr);
         $name = end($bdr); # don't use $bdr again so no need to        reset() it...
     }
 
@@ -121,33 +121,47 @@
     { // names with # in them will break the regexp in Local debase()
         $fail = $vals['hashname'] = TRUE;
     }
-    elseif (version_compare(phpversion(), '5.5.0', '<')) {
+    elseif (version_compare(phpversion(), '5.6.0', '<')) {
         $fail = $vals['phpversion'] = TRUE;
     }
     elseif (!function_exists('password_hash'))
     {
         $fail = $vals['phpversion'] = TRUE;
     }
-    $fd = @fopen('.test', 'w');
-    if ($fd === FALSE)
+       
+    if (!is_writable('.'))
     {
         $fail = $vals['nodotgw'] = TRUE;
     }
-    else
-    {
-        fclose($fd);
-        unlink('.test');
-    }
 
-    $fd = @fopen('class/.test', 'w');
-    if ($fd === FALSE)
+    if (!is_writable('class'))
     {
         $fail = $vals['noclassgw'] = TRUE;
     }
-    else
+    
+    if (file_exists('.htaccess') && !is_writable('.htaccess'))
     {
-        fclose($fd);
-        unlink('class/.test');
+        $fail = $vals['nowhtaccess'] = TRUE;
+    }
+
+/*
+ * We need to knoa some option selections to do some requirements checking
+ */
+    $flags = [
+        'private', 'public', 'regexp',
+    ];
+    $options = [];
+    foreach ($flags as $fn)
+    {
+        $options[$fn] = filter_has_var(INPUT_POST, $fn);
+    }
+
+    if ($options['public'])
+    {
+        if (!is_writable('assets'))
+        {
+            $fail = $vals['noassets'] = TRUE;
+        }
     }
 
 //    $hasconfig = file_exists('class/config.php');
@@ -181,16 +195,6 @@
                 header('HTTP/1.1 400 Bad Request');
                 exit;
             }
-        }
-
-        
-        $flags = [
-            'private', 'public', 'regexp',
-        ];
-        $options = [];
-        foreach ($flags as $fn)
-        {
-            $options[$fn] = filter_has_var(INPUT_POST, $fn);
         }
 
 /*
@@ -256,7 +260,7 @@
  */
         if ($options['private'])
         { # make the directory for private files
-            mkdir('private', 0766);
+            mkdir('assets'.DIRECTORY_SEPARATOR.'private', 0766);
         }
 
         if ($options['public'])

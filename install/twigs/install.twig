@@ -13,16 +13,16 @@
                 {% if hashname %}
 		    <h3><span class="label label-danger"># character in site directory name</span></h3>
                     <p>
-		        The directory you are installing into has a # charcater in its name.
+		        The directory you are installing into has a # character in its name.
 			This will cause an error in the function debase in class Local where a # is used
 			as a regular expression delimiter.
                     </p>
                 {% endif %}
                 {% if phpversion %}
-		    <h3><span class="label label-danger">No password support</span></h3>
+		    <h3><span class="label label-danger">PHP version too old</span></h3>
                     <p>
-                        The version of PHP you are running does not have support for the password hashing extension. Please
-                        install a more recent version of the software.
+                        The version of PHP you are running does not have support for some of the language and library
+			features needed by the framework. Please install the most recent version of the system.
                     </p>
                 {% endif %}
 	        {% if nodotgw %}
@@ -38,6 +38,23 @@
                     <p>
                         The installer needs to create a file in this directory. Your web server is probably running
                         under a special user id and group - you need to either change the owner of the directory
+                        to be the webserver user or change the group to be the same as the web server and do a chmod g+w.
+                    </p>
+		{% endif %}
+	        {% if noassets %}
+		    <h3><span class="label label-danger">No write access to directory &quot;{{dir}}/assets&quot;</span></h3>
+                    <p>
+                        You have asked for support for publically accessible uploaded files so the installer needs to
+			create a sub-directory in this directory. Your web server is probably running
+                        under a special user id and group - you need to either change the owner of the directory
+                        to be the webserver user or change the group to be the same as the web server and do a chmod g+w.
+                    </p>
+		{% endif %}
+	        {% if nowhtaccess %}
+		    <h3><span class="label label-danger">No write access to .htaccess</span></h3>
+                    <p>
+                        The installer needs to to write to .htaccess. Your web server is probably running
+                        under a special user id and group - you need to either change the owner of the file
                         to be the webserver user or change the group to be the same as the web server and do a chmod g+w.
                     </p>
 		{% endif %}
