@@ -270,7 +270,7 @@
  */
         public function acceptgzip()
         {
-            return filter_has_var(INPUT_SERVER, 'HTTP_ACCEPT_ENCOIDNG') &&
+            return filter_has_var(INPUT_SERVER, 'HTTP_ACCEPT_ENCODING') &&
 	        substr_count($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip') > 0;
         }
 /**
