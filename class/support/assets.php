@@ -50,7 +50,7 @@
 	    $this->file = implode(DIRECTORY_SEPARATOR, $rest);
 	    $this->mtime = filemtime($this->file);
 /**
- * PHP file info does not gice the correct mime type for compressed css files
+ * PHP file info does not give the correct mime type for compressed css files
  * so wee need to do it ourselves which is a pain
  */
 	    $fname = array_pop($rest);
