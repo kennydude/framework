@@ -11,17 +11,16 @@
     <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE8" />
 -->
 
-    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" media="screen,print"/>
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" media="screen,print"/>
 
 </head>
 <body lang="en-GB">
     <article class="container">
 	<div class="row">
 	   <div class="col-md-offset-3 col-md-6">
-	       <p>There has been a system error in the installer.</p>
+	       <p>There has been a system error</p>
 	   </div>
 	</div>
     </article>
-    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 </body>
 </html>
