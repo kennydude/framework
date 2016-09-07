@@ -328,6 +328,7 @@
             $pages = [
                 'about'         => [Siteaction::TEMPLATE, 'about.twig', 0, 0, 0, 1],
                 'admin'         => [Siteaction::OBJECT, 'Admin', 1, 1, 0, 1],
+                'assets'        => [Siteaction::OBJECT, 'Assets', 1, 1, 0, 0],          # not active - really only needed when total cacheability is needed
                 'confirm'       => [Siteaction::OBJECT, 'UserLogin', 0, 0, 0, 1],
                 'contact'       => [Siteaction::OBJECT, 'Contact', 0, 0, 0, 1],
                 'devel'         => [Siteaction::OBJECT, 'Developer', 1, 1, 1, 1],
