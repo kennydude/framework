@@ -62,6 +62,32 @@
         {
             return isset($_FILES[$name]);
         }
+/**
+ * Utility function to dig out an element from a possibly multi-dimensional array
+ *
+ * @param array     $porg   The array
+ * @param array     $keys   An array of keys
+ */
+        private function getval($porg, $keys, $default = NULL, $fail = FALSE)
+        {
+            while (TRUE)
+            {
+                $key = array_shift($keys);
+                if (!isset($porg[$key]))
+                {
+                    if ($fail)
+                    {
+                        throw new Exception('Missing element');
+                    }
+                    return $default;
+                }
+                $val = $porg[$key];
+                if (empty($keys))
+                {
+                    return trim($val);
+                }
+            }
+        }
 /*
  ***************************************
  * $_GET fetching methods
@@ -72,14 +98,26 @@
  *
  * N.B. This function assumes the value is a string and will fail if used on array values
  *
- * @param string	$name	The key
+ * @param mixed 	$name	The key or if it is an array then the key and the fields that are needed $_GET['xyz'][0]
  * @param boolean	$fail	If TRUE then generate a 400 if the key does not exist in the array
  *
  * @return mixed
  */
         public function mustget($name, $fail = TRUE)
         {
-            if (filter_has_var(INPUT_GET, $name))
+            if (is_array($name) && filter_has_var(INPUT_GET, $name[0]))
+            {
+                $n = array_shift($name);
+                try
+                {
+                    return $this->getval($_GET[$n], $name, NULL, $fail);
+                }
+                catch (Exception $e)
+                {
+                    // just drop through to the error handler below.
+                }
+            }
+            elseif (filter_has_var(INPUT_GET, $name))
             {
                 return trim($_GET[$name]);
             }
@@ -101,6 +139,11 @@
  */
         public function get($name, $dflt = '')
         {
+            if (is_array($name) && filter_has_var(INPUT_GET, $name[0]))
+            {
+                $n = array_shift($name);
+                return $this->getval($_GET[$n], $name, $dflt, FALSE);
+            }
             return filter_has_var(INPUT_GET, $name) ? trim($_GET[$name]) : $dflt;
         }
 /**
@@ -165,7 +208,19 @@
  */
         public function mustpost($name, $fail = TRUE)
         {
-            if (filter_has_var(INPUT_POST, $name))
+            if (is_array($name) && filter_has_var(INPUT_POST, $name[0]))
+            {
+                $n = array_shift($name);
+                try
+                {
+                    return $this->getval($_POST[$n], $name, NULL, $fail);
+                }
+                catch (Exception $e)
+                {
+                    //drop through to error handling code
+                }
+            }
+            elseif (filter_has_var(INPUT_POST, $name))
             {
                 return trim($_POST[$name]);
             }
@@ -188,6 +243,11 @@
  */
         public function post($name, $dflt = '')
         {
+            if (is_array($name) && filter_has_var(INPUT_POST, $name[0]))
+            {
+                $n = array_shift($name);
+                return $this->getval($_POST[$n], $name, $dflt, FALSE);
+            }
             return filter_has_var(INPUT_POST, $name) ? trim($_POST[$name]) : $dflt;
         }
 
