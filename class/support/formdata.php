@@ -77,7 +77,7 @@
                 {
                     if ($fail)
                     {
-                        throw new Exception('Missing element');
+                        Web::getinstance()->bad();
                     }
                     return $default;
                 }
@@ -108,14 +108,7 @@
             if (is_array($name) && filter_has_var(INPUT_GET, $name[0]))
             {
                 $n = array_shift($name);
-                try
-                {
-                    return $this->getval($_GET[$n], $name, NULL, $fail);
-                }
-                catch (Exception $e)
-                {
-                    // just drop through to the error handler below.
-                }
+                return $this->getval($_GET[$n], $name, NULL, $fail);
             }
             elseif (filter_has_var(INPUT_GET, $name))
             {
@@ -211,14 +204,7 @@
             if (is_array($name) && filter_has_var(INPUT_POST, $name[0]))
             {
                 $n = array_shift($name);
-                try
-                {
-                    return $this->getval($_POST[$n], $name, NULL, $fail);
-                }
-                catch (Exception $e)
-                {
-                    //drop through to error handling code
-                }
+                return $this->getval($_POST[$n], $name, NULL, $fail);
             }
             elseif (filter_has_var(INPUT_POST, $name))
             {
