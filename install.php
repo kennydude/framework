@@ -267,6 +267,8 @@
         { # make the directory for private files
             mkdir('public', 0766);
         }
+        
+        mkdir('twigcache'); # in case we turn caching on for twig.
 /*
  * Try opening the database and setting up the User table
  */
