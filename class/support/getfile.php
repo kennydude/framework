@@ -47,7 +47,7 @@
 	{
 	    $web = $context->web(); # it's used all over the place so grab it once
 
-            chdir(implode(DIRECTORY_SEPARATOR, [$_SERVER['DOCUMENT_ROOT'], self::DATADIR]));
+            chdir($context->local()->makebasepath(self::DATADIR));
             $fpt = $context->rest();
 /**
  * Depending on how you construct the URL, it's possible to do some sanity checks on the
@@ -126,11 +126,11 @@
 /*
  * Cache control headers should be added here if necessary
  */
-	    $web->addheaders([
+	    $web->addheader([
 		'Last-Modified'	=> $this->mtime,
 		'ETag'		=> $this->makeetag(),
 	    ]);
-	    $web->sendfile($code, $file->filename, '', $range, '', $this->makeetag());
+	    $web->sendfile($this->file, $file->filename, '', $range, FALSE);
             return '';
 	}
 
