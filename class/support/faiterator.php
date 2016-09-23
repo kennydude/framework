@@ -27,7 +27,7 @@
 /*
  *  The 'error' sub-array is just used an iteration control and any of the field arrays could be used.
  */
-            parent::_construct($_FILES[$name]['error']);
+            parent::__construct($_FILES[$name]['error']);
         }
 /**
  * Returns the value of the current element of the "array"
