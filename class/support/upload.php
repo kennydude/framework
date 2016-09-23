@@ -21,7 +21,7 @@
 	public function handle($context)
 	{
 	    $fd = $context->formdata();
-	    if ($fd->hasfile['uploads'])
+	    if ($fd->hasfile('uploads'))
 	    {
 		if (Config::UPUBLIC && Config::UPRIVATE)
 		{ # need to check the flag could be either private or public
