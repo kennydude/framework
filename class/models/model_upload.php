@@ -23,7 +23,16 @@
  */
 	public function canaccess($user)
 	{
-	    return $this->user->equals($user) || $user->isadmin();
+	    return $this->bean->user->equals($user) || $user->isadmin();
+	}
+/**
+ * Return the owner of this uplaod
+ *
+ * @return object
+ */
+	public function owner()
+	{
+	    return $this->bean->user;
 	}
 /**
  * Store a file
