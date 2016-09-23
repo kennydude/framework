@@ -152,14 +152,15 @@
 /**
  * Deliver a file as a response.
  *
- * @param string	$path	The path to the file
- * @param string	$name	The name of the file as told to the downloader
- * @param string	$mime	The mime type of the file
- * @param array		$range	Specifies if a sub-range of the file is wanted. Used mainly for video.
+ * @param string	$path		The path to the file
+ * @param string	$name		The name of the file as told to the downloader
+ * @param string	$mime		The mime type of the file
+ * @param array		$range		Specifies if a sub-range of the file is wanted. Used mainly for video.
+ * @param boolean	$transfer	If this is TRUE then set the Description
  *
  * @return void
  */
-	public function sendfile($path, $name = '', $mime = '', $range = [])
+	public function sendfile($path, $name = '', $mime = '', $range = [], $transfer = TRUE)
 	{
 	    if ($mime === '')
 	    {
@@ -171,10 +172,13 @@
                 finfo_close($finfo);
 	    }
 	    $this->sendheaders(StatusCodes::HTTP_OK, $mime);
-            header('Content-Description: File Transfer');
-	    if ($name !== '')
+	    if ($transfer)
 	    {
-                header('Content-Disposition: attachment; filename="'.$name.'"');
+		header('Content-Description: File Transfer');
+		if ($name !== '')
+		{
+		    header('Content-Disposition: attachment; filename="'.$name.'"');
+		}
 	    }
             $this->debuffer();
 	    $gz = $this->acceptgzip();
