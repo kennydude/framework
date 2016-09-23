@@ -23,7 +23,7 @@
  */
 	public function canaccess($user)
 	{
-	    return $this->user()->equals($user) || $user->isadmin();
+	    return $this->user->equals($user) || $user->isadmin();
 	}
 /**
  * Store a file
