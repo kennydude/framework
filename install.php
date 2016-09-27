@@ -258,16 +258,16 @@
 /*
  *  Make directories for uploads if required
  */
-        if ($options['private'])
-        { # make the directory for private files
-            mkdir('assets'.DIRECTORY_SEPARATOR.'private', 0766);
+        if ($options['public'])
+        { # make the directory for public files
+            mkdir('assets'.DIRECTORY_SEPARATOR.'public', 0766);
         }
 
-        if ($options['public'])
+        if ($options['private'])
         { # make the directory for private files
-            mkdir('public', 0766);
+            mkdir('private', 0766);
         }
-        
+
         mkdir('twigcache'); # in case we turn caching on for twig.
 /*
  * Try opening the database and setting up the User table
