@@ -414,5 +414,5 @@
             @unlink('class/config.php');
         }
     }
-    echo $twig->render($tpl, $vals);
+    echo $twig->render($tpl, $vals); 
 ?>
