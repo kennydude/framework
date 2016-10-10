@@ -325,7 +325,7 @@
             {
                 $this->addval($vals);
             }
-            return $tpl != '' ? $this->twig->loadtemplate($tpl)->render($this->tvals) : '';
+            return $tpl != '' ? $this->twig->render($tpl, $this->tvals) : '';
         }
 /**
  * Render a twig - do nothing if the template is the empty string
