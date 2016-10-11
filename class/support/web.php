@@ -192,12 +192,14 @@
 	    }
 	    if (!empty($range))
 	    {
-                    header('Content-Range: bytes '.$m[1].'-'.$m[2].'/'.$sz);
-                    $fd = fopen($this->file, 'r'); # open the file, seek to the required place and read and return the required amount.
-                    fseek($fd, $m[1]);
-		    $this->debuffer(); # get rid of any buffering that we might be in
-                    echo fread($fd, $m[2]-$m[1]+1);
-                    fclose($fd); 
+		$leng = $range[1]-$range[0]+1;
+		header('Content-Length: '.$leng);
+		header('Content-Range: bytes '.$range[0].'-'.$range[1].'/'.$sz);
+		$fd = fopen($this->file, 'r'); # open the file, seek to the required place and read and return the required amount.
+		fseek($fd, $range[0]);
+		$this->debuffer(); # get rid of any buffering that we might be in
+		echo fread($fd, $leng);
+		fclose($fd); 
 	    }
 	    else
 	    {
