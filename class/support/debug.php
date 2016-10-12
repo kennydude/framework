@@ -21,7 +21,7 @@
 	{
 	    if (self::$fd === NULL)
 	    {
-	        self::$fd = fopen('/tmp/'.Config::SITENAME.'debug.txt', 'a');
+	        self::$fd = fopen(Local::getinstance()->makebasepath('debug', 'debug.txt'), 'a');
 	    }
 	}
 /**
@@ -63,7 +63,7 @@
         {
 	    if (self::$fd !== NULL)
 	    {
-	        fflush($fd);
+	        fflush(self::$fd);
 	    }
         }
 /**
