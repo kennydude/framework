@@ -335,7 +335,10 @@
  */
         public function render($tpl, $vals = [])
         {
-            echo $this->getrender($tpl, $vals);
+            if ($tpl !== '')
+            {
+                Web::getinstance()->sendstring($this->getrender($tpl, $vals), 'text/html; charset="utf-8"');
+            }
         }
 /**
  * Add a value into the values stored for rendering the template
