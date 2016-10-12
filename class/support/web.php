@@ -20,9 +20,10 @@
 /**
  * Generate a Location header
  *
- * @param string		$where	The URL to divert to
- * @param boolean		$temporary	TRUE if this is a temporary redirect
- * @param boolean		$nochange	If TRUE then reply status codes 307 and 308 will be used rather than 301 and 302
+ * @param string	$where		The URL to divert to
+ * @param boolean	$temporary	TRUE if this is a temporary redirect
+ * @param string	$msg		A message to send
+ * @param boolean	$nochange	If TRUE then reply status codes 307 and 308 will be used rather than 301 and 302
  */
 	public function relocate($where, $temporary = TRUE, $msg = '', $nochange = FALSE)
 	{
