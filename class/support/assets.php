@@ -1,6 +1,6 @@
 <?php
 /**
- * Handle assets access
+ * Handle assets access if that is what is wanted
  *
  * @author Lindsay Marshall <lindsay.marshall@ncl.ac.uk>
  * @copyright 2016 Newcastle University
@@ -34,9 +34,9 @@
 /**
  * Handle access to things in assets
  *
- * You can rely on Apache to deal with these things nromally, however if
- * you really want to get cacheability to complete you either have to go through hoops
- * in the APache config or you code it in here!
+ * You can rely on Apache to deal with these things normally, however if
+ * you really want to get cacheability to be complete you either have to go through hoops
+ * in the Apache config or you code it in here!
  *
  * @param object	$context	The context object for the site
  *
@@ -51,7 +51,7 @@
 	    $this->mtime = filemtime($this->file);
 /**
  * PHP file info does not give the correct mime type for compressed css files
- * so wee need to do it ourselves which is a pain
+ * so we need to do it ourselves which is a pain
  */
 	    $fname = array_pop($rest);
 	    $ext = strtolower(substr(strrchr($fname, "."), 1));
