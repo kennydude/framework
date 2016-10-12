@@ -76,7 +76,7 @@
 		    $ifmod = $m[1];
 		}
 		$st = strtotime($ifmod);
-		$ifms = ($st !== FALSE && $this->checkmodtime($st)); # will 304 later if there is no NONE_MATCH or nothing matches
+		$ifms = $st !== FALSE && $this->checkmodtime($st); # will 304 later if there is no NONE_MATCH or nothing matches
 	    }
 	    if (filter_has_var(INPUT_SERVER, 'HTTP_IF_NONE_MATCH'))
 	    {
@@ -222,7 +222,6 @@
  */
 	public function checketag($tag)
 	{
-	    Debug::head($tag.' '.$this->makeetag());
 	    return $tag === $this->makeetag();
 	}
 /**
