@@ -10,6 +10,8 @@
  */
     class Web
     {
+	const HTMLMIME	= 'text/html; charset="utf-8"';
+
         use Singleton;
 /**
  * @var array   Holds values for headers that are required. Keyed by the name of the header
@@ -36,7 +38,7 @@
 		$code = StatusCodes::HTTP_MOVED_PERMANENTLY;		
 	    }
 	    $this->addheader('Location', $where);
-	    $this->sendstring($msg, 'text/html; charset="utf-8"');
+	    $this->sendstring($msg, self::HTMLMIME);
 	    exit;
 	}
 /**
