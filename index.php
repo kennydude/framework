@@ -69,26 +69,16 @@
     else
     {
 	if (($page->needlogin) && !$context->hasuser())
-	{ # not logged in or not an admin
+	{ # not logged in
 	    $context->divert('/login?page='.urlencode($local->debase($_SERVER['REQUEST_URI'])));
 	    /* NOT REACHED */
 	}
     
-	if ($page->admin && !$context->hasadmin())
-	{ # not logged in or not an admin
-	    $context->web()->sendtemplate('error/403.twig', StatusCodes::HTTP_FORBIDDEN, $mime);
-	    exit;
-	}
-    
-	if ($page->devel && !$context->hasdeveloper())
-	{ # not logged in or not a developer
-	    $context->web()->sendtemplate('error/403.twig', StatusCodes::HTTP_FORBIDDEN, $mime);
-	    exit;
-	}
-    
-	if ($page->mobileonly && !$context->hastoken())
+	if (($page->admin && !$context->hasadmin()) ||		// not an admin
+	    ($page->devel && !$context->hasdeveloper()) ||	// not a developer
+	    ($page->mobileonly && !$context->hastoken()))	// not mobile and logged in
 	{
-	    $context->web()->sendtemplate('error/403.twig', StatusCodes::HTTP_FORBIDDEN, $mime);
+	    $context->web()->sendstring($local->getrender('error/403.twig'), $mime, StatusCodes::HTTP_FORBIDDEN);
 	    exit;
 	}
     }
@@ -132,6 +122,9 @@
         $context->web()->internal('Weird error');
         /* NOT REACHED */
     }
-
-    $context->web()->sendtemplate($tpl, $code, $mime);
+    
+    if ($tpl !== '')
+    { # an empty template string means generate no output here...
+	$context->web()->sendstring($local->getrender($tpl), $mime);
+    }
 ?>
