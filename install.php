@@ -145,7 +145,7 @@
     }
 
 /*
- * We need to knoa some option selections to do some requirements checking
+ * We need to know some option selections to do some requirements checking
  */
     $flags = [
         'private', 'public', 'regexp',
@@ -255,6 +255,8 @@
             '# AddOutputFilterByType DEFLATE text/javascript'.PHP_EOL
         );
         fclose($fd);
+        
+        mkdir('debug'); // make a directory for debugging output
 /*
  *  Make directories for uploads if required
  */
