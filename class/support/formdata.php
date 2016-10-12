@@ -65,8 +65,12 @@
 /**
  * Utility function to dig out an element from a possibly multi-dimensional array
  *
- * @param array     $porg   The array
- * @param array     $keys   An array of keys
+ * @param array     $porg       The array
+ * @param array     $keys       An array of keys
+ * @param mixed     $default    A value to return if the item is missing and we are not failing
+ * @param boolean   $fail       If TRUE then exit the process with a 400 Bad return code
+ *
+ * @return string
  */
         private function getval($porg, $keys, $default = NULL, $fail = FALSE)
         {
