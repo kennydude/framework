@@ -19,9 +19,7 @@
  *
  * @author Lindsay Marshall <lindsay.marshall@ncl.ac.uk>
  * @copyright 2012-2016 Newcastle University
- */
-/**
- * Supporting access controlled file retrieval via URL
+ *
  */
     class GetFile extends Siteaction
     {
@@ -45,9 +43,9 @@
  */
 	public function handle($context)
 	{
-	    $web = $context->web(); # it's used all over the place so grab it once
+	    $web = Web::getinstance(); # it's used all over the place so grab it once
 
-            chdir($context->local()->makebasepath(self::DATADIR));
+            chdir(implode(DIRECTORY_SEPARATOR, array($_SERVER['DOCUMENT_ROOT'], self::DATADIR)));
             $fpt = $context->rest();
 /**
  * Depending on how you construct the URL, it's possible to do some sanity checks on the
@@ -68,7 +66,7 @@
 
 # Now do an access control check
             $file = R::findOne('upload', 'fname=?',
-		[DIRECTORY_SEPARATOR . self::DATADIR . DIRECTORY_SEPARATOR . $this->file]);
+		array(DIRECTORY_SEPARATOR . self::DATADIR . DIRECTORY_SEPARATOR . $this->file));
             if (!is_object($file))
             { # not recorded in the database so 404 it
                 $web->notfound();
@@ -88,52 +86,14 @@
  
 	    $this->ifmodcheck(); # check to see if we actually need to send anything
  
-	    $gz = $web->acceptgzip();
-
-	    $sz = filesize($this->file);
-
-            if (isset($_SERVER['HTTP_RANGE']))
-            { # handle range requests. Media players ask for the file in chunks.,
-                if (preg_match('/=([0-9]+)-([0-9]*)\s*$/', $_SERVER['HTTP_RANGE'], $m))
-                { # split the range request
-		    if ($m[1] > $sz)
-		    { # start is after end of file
-			$web->notsatisfiable();
-		    }
-                    if (!isset($m[2]) || $m[2] === '')
-                    { # no top value specified, so use the filesize (-1 of course!!)
-                        $m[2] = $sz - 1;
-                    }
-		    elseif ($m[2] > $sz-1)
-		    { # end is after end of file so return error
-			$web->notsatisfiable();
-			/* NOT REACHED */
-		    }
-		    $range = [$m[1], $m[2]];
-		    $code = StatusCodes::HTTP_PARTIAL_CONTENT;
-                }
-                else
-                {
-                    $web->notsatisfiable();	
-		    /* NOT REACHED */
-                }
-            }
-	    else
-	    {
-		$range = [];
-		$code = StatusCodes::HTTP_OK;
-	    }
-/*
- * Cache control headers should be added here if necessary
- */
-	    $web->addheader([
+ 	    $rcheck = $web->hasrange(filesize($this->file));
+	    $web->addheaders([
 		'Last-Modified'	=> $this->mtime,
-		'ETag'		=> $this->makeetag(),
+		'Etag'		=> '"'.$this->makeetag().'"',
 	    ]);
-	    $web->sendfile($this->file, $file->filename, '', $range, FALSE);
+	    $web->sendfile($file->filename, '', '', $rcheck[1]);
             return '';
 	}
-
 /**
  * Make an etag for an item
  *
@@ -143,7 +103,7 @@
  */
 	public function makeetag()
 	{
-	    return $this->mtime;
+	    return $filemtime;
 	}
 /**
  * Get a last modified time for the page
@@ -185,7 +145,7 @@
  */
 	public function checketag($tag)
 	{
-	    return $tag == $this->makeetag();
+	    return $tag == $this->mtime;
 	}
     }
 ?>
