@@ -21,7 +21,12 @@
  * @copyright 2012-2016 Newcastle University
  *
  */
-    class GetFile extends Siteaction
+/**
+ * The Getfile class
+ *
+ * This returns a file requested from the upload area
+ */
+    class Getfile extends Siteaction
     {
 	const DATADIR	= 'private';
 /**
