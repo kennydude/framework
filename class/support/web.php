@@ -195,7 +195,7 @@
             $this->debuffer();
 	    if (!empty($range))
 	    {
-		$fd = fopen($this->file, 'r'); # open the file, seek to the required place and read and return the required amount.
+		$fd = fopen($path, 'r'); # open the file, seek to the required place and read and return the required amount.
 		fseek($fd, $range[0]);
 		echo fread($fd, $length);
 		fclose($fd); 
