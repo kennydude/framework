@@ -251,8 +251,13 @@
             'RewriteRule ^(assets'.($options['public'] ? '|public' : '').')/(.*) $1/$2 [L,NC]'.PHP_EOL.
 //            'RewriteRule ^(themes/[^/]*/assets/(css|js)/[^/]*) $1 [L,NC]'.PHP_EOL.
             'RewriteRule ^.*$ index.php [L,QSA]'.PHP_EOL.PHP_EOL.
+            '# uncomment these to turn on compression of responses'.PHP_EOL.
+            '# Apache needs the deflate module and PHP needs the zlib module for these to work'.PHP_EOL.
             '# AddOutputFilterByType DEFLATE text/css'.PHP_EOL.
-            '# AddOutputFilterByType DEFLATE text/javascript'.PHP_EOL
+            '# AddOutputFilterByType DEFLATE text/javascript'.PHP_EOL.
+            '# php_flag zlib.output_compression  On'.PHP_EOL.
+            '# php_value zlib.output_compression_level 5'.PHP_EOL
+
         );
         fclose($fd);
         
