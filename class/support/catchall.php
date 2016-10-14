@@ -40,8 +40,8 @@
 		return ['sitemap.twig', 'application/xml; charset="utf-8"', StatusCodes::HTTP_OK];
 
 	    default:
-		$context->local()->addval('page', urlencode($_SERVER['REQUEST_URI']));
-		return ['error/404.twig', StatusCodes::HTTP_NOT_FOUND,  Web::HTMLMIME];
+		$context->local()->addval('page', $_SERVER['REQUEST_URI']);
+		return ['error/404.twig', Web::HTMLMIME, StatusCodes::HTTP_NOT_FOUND];
 	    }
 	    return $tpl;
 	}
