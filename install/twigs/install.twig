@@ -8,7 +8,7 @@
     <div class="row">
         <div class="col-md-offset-2 col-md-8">
 	    <h1>Framework Installer</h1>
-	    {% if nodotgw is defined or noclassgw is defined or dberror is defined or phpversion is defined %}
+	    {% if fail %}
 		<h2>Error!!</h2>
                 {% if hashname %}
 		    <h3><span class="label label-danger"># character in site directory name</span></h3>
