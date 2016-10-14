@@ -164,6 +164,7 @@
         }
     }
 
+    $vals['fail'] = $fail;
 //    $hasconfig = file_exists('class/config.php');
 //    $hashtaccess  = file_exists('.htaccess');
 //    $vals['hasconfig'] = $hasconfig;
