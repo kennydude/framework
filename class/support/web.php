@@ -47,15 +47,9 @@
  *
  * @param number	$code	The return code
  * @param string	$msg	The message (or '')
- * @param boolean       $divert If this TRUE and there is a context stored, divert to page /error/XXX
  */
-	private function sendhead($code, $msg, $divert = FALSE)
+	private function sendhead($code, $msg)
 	{
-            if ($divert)
-            { # divert to an error page, passing the message as a parameter
-                Context::getinstance()->divert('/error/'.$code);
-		/* NOT REACHED */
-            }
 	    $this->sendheaders(StatusCodes::httpHeaderFor($code));
 	    if ($msg != '')
 	    {
