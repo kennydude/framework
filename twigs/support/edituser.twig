@@ -15,12 +15,7 @@
         $('option', $('#mrow').prev()).prop('selected', false) // clear any selections
     })
     $('#uform').on('submit', function(e){
-        var valid = $(this).parsley().validate()
-        if (valid)
-        {
-            return true
-        }
-        return false
+        return $(this).parsley().validate()
     })
     $('.delb').on('click', function(e){
         dodelbean(e, this, 'role')
@@ -97,8 +92,8 @@
                             </tr>
 		        </tbody>
 		    </table>
-                    <button class="btn btn-primary btn-lg" type="submit">Save</button>
 		</fieldset>
+                <button class="btn btn-primary btn-lg" type="submit">Save</button>
 	    </form>
         </div>
     </div>
