@@ -23,6 +23,7 @@
  */
         private static $ops = array(
             'addcontext'    => array(TRUE, TRUE, FALSE),
+            'addform'       => array(TRUE, TRUE, FALSE),
             'addpage'       => array(TRUE, TRUE, FALSE),
             'addrole'       => array(TRUE, TRUE, FALSE),
             'adduser'       => array(TRUE, TRUE, FALSE),
@@ -31,6 +32,7 @@
             'deluser'       => array(TRUE, TRUE, FALSE),
             'newconf'       => array(TRUE, TRUE, FALSE),
             'toggle'        => array(TRUE, TRUE, FALSE),
+            'update'        => array(TRUE, TRUE, FALSE),
         );
 /**
  * Add a User
@@ -60,6 +62,23 @@
                 $u->addrole('Site', 'Developer', '', $now);
             }
             echo $u->getID();
+        }
+/**
+ * Add a Form
+ *
+ * @param object	$context	The context object for the site
+ *
+ * @return void
+ */
+        private function addform($context)
+        {
+            $fdt = $context->formdata();
+            $p = R::dispense('form');
+            $p->name = $fdt->mustpost('name');
+            $p->method = $fdt->mustpost('method');
+            $p->multipart = $fdt->mustpost('multipart');
+            R::store($p);
+            echo $p->getID();
         }
 /**
  * Add a Page
@@ -209,6 +228,22 @@
                 $bn->$field = $bn->$field == 1 ? 0 : 1;
                 R::store($bn);
             }
+        }
+/**
+ * Update a field in a bean
+ *
+ * @param object	$context	The context object for the site
+ *
+ * @return void
+ */
+        private function update($context)
+        {
+            $fdt = $context->formdata();
+
+            $bn = $context->load($fdt->mustpost('bean'), $fdt->mustpost('id'), Context::R400);
+            $field = $fdt->mustpost('name');
+            $bn->$field = $fdt->mustpost('value');
+            R::store($bn);
         }
 /**
  * Handle AJAX operations
