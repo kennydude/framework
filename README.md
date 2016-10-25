@@ -2,7 +2,7 @@
 
 A PHP Development Framework
 
-http://catless.ncl.ac.uk/framework/
+http://catless.ncl.ac.uk/framework/ has details of installation and usage
 
 ## Vagrant
 
