@@ -56,5 +56,14 @@
         {
             return R::findAll('fwconfig');
         }
+/**
+ * Get all the form beans
+ *
+ * @return array
+ */
+        public function forms()
+        {
+            return R::findAll('form', 'order by name');
+        }
     }
 ?>
