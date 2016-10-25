@@ -4,36 +4,42 @@
 <i class="{{class}} fa fa-toggle-{% if val %}on{% else %}off{% endif %}"></i>
 {% endmacro tick %}
 
+{% macro inline(type, name, msg, id, value) %}
+<a href="#" class="ppedit" data-name="{{name}}" data-type="{{type}}" data-pk="{{id}}" data-url="{{base}}/ajax.php" data-title="{{msg}}">{{value}}</a>
+{% endmacro inline %}
+
 {% import _self as h %}
 
 {% block scripts %}
+    <script src="{{fwurls.parsley}}"></script>
     <script src="{{assets}}/js/util.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.1/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
 {% endblock scripts %}
 
+{% block css %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.1/bootstrap3-editable/css/bootstrap-editable.css"/>
+{% endblock css %}
+
+{% set types = ['Object', 'Template', 'In-site Temporary Redirect', 'In-site Permanent Redirect', 'External Temporary Redirect',  'External Permanent Rehome'] %}
+
 {% block setup %}
-    function tick(v)
-    {
-        return '<i class="fa fa-toggle-'+(v ? 'on' : 'off')+'"></i>'
-    }
-    function toggle(x)
-    {
-        if (x.hasClass('fa-toggle-on'))
-	{
-	   x.removeClass('fa-toggle-on');
-	   x.addClass('fa-toggle-off')
-	}
-	else
-	{
-	   x.removeClass('fa-toggle-off');
-	   x.addClass('fa-toggle-on')
-	}
-    }
     var kname = []
-    kname[2] = 'Template'
-    kname[1] = 'Object'
+    function paramset(params)
+    {
+	params.id = params.pk
+	params.bean = 'page'
+	params.op = 'update'
+	return params
+    }
+    kname = [
+    {% for v in types %}
+        {value: {{loop.index}}, text: '{{v}}'}{{loop.last ? '' : ','}}
+    {% endfor %}
+    ]
 {% endblock setup %}
 
 {% block onload %}
+    $('.ppedit').editable({params: paramset, source: kname});
     $('#npform').on('submit', false)
     $('#addb').on('click', function(e){
         e.preventDefault()
@@ -183,9 +189,9 @@
 		<tbody>
 		    {% for p in siteinfo.pages %}
 			<tr data-id="{{p.id}}">
-			    <td class="pname">{{p.name}}</td>
-			    <td>{{p.kind == 2 ? 'Template' : 'Object'}}</td>
-			    <td>{{p.source}}</td>
+			    <td class="pname">{{h.inline('text', 'name', 'Enter name', p.getID, p.name)}}</td>
+			    <td>{{h.inline('select', 'kind', 'Enter kind', p.getID, types[p.kind-1])}}</td>
+			    <td>{{h.inline('text', 'source', 'Enter source', p.getID, p.source)}}</td>
 			    <td>{{h.tick(p.needlogin, 'logn')}}</td>
 			    <td>{{h.tick(p.mobileonly, 'mobo')}}</td>
 			    <td>{{h.tick(p.admin, 'admb')}}</td>
