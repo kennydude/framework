@@ -118,7 +118,17 @@
             { # haven't generated any output yet.
                 if (!$this->ajax)
                 { # not in an ajax page so try and send a pretty error
-                    Web::getinstance()->internal($this->debug ? str_replace(PHP_EOL, '<br/>'.PHP_EOL, htmlentities($this->back)) : 'There has been an internal error');
+                    $str = $this->debug ? '<pre>'.str_replace(',[', ',<br/>&nbsp;&nbsp;&nbsp;&nbsp;[', str_replace(PHP_EOL, '<br/>'.PHP_EOL, htmlentities($this->back))).'</pre>' :
+                        'There has been an internal error';
+                    if (is_object($this->twig))
+                    { # we have twig so render a nice page
+                        $this->addval('message', $str);
+                        Web::getinstance()->sendstring($this->getrender('error/500.twig'), Web::HTMLMIME);
+                    }
+                    else
+                    { # no twig so just dump
+                        Web::getinstance()->internal($str);
+                    }
                 }
                 else
                 {
