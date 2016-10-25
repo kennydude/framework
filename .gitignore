@@ -1,3 +1,5 @@
 .vagrant
 vendor
 composer.phar
+
+config.codekit
