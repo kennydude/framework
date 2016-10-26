@@ -8,62 +8,13 @@
  */
 /**
  * Utility class that returns generally useful information about parts of the site
+ * The parent class (FWSiteInfo) contains a set of functions that are used by the
+ * admin pages of the site.
  */
-    class SiteInfo
+    class SiteInfo extends FWSiteInfo
     {
 /**
- * Get all the user beans
- *
- * @return array
+ * Any functions that you need for general site information go here.
  */
-        public function users()
-        {
-            return R::findAll('user', 'order by login');
-        }
-/**
- * Get all the page beans
- *
- * @return array
- */
-        public function pages()
-        {
-            return R::findAll('page', 'order by name');
-        }
-/**
- * Get all the Rolename beans
- *
- * @return array
- */
-        public function roles()
-        {
-            return R::findAll('rolename', 'order by name');
-        }
-/**
- * Get all the Rolecontext beans
- *
- * @return array
- */
-        public function contexts()
-        {
-            return R::findAll('rolecontext', 'order by name');
-        }
-/**
- * Get all the site config information
- *
- * @return array
- */
-        public function siteconfig()
-        {
-            return R::findAll('fwconfig');
-        }
-/**
- * Get all the form beans
- *
- * @return array
- */
-        public function forms()
-        {
-            return R::findAll('form', 'order by name');
-        }
     }
 ?>
