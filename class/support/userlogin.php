@@ -282,7 +282,7 @@
 	{
 	    if ($context->hasuser())
 	    { # logged in, so this stupid....
-		$context->divert('/');
+		$context->local();
 	    }
             $local = $context->local();
             $fdt = $context->formdata();
@@ -295,16 +295,16 @@
 		if ($lg !== '')
 		{
 		    $user = $this->eorl($lg);
+		    $tpl = 'reset.twig';
 		    if (is_object($user))
 		    {
 			$this->sendreset($context, $user);
 			$local->message(Local::MESSAGE, 'A password reset link has been sent to your email address.');
-			$tpl = 'index.twig';
+			$local->addval('done', TRUE);
 		    }
 		    else
 		    {
 			$local->message(Local::WARNING, 'Sorry, there is no user with that name or email address.');
-			$tpl = 'reset.twig';
 		    }
 		}
 	    }
@@ -377,3 +377,4 @@
 	}
     }
 ?>
+                                                                                                                        
