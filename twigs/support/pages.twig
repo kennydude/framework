@@ -13,11 +13,11 @@
 {% block scripts %}
     <script src="{{fwurls.parsley}}"></script>
     <script src="{{assets}}/js/util.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.1/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
+    <script src="{{fwurls.editable}}"></script>
 {% endblock scripts %}
 
 {% block css %}
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.1/bootstrap3-editable/css/bootstrap-editable.css"/>
+    <link rel="stylesheet" href="{{fwurls.editablecss}}"/>
 {% endblock css %}
 
 {% set types = ['Object', 'Template', 'In-site Temporary Redirect', 'In-site Permanent Redirect', 'External Temporary Redirect',  'External Permanent Rehome'] %}

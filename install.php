@@ -33,13 +33,15 @@
  * URLs for various clientside packages that are used by the installer and by the framework
  */
     $fwurls = [
-        'bootcss'   => '//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css',
-        'facss'     => '//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css',
-        'jquery1'   => '//code.jquery.com/jquery-1.12.4.min.js',
-        'jquery2'   => '//code.jquery.com/jquery-3.1.1.min.js',
-        'bootjs'    => '//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js',
-        'bootbox'   => '//cdnjs.cloudflare.com/ajax/libs/bootbox.js/4.4.0/bootbox.min.js',
-        'parsley'   => 'https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.4.4/parsley.min.js',
+        'bootcss'       => '//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css',
+        'editable'      => 'https://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.1/bootstrap3-editable/js/bootstrap-editable.min.js',
+        'editablecss'   => 'https://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.1/bootstrap3-editable/css/bootstrap-editable.css',
+        'facss'         => '//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css',
+        'jquery1'       => '//code.jquery.com/jquery-1.12.4.min.js',
+        'jquery2'       => '//code.jquery.com/jquery-3.1.1.min.js',
+        'bootjs'        => '//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js',
+        'bootbox'       => '//cdnjs.cloudflare.com/ajax/libs/bootbox.js/4.4.0/bootbox.min.js',
+        'parsley'       => 'https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.4.4/parsley.min.js',
     ];
 
     try
