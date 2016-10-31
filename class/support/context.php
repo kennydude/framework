@@ -341,7 +341,7 @@
             {
                 $uri = $_SERVER['REQUEST_URI'];
             }
-            if ($_SERVER['QUERY_STRING'] != '')
+            if ($_SERVER['QUERY_STRING'] !== '')
             { # there is a query string so get rid it of it from the URI
                 list($uri) = explode('?', $uri);
             }
@@ -354,7 +354,7 @@
  * The code here is to make it easier to move your code around within the hierarchy. If you don't need
  * this then optimise the hell out of it.
  */
-            if ($this->local()->base() != '')
+            if ($this->local()->base() !== '')
             { # we are in at least one sub-directory
                 $bsplit = array_filter(explode('/', $this->local()->base()));
                 foreach (range(1, count($bsplit)) as $c)

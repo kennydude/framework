@@ -335,7 +335,7 @@
             {
                 $this->addval($vals);
             }
-            return $tpl != '' ? $this->twig->render($tpl, $this->tvals) : '';
+            return $tpl !== '' ? $this->twig->render($tpl, $this->tvals) : '';
         }
 /**
  * Render a twig - do nothing if the template is the empty string
@@ -506,7 +506,7 @@
  * Initialise database access
  */
 	    require_once('rb.php'); # RedBean interface
-            if (Config::DBHOST != '' && $loadrb)
+            if (Config::DBHOST !== '' && $loadrb)
             { # looks like there is a database configured
                 R::setup('mysql:host='.Config::DBHOST.';dbname='.Config::DB, Config::DBUSER, Config::DBPW); # mysql initialiser
                 R::freeze(!$debug); # freeze DB for production systems

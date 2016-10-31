@@ -51,7 +51,7 @@
 	private function sendhead($code, $msg)
 	{
 	    $this->sendheaders(StatusCodes::httpHeaderFor($code));
-	    if ($msg != '')
+	    if ($msg !== '')
 	    {
 		echo '<p>'.$msg.'</p>';
 	    }

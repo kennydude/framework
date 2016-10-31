@@ -292,7 +292,7 @@
 	    {
 		$lg = $fdt->post('eorl', '');
 		$tpl = 'reset.twig';
-		if ($lg != '')
+		if ($lg !== '')
 		{
 		    $user = $this->eorl($lg);
 		    if (is_object($user))

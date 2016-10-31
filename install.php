@@ -34,7 +34,7 @@
  */
     $fwurls = [
         'bootcss'   => '//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css',
-        'facss'     => '//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css',
+        'facss'     => '//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css',
         'jquery1'   => '//code.jquery.com/jquery-1.12.4.min.js',
         'jquery2'   => '//code.jquery.com/jquery-3.1.1.min.js',
         'bootjs'    => '//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js',
@@ -212,7 +212,7 @@
         fputs($fd, "\tconst BASEDNAME\t= '".$dir."';".PHP_EOL);
         foreach ($cvars as $fld => $pars)
         {
-            if ($pars[0] != '')
+            if ($pars[0] !== '')
             { # Only save relevant values - see above
                 fputs($fd, "\tconst ".$pars[0]."\t= '".$cvalue[$fld]."';".PHP_EOL);
             }

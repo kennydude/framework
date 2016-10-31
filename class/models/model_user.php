@@ -95,7 +95,7 @@
             $r->rolename = $role;
             $r->otherinfo = $otherinfo;
             $r->start = $start;
-            $r->end = $end == '' ? NULL : $end;
+            $r->end = $end === '' ? NULL : $end;
             R::store($r);
         }
 /**
@@ -210,7 +210,7 @@
             foreach (self::$editfields as $fld => $flags)
             { // might need more fields for different applications
                 $val = $fdt->post($fld, '');
-                if ($flags[0] && $val == '')
+                if ($flags[0] && $val === '')
                 { // this is an error as this is a required field
                     $error = TRUE;
                 }
@@ -225,7 +225,7 @@
                 R::store($this->bean);
             }
             $pw = $fdt->post('pw', '');
-            if ($pw != '')
+            if ($pw !== '')
             {
                 if ($pw == $fdt->post('rpw', ''))
                 {
@@ -253,9 +253,9 @@
                     {
                         $rl->start = $context->utcdate($start);
                     }
-                    if (strtolower($end) == 'never' || $end == '')
+                    if (strtolower($end) == 'never' || $end === '')
                     {
-                        if ($rl->end != '')
+                        if ($rl->end !== '')
                         {
                             $rl->end = NULL;
                         }
@@ -274,13 +274,13 @@
             foreach ($_POST['role'] as $ix => $rn)
             {
                 $cn = $_POST['context'][$ix];
-                if ($rn != '' && $cn != '')
+                if ($rn !== '' && $cn !== '')
                 {
                     $end = $_POST['end'][$ix];
                     $start = $_POST['start'][$ix];
                     $this->addrolebybean($context->load('rolecontext', $cn), $context->load('rolename', $rn), $_POST['otherinfo'][$ix],
                         strtolower($start) == 'now' ? $context->utcnow() : $context->utcdate($start),
-                        strtolower($end) == 'never' || $end == '' ? '' : $context->utcdate($end)
+                        strtolower($end) == 'never' || $end === '' ? '' : $context->utcdate($end)
                     );
                 }
             }

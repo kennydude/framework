@@ -255,7 +255,7 @@
         public function handle($context)
         {
             $fdt = $context->formdata();
-            if (($lg = $fdt->get('login', '')) != '')
+            if (($lg = $fdt->get('login', '')) !== '')
             { # this is a parsley generated username check call
                 if (R::count('user', 'login=?', array($lg)) > 0)
                 {

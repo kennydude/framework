@@ -64,7 +64,7 @@
                 {
                     Web::getinstance()->bad();
                 }
-                if (($bid = $context->formdata()->post('bean', '')) != '')
+                if (($bid = $context->formdata()->post('bean', '')) !== '')
                 { # this is a post
                     if ($bid != $obj->getID())
                     { # something odd...
@@ -88,7 +88,7 @@
                 {
                     Web::getinstance()->bad();
                 }
-                if (($bid = $context->formdata()->post('bean', '')) != '')
+                if (($bid = $context->formdata()->post('bean', '')) !== '')
                 { # this is a post
                     if ($bid != $obj->getID())
                     { # something odd...
