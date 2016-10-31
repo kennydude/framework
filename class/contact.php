@@ -3,16 +3,13 @@
  * A class that contains code to implement a contact page
  *
  * @author Lindsay Marshall <lindsay.marshall@ncl.ac.uk>
- * @copyright 2012-2015 Newcastle University
+ * @copyright 2012-2016 Newcastle University
  *
- */
-/**
- * Support the /contact page
  */
     class Contact extends Siteaction
     {
 /**
- * Handle contact operations /contact/xxxx
+ * Handle various contact operations /contact
  *
  * @param object	$context	The context object for the site
  *
@@ -20,10 +17,10 @@
  */
         public function handle($context)
         {
-            $fdt = $context->formdata();
-            if (($msg = $fdt->post('message', '')) !== '')
+            $fd = $context->formdata();
+            if (($msg = $fd->post('message', '')) != '')
             { # there is a post
-                mail(Config::SYSADMIN, $fdt->post('subject', 'No Subject'), $msg);
+                mail(Config::SYSADMIN, $fd->post('subject', 'No Subject'), $fd->post('sender', 'No Sender').PHP_EOL.PHP_EOL.$msg);
                 $context->local()->addval('done', TRUE);
             }
             return 'contact.twig';
