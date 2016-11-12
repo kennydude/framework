@@ -44,10 +44,15 @@
  */
 	public function handle($context)
 	{
+	    $web = $context->web();
 	    chdir($context->local()->assetsdir());
 	    
 	    $rest = $context->rest();
 	    $this->file = implode(DIRECTORY_SEPARATOR, $rest);
+	    if (!file_exists($this->file))
+	    {
+	        $web->notfound();
+	    }
 	    $this->mtime = filemtime($this->file);
 /**
  * PHP file info does not give the correct mime type for compressed css files
@@ -69,7 +74,6 @@
                 finfo_close($finfo);
 	    }
 	    $mag = $this->makemaxage();
-	    $web = $context->web();
 	    $web->addheader([
 		'Last-Modified'	=> $this->makemod($this->mtime),
 		'Etag'		=> '"'.$this->makeetag().'"',
