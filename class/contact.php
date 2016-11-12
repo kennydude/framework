@@ -18,7 +18,7 @@
         public function handle($context)
         {
             $fd = $context->formdata();
-            if (($msg = $fd->post('message', '')) != '')
+            if (($msg = $fd->post('message', '')) !== '')
             { # there is a post
                 mail(Config::SYSADMIN, $fd->post('subject', 'No Subject'), $fd->post('sender', 'No Sender').PHP_EOL.PHP_EOL.$msg);
                 $context->local()->addval('done', TRUE);
