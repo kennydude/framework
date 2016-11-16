@@ -3,12 +3,12 @@
  * Contains the definition of the Context class
  *
  * @author Lindsay Marshall <lindsay.marshall@ncl.ac.uk>
- * @copyright 2012-2015 Newcastle University
+ * @copyright 2012-2016 Newcastle University
  */
 /**
  * A class that stores various useful pieces of data for access throughout the rest of the system.
  */
-    class Context
+    class FWContext
     {
         use Singleton;
 /**
@@ -34,23 +34,23 @@
 /**
  * @var object		NULL or an object decribing the current logged in User
  */
-        private $luser	= NULL;		# Current user bean if we have logins....
+        protected $luser	= NULL;		# Current user bean if we have logins....
 /**
  * @var integer		Counter used for generating unique ids
  */
-        private $idgen = 0;			# used for generating unique ids
+        protected $idgen = 0;			# used for generating unique ids
 /**
  * @var string		The first component of the current URL
  */
-        private $reqaction	= 'home';	# the first segment of	the URL
+        protected $reqaction	= 'home';	# the first segment of	the URL
 /**
  * @var array		The rest of the current URL exploded at /
  */
-        private $reqrest	= [];		# the rest of the URL
+        protected $reqrest	= [];		# the rest of the URL
 /**
  * @var boolean		True if authenticated by token
  */
-	private $tokauth	= FALSE;
+	protected $tokauth	= FALSE;
 /*
  ***************************************
  * URL and REST support functions
