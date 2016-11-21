@@ -4,9 +4,9 @@
 <i class="{{class}} fa fa-toggle-{% if val %}on{% else %}off{% endif %}"></i>
 {% endmacro tick %}
 
-{% macro inline(type, name, msg, id, value) %}
-<a href="#" class="ppedit" data-name="{{name}}" data-type="{{type}}" data-pk="{{id}}" data-url="{{base}}/ajax.php" data-title="{{msg}}">{{value}}</a>
-{% endmacro inline %}
+{% macro inline(type, name, msg, id, value) %}<a href="#" class="ppedit" data-name="{{name}}" data-type="{{type}}" data-pk="{{id}}" data-url="{{base}}/ajax.php" data-title="{{msg}}">{{value}}</a>{% endmacro inline %}
+
+{% macro wrap(t) %}'+{{t}}+'{% endmacro wrap %}
 
 {% import _self as h %}
 
@@ -23,6 +23,10 @@
 {% set types = ['Object', 'Template', 'In-site Temporary Redirect', 'In-site Permanent Redirect', 'External Temporary Redirect',  'External Permanent Rehome'] %}
 
 {% block setup %}
+    function mkinline(type, name, msg, id, value)
+    {
+        return '{{h.inline(h.wrap('type'), h.wrap('name'), h.wrap('msg'), h.wrap('id'), h.wrap('value'))}}'
+    }
     var kname = []
     function paramset(params)
     {
@@ -35,6 +39,14 @@
     {% for v in types %}
         {value: {{loop.index}}, text: '{{v}}'}{{loop.last ? '' : ','}}
     {% endfor %}
+    ]
+    var clicks = [
+	['delb', dodelbean, ''],
+	['admb', dotoggle, 'admin'],
+	['actb', dotoggle, 'active'],
+	['devb', dotoggle, 'devel'],
+	['logn', dotoggle, 'needlogin'],
+	['mobo', dotoggle, 'mobileonly']
     ]
 {% endblock setup %}
 
@@ -87,19 +99,6 @@
 	var mobile = $('#npmobile').is(':checked') ? 1 : 0
 	var devel = $('#npdevel').is(':checked') ? 1 : 0
 	$('#npage').modal('hide')
-	var htm = '<tr><td>'+pn+'</td><td>'+kname[$('#npkind').val()]+'</td><td>'+$('#npsrc').val()+'</td>'+
-	'<td>'+mktoggle('logn', login)+'</td><td>'+mktoggle('mobo', mobile)+'</td><td>'+mktoggle('admb', admin)+'</td><td>'+
-        mktoggle('actb', active)+'</td>'+'<td>'+mktoggle('devb', devel)+'</td>'+
-	'<td><i class="delb fa fa-trash-o"></i></td></tr>'
-	var nx
-	if (sp == null)
-	{
-	    nx = $(htm).appendTo($('#ptab tbody'))
-	}
-	else
-	{
-	    nx = $(htm).insertBefore(sp.parent())
-	}
 	$.post('{{base}}/ajax.php', {
 		op : 'addpage',
 		name : pn,
@@ -111,51 +110,37 @@
                 login : login,
                 mobile: mobile
 	    }, function(data){
-	       nx.data('id', data)
+	        var htm = '<tr><td>'+mkinline('text', 'name', 'Enter name', data, pn)+'</td>'+
+		    '<td>'+mkinline('select', 'kind', 'Enter kind', data, kname[kind-1].text)+'</td>'+
+		    '<td>'+mkinline('text', 'source', 'Enter source', data, $('#npsrc').val())+'</td>'+
+		    '<td>'+mktoggle('logn', login)+'</td>'+
+		    '<td>'+mktoggle('mobo', mobile)+'</td>'+
+		    '<td>'+mktoggle('admb', admin)+'</td>'+
+		    '<td>'+mktoggle('actb', active)+'</td>'+
+		    '<td>'+mktoggle('devb', devel)+'</td>'+
+		    '<td><i class="delb fa fa-trash-o"></i></td></tr>';
+	        var nx
+	        if (sp == null)
+	        {
+	             nx = $(htm).appendTo($('#ptab tbody'))
+	        }
+	        else
+	        {
+	            nx = $(htm).insertBefore(sp.parent())
+  	        }
+	        nx.data('id', data)
+		$('.ppedit', nx).editable({params: paramset, source: kname});
 	    }
 	)
     })
     $('#ptab').on('click', function(e){
         var x = $(e.target)
-	if (x.hasClass('delb'))
+	for (var ix in clicks)
 	{
-	    e.preventDefault();
-	    e.stopPropagation();
-	    bootbox.confirm('Are you sure you you want to delete this page?', function(r){
-	        if (r)
-		{ // user picked OK
-		    var tr = $(x).parent().parent()
-		    $.post('{{base}}/ajax.php', {
-			    op :'delbean',
-			    'bean' : 'page',
-			    id : tr.data('id')
-			},
-			function(data){
-			    tr.css('background-color', 'yellow').fadeOut(1500, function(){ tr.remove() })
-			}
-		    )
-		}
-	    })
-	}
-	else if (x.hasClass('admb'))
-	{
-	    dotoggle(e, x, 'page', 'admin')
-	}
-	else if (x.hasClass('actb'))
-	{
-	    dotoggle(e, x, 'page', 'active')
-	}
-	else if (x.hasClass('devb'))
-	{
-	    dotoggle(e, x, 'page', 'devel')
-	}
-	else if (x.hasClass('logn'))
-	{
-	    dotoggle(e, x, 'page', 'needlogin')
-	}
-	else if (x.hasClass('mobo'))
-	{
-	    dotoggle(e, x, 'page', 'mobileonly')
+	   if (x.hasClass(clicks[ix][0]))
+	   {
+	       clicks[ix][1](e, x, 'page', clicks[ix][2])
+	   }
 	}
     })
     $('#npage').on('show.bs.modal', function(e){
@@ -188,7 +173,7 @@
                 </thead>
 		<tbody>
 		    {% for p in siteinfo.pages %}
-			<tr data-id="{{p.id}}">
+			<tr data-id="{{p.getID}}">
 			    <td class="pname">{{h.inline('text', 'name', 'Enter name', p.getID, p.name)}}</td>
 			    <td>{{h.inline('select', 'kind', 'Enter kind', p.getID, types[p.kind-1])}}</td>
 			    <td>{{h.inline('text', 'source', 'Enter source', p.getID, p.source)}}</td>
