@@ -18,11 +18,11 @@
 {% block scripts %}
     <script src="{{fwurls.parsley}}"></script>
     <script src="{{assets}}/js/util.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.1/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
+    <script src="{{fwurls.editable}}"></script>
 {% endblock scripts %}
 
 {% block css %}
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.1/bootstrap3-editable/css/bootstrap-editable.css"/>
+    <script src="{{fwurls.editablecss}}"></script>
 {% endblock css %}
 
 {% set types = ['text', 'textarea', 'checkbox', 'radio', 'password', 'select'] %}
