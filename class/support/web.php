@@ -10,9 +10,10 @@
  */
     class Web
     {
-	const HTMLMIME	= 'text/html; charset="utf-8"';
-
         use Singleton;
+
+ 	const HTMLMIME	= 'text/html; charset="utf-8"';
+
 /**
  * @var array   Holds values for headers that are required. Keyed by the name of the header
  */
@@ -20,10 +21,10 @@
 /**
  * Generate a Location header
  *
- * @param string	$where		The URL to divert to
- * @param boolean	$temporary	TRUE if this is a temporary redirect
- * @param string	$msg		A message to send
- * @param boolean	$nochange	If TRUE then reply status codes 307 and 308 will be used rather than 301 and 302
+ * @param string		$where		The URL to divert to
+ * @param boolean		$temporary	TRUE if this is a temporary redirect
+ * @param string		$msg		A message to send
+ * @param boolean		$nochange	If TRUE then reply status codes 307 and 308 will be used rather than 301 and 302
  */
 	public function relocate($where, $temporary = TRUE, $msg = '', $nochange = FALSE)
 	{
@@ -117,6 +118,22 @@
 	    {
 		header('Content-Disposition: attachment; filename="'.$name.'"');
 	    }
+	}
+/**
+ * Send a 304 response
+ *
+ * @param	string		$etag	An entity tag
+ * @param	integer		$maxage	Maximum age for page in seconds
+ *
+ * @return void
+ */
+	public function send304($etag, $maxage)
+	{
+	    $this->addheader([
+		'Etag'	=> '"'.$etag.'"',
+		'Cache-Control'	=> 'maxage='.$maxage
+	    ]);
+	    $this->sendheaders(StatusCodes::HTTP_NOT_MODIFIED);
 	}
 /**
  * Generate a 400 Bad Request error return
@@ -231,7 +248,7 @@
  *
  * This supports having more than one header with the same name.
  *
- * @param mixed         $key	Either an arrray of key/value pairs or the key for the value that is in the second parameter
+ * @param string        $key	Either an array of key/value pairs or the key for the value that is in the second parameter
  * @param string        $value
  *
  * @return void

@@ -103,8 +103,8 @@
 	    }
 	    if (!$ifms)
 	    { # we dont need to send the page
-		Web::getinstance()->send304($this->makeetag(), $this->makemaxage());
-		exit;
+		$this->etagmatched();
+		/* NOT REACHED */
 	    }
 	    if (filter_has_var(INPUT_SERVER, 'HTTP_IF_MATCH'))
 	    {
@@ -234,14 +234,15 @@
  */
 	private function etagmatched()
 	{
-	    $rqm = Web::getinstance()->method();
+	    $web = Web::getinstance();
+	    $rqm = $web->method();
 	    if ($rqm != 'GET' && $rqm != 'HEAD')
 	    { # fail if not a GET or HEAD - see W3C specification
-		Web::getinstance()->sendheaders(StatusCodes::HTTP_PRECONDITION_FAILED);
+		$web->sendheaders(StatusCodes::HTTP_PRECONDITION_FAILED);
 	    }
 	    else
 	    {
-		Web::getinstance()->send304($this->makeetag(), $this->makemaxage());
+		$web->send304($this->makeetag(), $this->makemaxage());
 	    }
 	    exit;
 	}
