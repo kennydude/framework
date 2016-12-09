@@ -50,8 +50,22 @@
 	{
 	    $web = Web::getinstance(); # it's used all over the place so grab it once
 
-            chdir($context->local()->makebasepath(self::DATADIR));
+            chdir($context->local()->basedir());
             $fpt = $context->rest();
+	    
+	    if (count($fpt) == 2 && $fpt[0] == 'file')
+	    { # this is access by upload ID
+		$file = R::load('upload', $fpt[1]);
+		if ($file->getID() == 0)
+		{
+		    $web->notfound();
+		    /* NOT REACHED */
+		}
+		$this->file = substr($file->fname, 1); // drop the separator at the start....
+	    }
+	    else
+	    {
+		chdir(self::DATADIR);
 /**
  * Depending on how you construct the URL, it's possible to do some sanity checks on the
  * values passed in. The structure assumed here is /user_id/year/month/filename so
@@ -61,21 +75,22 @@
  * ALways be careful that filenames do not have .. in them of course.
  * 
  */
-            $this->file = implode(DIRECTORY_SEPARATOR, $fpt);
-	    if (!preg_match('#^[0-9]+/[0-9]+/[0-9]+/[^/]+$#', implode('/', $fpt)))
-	    { # filename constructed is not the right format
-                $web->bad();		
-		/* NOT REACHED */
+		$this->file = implode(DIRECTORY_SEPARATOR, $fpt);
+		if (!preg_match('#^[0-9]+/[0-9]+/[0-9]+/[^/]+$#', implode('/', $fpt)))
+		{ # filename constructed is not the right format
+		    $web->bad();		
+		    /* NOT REACHED */
+		}
+    
+    # Now do an access control check
+		$file = R::findOne('upload', 'fname=?',
+		    [DIRECTORY_SEPARATOR . self::DATADIR . DIRECTORY_SEPARATOR . $this->file]);
+		if (!is_object($file))
+		{ # not recorded in the database so 404 it
+		    $web->notfound();
+		    /* NOT REACHED */
+		}
 	    }
-
-# Now do an access control check
-            $file = R::findOne('upload', 'fname=?',
-		[DIRECTORY_SEPARATOR . self::DATADIR . DIRECTORY_SEPARATOR . $this->file]);
-            if (!is_object($file))
-            { # not recorded in the database so 404 it
-                $web->notfound();
-		/* NOT REACHED */
-            }
             if (!$file->canaccess($context->user()))
             { # caurrent user cannot access the file
                 $web->noaccess();
@@ -84,7 +99,7 @@
 
 	    if (($this->mtime = filemtime($this->file)) === FALSE)
 	    {
-                $web->internal('Lost File');
+                $web->internal('Lost File: '.$this->file);
 		/* NOT REACHED */		
 	    }
  
