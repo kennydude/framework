@@ -50,7 +50,7 @@
 	{
 	    $web = Web::getinstance(); # it's used all over the place so grab it once
 
-            chdir(implode(DIRECTORY_SEPARATOR, array($_SERVER['DOCUMENT_ROOT'], self::DATADIR)));
+            chdir($context->local()->makebasepath(self::DATADIR));
             $fpt = $context->rest();
 /**
  * Depending on how you construct the URL, it's possible to do some sanity checks on the
@@ -62,16 +62,15 @@
  * 
  */
             $this->file = implode(DIRECTORY_SEPARATOR, $fpt);
-	    if (!preg_match('#^[0-9]+/[0-9]+/[0-9]+/[^/]+#i', $this->file))
+	    if (!preg_match('#^[0-9]+/[0-9]+/[0-9]+/[^/]+$#', implode('/', $fpt)))
 	    { # filename constructed is not the right format
                 $web->bad();		
 		/* NOT REACHED */
 	    }
-	    $this->mtime = filemtime($this->file);
 
 # Now do an access control check
             $file = R::findOne('upload', 'fname=?',
-		array(DIRECTORY_SEPARATOR . self::DATADIR . DIRECTORY_SEPARATOR . $this->file));
+		[DIRECTORY_SEPARATOR . self::DATADIR . DIRECTORY_SEPARATOR . $this->file]);
             if (!is_object($file))
             { # not recorded in the database so 404 it
                 $web->notfound();
@@ -83,20 +82,19 @@
 		/* NOT REACHED */
             }
 
-            if (!file_exists($this->file))
-            { # no such file - but it was in the database! System error
+	    if (($this->mtime = filemtime($this->file)) === FALSE)
+	    {
                 $web->internal('Lost File');
-		/* NOT REACHED */
-            }
+		/* NOT REACHED */		
+	    }
  
 	    $this->ifmodcheck(); # check to see if we actually need to send anything
- 
- 	    $rcheck = $web->hasrange(filesize($this->file));
-	    $web->addheaders([
+
+	    $web->addheader([
 		'Last-Modified'	=> $this->mtime,
 		'Etag'		=> '"'.$this->makeetag().'"',
 	    ]);
-	    $web->sendfile($file->filename, '', '', $rcheck[1]);
+	    $web->sendfile($this->file, $file->filename);
             return '';
 	}
 /**
@@ -108,7 +106,7 @@
  */
 	public function makeetag()
 	{
-	    return $filemtime;
+	    return $this->mtime;
 	}
 /**
  * Get a last modified time for the page
