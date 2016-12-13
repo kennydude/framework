@@ -4,11 +4,11 @@
 	{% elseif page < 1 %}
 	    {% set page = 1 %}
 	{% endif %}
-	<div>
+	<div class="paginator">
 	    <ul class="pagination">
 		{% if page > 1 %}
                     <li><a href="{{url}}?page=1&amp;pagesize={{pagesize}}" title="Page 1"><i class="fa fa-fast-backward"></i></a></li>
-		    <li><a href="{{url}}?page={{page-1}}&amp;pagesize={{pagesize}}}" title="Prev"><i class="fa fa-backward"></i></a></li>
+		    <li><a href="{{url}}?page={{page-1}}&amp;pagesize={{pagesize}}" title="Prev"><i class="fa fa-backward"></i></a></li>
 		{% else %}
 		    <li class="disabled"><a class="noclick"><i class="fa fa-fast-backward"></i></a></li>
 		    <li class="disabled"><a class="noclick"><i class="fa fa-backward"></i></a></li>
@@ -38,7 +38,7 @@
                 {% endif %}
 		{% if page < pages %}
 		    <li><a href="{{url}}?page={{page+1}}&amp;pagesize={{pagesize}}" title="Prev"><i class="fa fa-forward"></i></a></li>
-                    <li><a href="{{url}}?pagesize={{pagesize}}{{help.stat(status)}}" title="Page {{pages}}"><i class="fa fa-fast-forward"></i></a></li>
+                    <li><a href="{{url}}?page={{pages}}&amp;pagesize={{pagesize}}{{help.stat(status)}}" title="Page {{pages}}"><i class="fa fa-fast-forward"></i></a></li>
 		{% else %}
 		    <li class="disabled"><a  class="noclick"><i class="fa fa-forward"></i></a></li>
 		    <li class="disabled"><a  class="noclick"><i class="fa fa-fast-forward"></i></a></li>
