@@ -25,7 +25,7 @@
 	    {
 		if (Config::UPUBLIC && Config::UPRIVATE)
 		{ # need to check the flag could be either private or public
-		    foreach ($this->posta('public') as $ix => $public)
+		    foreach ($fd->posta('public') as $ix => $public)
 		    {
 			$upl = R::dispense('upload');
 			$upl->savefile($context, $fd->filedata('uploads', $ix), $public, $context->user());
