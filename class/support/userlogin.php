@@ -282,7 +282,9 @@
 	{
 	    if ($context->hasuser())
 	    { # logged in, so this stupid....
-		$context->local();
+		$context->local()->addval('done', TRUE);
+		$context->local()->message(Local::WARNING, 'You are already logged in');
+		return 'reset.twig';
 	    }
             $local = $context->local();
             $fdt = $context->formdata();
@@ -377,4 +379,3 @@
 	}
     }
 ?>
-                                                                                                                        
